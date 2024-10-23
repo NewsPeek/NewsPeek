@@ -51,6 +51,45 @@
                     </dependency>
                 </dependencies>
             </plugin>
+            <plugin>
+                <groupId>com.aldaviva.coverage</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+                <configuration>
+                    <exclusions>
+                        <!-- Exclude any files you don't want counting against your coverage thresholds. -->
+                        Ant path syntax:
+                        ** = multiple directories
+                        *  = single directory or multiple characters
+                        ?  = single character
+                        -->
+                        <param></param>
+                    </exclusions>
+
+                    <!-- Specify minimum coverage thresholds for lines of code or branching statements as a floating-point number between 0.0 (no coverage) and 1.0 (full coverage) -->
+                    <minBranchCoveredRatio>0.00</minBranchCoveredRatio>
+                </configuration>
+
+                <executions>
+                    <!-- Add instrumentation instructions to bytecode before tests run -->
+                    <execution>
+                        <id>instrument</id>
+                        <goals>
+                            <goal>instrument</goal>
+                        </goals>
+                        <phase>process-test-classes</phase>
+                    </execution>
+
+                    <!-- Restore uninstrumented class files after tests are done, and fail the build if coverage thresholds were not met -->
+                    <execution>
+                        <id>check</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <phase>prepare-package</phase>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -65,6 +104,12 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>5.8.1</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.cobertura</groupId>
+            <artifactId>cobertura</artifactId>
+            <version>2.1.1</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
