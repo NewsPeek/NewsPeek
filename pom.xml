@@ -59,9 +59,16 @@
                 </dependencies>
             </plugin>
             <plugin>
-                <groupId>com.github.aldaviva</groupId>
+                <groupId>com.aldaviva.coverage</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2376a6a</version>
+                <version>0.0.1-SNAPSHOT</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.github.aldaviva</groupId>
+                        <artifactId>cobertura-maven-plugin</artifactId>
+                        <version>2376a6a696</version>
+                    </dependency>
+                </dependencies>
                 <configuration>
                     <exclusions>
                         <!-- Exclude any files you don't want counting against your coverage thresholds. -->
