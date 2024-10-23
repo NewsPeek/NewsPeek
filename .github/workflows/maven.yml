@@ -29,3 +29,6 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+    - name: Report code coverage with Cobertura
+      uses: 5monkeys/cobertura-action@v14
+            
