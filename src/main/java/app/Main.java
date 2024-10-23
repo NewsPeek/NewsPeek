@@ -6,6 +6,6 @@ public class Main {
     }
 
     public static int returnFive() {
-        return 6; //intentionally wrong to test the test
+        return 5;
     }
 }
