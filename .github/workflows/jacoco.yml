@@ -44,3 +44,4 @@ jobs:
         update-comment: true
         skip-if-no-changes: false
         title: Code Coverage Report
+        debug-mode: true
