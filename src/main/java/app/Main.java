@@ -8,4 +8,8 @@ public class Main {
     public static int returnFive() {
         return 5;
     }
+
+    public static int untested() {
+        return 7;
+    }
 }
