@@ -14,6 +14,10 @@ on:
   pull_request:
     branches: [ "main" ]
 
+permissions:
+  pull-requests: write
+  contents: read
+
 jobs:
   build:
 
@@ -29,3 +33,17 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+    - name: Generate Jacoco report with Maven
+      run: mvn -B jacoco:report --file pom.xml
+    - name: Add comment
+      uses: Madrapps/jacoco-report@v1.7.1
+      with:
+        paths: 'target/site/jacoco/jacoco.xml'
+        token: ${{ secrets.GITHUB_TOKEN }}
+        min-coverage-overall: 80
+        min-coverage-changed-files: 100
+        continue-on-error: true
+        update-comment: true
+        skip-if-no-changes: false
+        title: Code Coverage Report
+        debug-mode: true
