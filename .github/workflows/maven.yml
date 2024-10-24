@@ -29,3 +29,11 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+    - name: JaCoCo Report Custom
+      uses: ALonelyDuck/jacoco-report@v1.2
+      with:
+        paths: 'target/site/jacoco/jacoco.xml'
+        token: ${{ secrets.GITHUB_TOKEN }}
+        min-coverage-overall: 0.8
+        min-coverage-changed-files: 1.0
+        continue-on-error: true
