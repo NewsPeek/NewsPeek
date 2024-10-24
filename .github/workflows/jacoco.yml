@@ -42,5 +42,5 @@ jobs:
         min-coverage-changed-files: 1.0
         continue-on-error: true
         update-comment: true
-        skip-if-no-changes: true
+        skip-if-no-changes: false
         title: Code Coverage Report
