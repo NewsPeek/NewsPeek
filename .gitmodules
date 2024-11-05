@@ -1,0 +1,3 @@
+[submodule "jreadability"]
+	path = jreadability
+	url = git@github.com:NewsPeek/jreadability
