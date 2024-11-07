@@ -1,7 +1,7 @@
 package use_case.helpers;
 
 import entity.Article;
-import entity.WebNewsArticle;
+import entity.CommonArticle;
 
 import java.time.LocalDateTime;
 
@@ -18,6 +18,6 @@ public class JReadabilityScraper extends Scraper {
         final String author = "John Cena";
         final String agency = "XYZ Corporation";
         final LocalDateTime postedAt = LocalDateTime.now();
-        return new WebNewsArticle(title, text, this.url, author, agency, postedAt);
+        return new CommonArticle(title, text, this.url, author, agency, postedAt);
     }
 }
