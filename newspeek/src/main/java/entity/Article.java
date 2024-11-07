@@ -14,8 +14,20 @@ public interface Article {
     String getText();
 
     /**
-     * The source of the article, such as a URL or file path.
+     * Replaces the full text of the article.
+     * @param text the new full text of the article.
+     */
+    void setText(String text);
+
+    /**
+     * Returns the source of the article, such as a URL or file path.
      * @return the source of the article.
      */
     String getSource();
+
+    /**
+     * Returns a copy of the article.
+     * @return a copy of the article.
+     */
+    Article copy();
 }
