@@ -1,7 +1,7 @@
 package use_case.helpers;
 
-import entity.Article;
-import entity.CensorshipRuleSet;
+import entity.article.Article;
+import entity.censorship_rule_set.CensorshipRuleSet;
 
 public class ScanningCensorshipService implements CensorshipService {
     @Override

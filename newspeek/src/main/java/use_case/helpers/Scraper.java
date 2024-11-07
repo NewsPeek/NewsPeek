@@ -1,13 +1,10 @@
 package use_case.helpers;
 
-import entity.Article;
+import entity.article.Article;
+import entity.article.ArticleFactory;
 
-public abstract class Scraper {
-    String url;
+import java.awt.geom.Arc2D;
 
-    Scraper(String url) {
-        this.url = url;
-    }
-
-    abstract Article scrapeArticle();
+public interface Scraper {
+    Article scrapeArticle(String url);
 }
