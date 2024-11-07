@@ -1,4 +1,4 @@
-package entity;
+package entity.article;
 
 public interface Article {
     /**
