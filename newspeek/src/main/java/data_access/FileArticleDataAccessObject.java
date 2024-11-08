@@ -1,12 +1,5 @@
 package data_access;
 
-import entity.Article;
-
-import java.io.*;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 // TODO: add `implements` statements for the DataAccessInterface for each use case
 /**
  * DAO for to read articles from files.

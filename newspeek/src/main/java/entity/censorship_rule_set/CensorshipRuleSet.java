@@ -1,4 +1,4 @@
-package entity;
+package entity.censorship_rule_set;
 
 import java.util.Map;
 import java.util.Set;
