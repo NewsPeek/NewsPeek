@@ -2,7 +2,7 @@ package data_access;
 
 import entity.article.Article;
 import entity.article.ArticleFactory;
-import use_case.helpers.Scraper;
+import data_access.scraper.Scraper;
 import use_case.random_article.RandomArticleAPIDataAccessInterface;
 
 import java.io.*;

@@ -1,9 +1,6 @@
-package use_case.helpers;
+package data_access.scraper;
 
 import entity.article.Article;
-import entity.article.ArticleFactory;
-
-import java.awt.geom.Arc2D;
 
 public interface Scraper {
     Article scrapeArticle(String url);
