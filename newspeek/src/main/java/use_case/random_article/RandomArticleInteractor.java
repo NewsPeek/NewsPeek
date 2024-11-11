@@ -5,14 +5,12 @@ import entity.censorship_rule_set.CensorshipRuleSet;
 import use_case.helpers.CensorshipService;
 import use_case.helpers.ScanningCensorshipService;
 
-import javax.swing.*;
-
 /**
  * The Random Article interactor.
  */
 public class RandomArticleInteractor implements RandomArticleInputBoundary {
-    private RandomArticleAPIDataAccessInterface apiDataAccessInterface;
-    private RandomArticleOutputBoundary presenter;
+    private final RandomArticleAPIDataAccessInterface apiDataAccessInterface;
+    private final RandomArticleOutputBoundary presenter;
 
     public RandomArticleInteractor(RandomArticleAPIDataAccessInterface randomArticleAPIDDataAccessInterface,
                                    RandomArticleOutputBoundary randomArticleOutputBoundary) {
@@ -25,7 +23,6 @@ public class RandomArticleInteractor implements RandomArticleInputBoundary {
         // Get article from Data Access Object
         final String country = randomArticleInputData.getCountry();
         final Article article = apiDataAccessInterface.getRandomArticle(country);
-        final JTextArea textArea = randomArticleInputData.getTextArea();
 
         // Censor article
         final CensorshipService censorshipService = new ScanningCensorshipService();
@@ -37,6 +34,5 @@ public class RandomArticleInteractor implements RandomArticleInputBoundary {
 
         // Prepare success view
         presenter.prepareSuccessView(randomArticleOutputData);
-        textArea.setText(censoredArticle.getText());
     }
 }

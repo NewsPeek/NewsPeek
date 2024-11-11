@@ -17,8 +17,8 @@ public class ReaderViewModel extends ViewModel<ReaderState> {
     }
 
     public void setArticle(Article article){
-        Article oldArticle = getState().getArticle();
+        ReaderState oldState = getState();
         getState().setArticle(article);
-        firePropertyChange("article", oldArticle,article);
+        firePropertyChange("article", oldState, getState());
     }
 }

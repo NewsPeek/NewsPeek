@@ -21,8 +21,8 @@ public class RandomArticleController {
      * @param country the country for which to fetch news articles
      * @param censorshipRuleSet the censorship ruleset used to return the censored article
      */
-    public void execute(String country, CensorshipRuleSet censorshipRuleSet, JTextArea jTextArea) {
-        final RandomArticleInputData inputData = new RandomArticleInputData(country, censorshipRuleSet, jTextArea);
+    public void execute(String country, CensorshipRuleSet censorshipRuleSet) {
+        final RandomArticleInputData inputData = new RandomArticleInputData(country, censorshipRuleSet);
         this.randomArticleInteractor.execute(inputData);
     }
 }
