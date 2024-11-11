@@ -1,8 +1,17 @@
 package app;
 
+import javax.swing.*;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        final AppBuilder appBuilder = new AppBuilder();
+        final JFrame application = appBuilder
+                .addReaderView()
+                .addRandomArticleUseCase()
+                .build();
+
+        application.pack();
+        application.setVisible(true);
     }
 
     public static int returnFive() {

@@ -14,7 +14,7 @@ public class APIDataAccessObject implements RandomArticleAPIDataAccessInterface 
     private final ArticleFactory articleFactory;
     private final Scraper scraper;
 
-    public APIDataAccessObject(ArticleFactory articleFactory, Scraper scraper) throws IOException {
+    public APIDataAccessObject(ArticleFactory articleFactory, Scraper scraper) {
         this.articleFactory = articleFactory;
         this.scraper = scraper;
     }
