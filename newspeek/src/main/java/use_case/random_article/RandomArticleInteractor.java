@@ -9,8 +9,8 @@ import use_case.helpers.ScanningCensorshipService;
  * The Random Article interactor.
  */
 public class RandomArticleInteractor implements RandomArticleInputBoundary {
-    private RandomArticleAPIDataAccessInterface apiDataAccessInterface;
-    private RandomArticleOutputBoundary presenter;
+    private final RandomArticleAPIDataAccessInterface apiDataAccessInterface;
+    private final RandomArticleOutputBoundary presenter;
 
     public RandomArticleInteractor(RandomArticleAPIDataAccessInterface randomArticleAPIDDataAccessInterface,
                                    RandomArticleOutputBoundary randomArticleOutputBoundary) {
