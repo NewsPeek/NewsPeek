@@ -10,10 +10,22 @@ public class ScanningCensorshipService implements CensorshipService {
         Article result = article.copy();
         StringBuilder censoredText = new StringBuilder();
 
-        // TODO: apply censorship rules. For now, we just duplicate the text verbatim.
-        censoredText.append(article.getText());
+        String[] articleText = result.getText().split(" ");
+
+        for(String word : articleText){
+            if(ruleset.getProhibitions().contains(word)) {
+                censoredText.append(censorWord(word));
+            }
+            else censoredText.append(ruleset.getReplacements().getOrDefault(word, word));
+            censoredText.append(" ");
+        }
+
 
         result.setText(censoredText.toString());
         return result;
+    }
+
+    private String censorWord(String word) {
+        return new String(new char[word.length()]).replace("\0", "x");
     }
 }
