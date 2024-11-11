@@ -1,6 +1,5 @@
 package app;
 
-import java.awt.CardLayout;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -20,6 +19,8 @@ import use_case.random_article.RandomArticleInputBoundary;
 import use_case.random_article.RandomArticleInteractor;
 import use_case.random_article.RandomArticleOutputBoundary;
 import view.ReaderView;
+
+import java.awt.*;
 
 /**
  * The AppBuilder class is responsible for putting together the pieces of

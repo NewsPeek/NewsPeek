@@ -7,10 +7,7 @@ import interface_adapter.ReaderViewModel;
 import interface_adapter.random_article.RandomArticleController;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Map;
@@ -47,7 +44,7 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
             String country = "Canada";
             CensorshipRuleSet censorshipRuleSet = new CommonCensorshipRuleSet( Set.of("violence"), Map.of(),
                     false, "Basic Rules");
-            randomArticleController.execute(country,censorshipRuleSet);
+            randomArticleController.execute(country,censorshipRuleSet, articleTextArea);
         });
 
 
@@ -59,9 +56,9 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
+        System.out.println("PropertyChangeEvent received: " + evt.getPropertyName());
         if (evt.getPropertyName().equals("state")) {
             final ReaderState state = (ReaderState) evt.getNewValue();
-            // change the view based on the updated state
             updateArticleText(state);
         }
     }
