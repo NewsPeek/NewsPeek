@@ -20,8 +20,8 @@ public class RandomArticleController {
      * @param censorshipRuleSet the censorship ruleset used to return the censored article
      */
     public void execute(String country, CensorshipRuleSet censorshipRuleSet) {
-        final RandomArticleInputData changePasswordInputData = new RandomArticleInputData(country, censorshipRuleSet);
+        final RandomArticleInputData inputData = new RandomArticleInputData(country, censorshipRuleSet);
 
-        this.randomArticleInteractor.execute(changePasswordInputData);
+        this.randomArticleInteractor.execute(inputData);
     }
 }

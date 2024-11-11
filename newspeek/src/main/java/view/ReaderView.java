@@ -4,7 +4,7 @@ import entity.censorship_rule_set.CensorshipRuleSet;
 import entity.censorship_rule_set.CommonCensorshipRuleSet;
 import interface_adapter.ReaderState;
 import interface_adapter.ReaderViewModel;
-import use_case.random_article.RandomArticleController;
+import interface_adapter.random_article.RandomArticleController;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
