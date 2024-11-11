@@ -1,12 +1,26 @@
 package app;
 
-import java.awt.CardLayout;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
+import data_access.APIDataAccessObject;
+import entity.article.Article;
+import entity.article.ArticleFactory;
+import entity.article.CommonArticleFactory;
+import interface_adapter.ReaderViewModel;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.random_article.RandomArticleController;
+import interface_adapter.random_article.RandomArticlePresenter;
+import use_case.helpers.JReadabilityScraper;
+import use_case.helpers.Scraper;
+import use_case.random_article.RandomArticleInputBoundary;
+import use_case.random_article.RandomArticleInteractor;
+import use_case.random_article.RandomArticleOutputBoundary;
+import view.ReaderView;
+
+import java.awt.*;
 
 /**
  * The AppBuilder class is responsible for putting together the pieces of
@@ -21,20 +35,43 @@ import interface_adapter.ViewManagerModel;
 //                  for your final project this term.
 public class AppBuilder {
     private final JPanel cardPanel = new JPanel();
+    private final CardLayout cardLayout = new CardLayout();
     private final ViewManagerModel viewManagerModel = new ViewManagerModel();
 
+    private ReaderView readerView;
+    private ReaderViewModel readerViewModel;
+
+    private ArticleFactory articleFactory = new CommonArticleFactory();
+    private APIDataAccessObject apiDataAccessObject;
 
     public AppBuilder() {
-        // TODO: implement
+        cardPanel.setLayout(cardLayout);
     }
 
-    // TODO: add all the addFoo() methods
     /**
-     * Adds *SOMETHING* to the application.
+     * Adds the Reader View to the application.
      * @return this builder
      */
-    public AppBuilder addStuff() {
-        // TODO: implement
+    public AppBuilder addReaderView() {
+        readerViewModel = new ReaderViewModel();
+        readerView = new ReaderView(readerViewModel);
+        cardPanel.add(readerView, readerView.getViewName());
+        return this;
+    }
+
+    /**
+     * Adds the Random Article Use Case to the application.
+     * @return this builder
+     */
+    public AppBuilder addRandomArticleUseCase() {
+        Scraper scraper = new JReadabilityScraper(articleFactory);
+        this.apiDataAccessObject = new APIDataAccessObject(articleFactory, scraper);
+        final RandomArticleOutputBoundary randomArticleOutputBoundary = new RandomArticlePresenter(readerViewModel);
+        final RandomArticleInputBoundary randomArticleInteractor = new RandomArticleInteractor(
+                apiDataAccessObject, randomArticleOutputBoundary);
+
+        final RandomArticleController controller = new RandomArticleController(randomArticleInteractor);
+        readerView.setRandomArticleController(controller);
         return this;
     }
 
@@ -46,8 +83,9 @@ public class AppBuilder {
         final JFrame application = new JFrame("NewsPeek");
         application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        // TODO: set initial state
-        // viewManagerModel.setState(somethingView.getViewName());
+        application.add(cardPanel);
+
+        viewManagerModel.setState(readerView.getViewName());
         viewManagerModel.firePropertyChanged();
 
         return application;
