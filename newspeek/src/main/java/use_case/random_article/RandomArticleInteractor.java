@@ -37,6 +37,6 @@ public class RandomArticleInteractor implements RandomArticleInputBoundary {
 
         // Prepare success view
         presenter.prepareSuccessView(randomArticleOutputData);
-        textArea.setText(article.getText());
+        textArea.setText(censoredArticle.getText());
     }
 }
