@@ -2,6 +2,8 @@ package use_case.random_article;
 
 import entity.censorship_rule_set.CensorshipRuleSet;
 
+import javax.swing.*;
+
 /**
  * The Input Data for the Logout Use Case.
  */
