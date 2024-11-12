@@ -11,7 +11,7 @@ public class ScanningCensorshipService implements CensorshipService {
     public Article censor(Article article, CensorshipRuleSet ruleset) {
         // loop through the words in the article.getText() and apply censorship rules
         Article result = article.copy();
-        StringBuffer censoredText = new StringBuffer();
+        StringBuilder censoredText = new StringBuilder();
 
         String[] articleWords = result.getText().split(WORD_REGEX);
         String[] articlePunctuation = result.getText().split(PUNCTUATION_REGEX);
