@@ -1,8 +1,7 @@
-package use_case.helpers;
+package data_access.scraper;
 
 import entity.article.Article;
 import entity.article.ArticleFactory;
-import entity.article.CommonArticle;
 
 import java.time.LocalDateTime;
 

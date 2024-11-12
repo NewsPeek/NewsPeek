@@ -45,14 +45,17 @@ public class CommonArticle implements Article {
         return new CommonArticle(this.title, this.text, this.source, this.author, this.agency, this.postedAt);
     }
 
+    @Override
     public String getAuthor() {
         return author;
     }
 
+    @Override
     public String getAgency() {
         return agency;
     }
 
+    @Override
     public LocalDateTime getPostedAt() {
         return postedAt;
     }

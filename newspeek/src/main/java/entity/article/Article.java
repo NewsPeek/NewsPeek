@@ -1,5 +1,7 @@
 package entity.article;
 
+import java.time.LocalDateTime;
+
 public interface Article {
     /**
      * Returns the title of the article.
@@ -30,4 +32,10 @@ public interface Article {
      * @return a copy of the article.
      */
     Article copy();
+
+    String getAuthor();
+
+    String getAgency();
+
+    LocalDateTime getPostedAt();
 }
