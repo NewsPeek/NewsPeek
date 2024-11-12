@@ -42,14 +42,14 @@ class ScanningCensorshipServiceTest {
         Article censoredArticle = censorshipService.censor(this.mockArticle, mockCensorshipRuleSet);
 
         // Article text should be the same, since there's no censorship applied
-        assertEquals(mockArticle.getText(), censoredArticle.getText());
+        assertEquals(censoredArticle.getText(), mockArticle.getText());
 
         // Nothing else should have changed
-        assertEquals(mockArticle.getTitle(), censoredArticle.getTitle());
-        assertEquals(mockArticle.getSource(), censoredArticle.getSource());
-        assertEquals(mockArticle.getAuthor(), censoredArticle.getAuthor());
-        assertEquals(mockArticle.getAgency(), censoredArticle.getAgency());
-        assertEquals(mockArticle.getPostedAt(), censoredArticle.getPostedAt());
+        assertEquals(censoredArticle.getTitle(), mockArticle.getTitle());
+        assertEquals(censoredArticle.getSource(), mockArticle.getSource());
+        assertEquals(censoredArticle.getAuthor(), mockArticle.getAuthor());
+        assertEquals(censoredArticle.getAgency(), mockArticle.getAgency());
+        assertEquals(censoredArticle.getPostedAt(), mockArticle.getPostedAt());
     }
 
     /*
@@ -69,15 +69,16 @@ class ScanningCensorshipServiceTest {
         Article censoredArticle = censorshipService.censor(this.mockArticle, mockCensorshipRuleSet);
 
         // Article text should be censored
-        assertEquals(mockArticle.getText(), "***** ***** dolor sit amet. ***** ***** DOLOR sIT aMeT.");
+        assertEquals(mockArticle.getText(), "xxxxx xxxxx dolor sit amet. xxxxx xxxxx DOLOR sIT aMeT.");
 
         // Nothing else should have changed
-        assertEquals(mockArticle.getTitle(), censoredArticle.getTitle());
-        assertEquals(mockArticle.getSource(), censoredArticle.getSource());
-        assertEquals(mockArticle.getAuthor(), censoredArticle.getAuthor());
-        assertEquals(mockArticle.getAgency(), censoredArticle.getAgency());
-        assertEquals(mockArticle.getPostedAt(), censoredArticle.getPostedAt());
+        assertEquals(censoredArticle.getTitle(), mockArticle.getTitle());
+        assertEquals(censoredArticle.getSource(), mockArticle.getSource());
+        assertEquals(censoredArticle.getAuthor(), mockArticle.getAuthor());
+        assertEquals(censoredArticle.getAgency(), mockArticle.getAgency());
+        assertEquals(censoredArticle.getPostedAt(), mockArticle.getPostedAt());
     }
+    */
 
     @Test
     void censorProhibitedCaseSensitiveTest() {
@@ -95,14 +96,13 @@ class ScanningCensorshipServiceTest {
         Article censoredArticle = censorshipService.censor(this.mockArticle, mockCensorshipRuleSet);
 
         // Article text should be censored
-        assertEquals(mockArticle.getText(), "***** ***** dolor sit amet. Lorem Ipsum DOLOR sIT aMeT.");
+        assertEquals("xxxxx xxxxx dolor sit amet. Lorem Ipsum DOLOR sIT aMeT.", mockArticle.getText());
 
         // Nothing else should have changed
-        assertEquals(mockArticle.getTitle(), censoredArticle.getTitle());
-        assertEquals(mockArticle.getSource(), censoredArticle.getSource());
-        assertEquals(mockArticle.getAuthor(), censoredArticle.getAuthor());
-        assertEquals(mockArticle.getAgency(), censoredArticle.getAgency());
-        assertEquals(mockArticle.getPostedAt(), censoredArticle.getPostedAt());
+        assertEquals(censoredArticle.getTitle(), mockArticle.getTitle());
+        assertEquals(censoredArticle.getSource(), mockArticle.getSource());
+        assertEquals(censoredArticle.getAuthor(), mockArticle.getAuthor());
+        assertEquals(censoredArticle.getAgency(), mockArticle.getAgency());
+        assertEquals(censoredArticle.getPostedAt(), mockArticle.getPostedAt());
     }
-    */
 }
