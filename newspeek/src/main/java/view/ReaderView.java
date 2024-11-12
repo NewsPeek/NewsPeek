@@ -35,16 +35,15 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         final JPanel buttons = new JPanel();
         JButton randomArticleButton = new JButton("Random Article");
         buttons.add(randomArticleButton);
-        articleTextArea=new JTextArea(10,40);
+        articleTextArea = new JTextArea(10,40);
         articleTextArea.setEditable(false);
         JScrollPane articleScrollPane = new JScrollPane(articleTextArea);
-
 
         randomArticleButton.addActionListener(evt ->{
             String country = "Canada";
             CensorshipRuleSet censorshipRuleSet = new CommonCensorshipRuleSet( Set.of("violence"), Map.of(),
                     false, "Basic Rules");
-            randomArticleController.execute(country,censorshipRuleSet, articleTextArea);
+            randomArticleController.execute(country,censorshipRuleSet);
         });
 
 
@@ -57,7 +56,7 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         System.out.println("PropertyChangeEvent received: " + evt.getPropertyName());
-        if (evt.getPropertyName().equals("state")) {
+        if (evt.getPropertyName().equals("article")) {
             final ReaderState state = (ReaderState) evt.getNewValue();
             updateArticleText(state);
         }
