@@ -6,6 +6,10 @@ import entity.censorship_rule_set.CensorshipRuleSet;
 import entity.censorship_rule_set.CommonCensorshipRuleSet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
+import org.junit.runners.Parameterized.Parameters;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -15,8 +19,19 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ScanningCensorshipServiceTest {
+@RunWith(Parameterized.class)
+class CensorshipServiceTest {
     private Article mockArticle;
+
+    @Parameter
+    public CensorshipService censorshipService;
+
+    @Parameters
+    public static CensorshipService[] data() {
+        return new CensorshipService[] {
+                new ScanningCensorshipService()
+        };
+    }
 
     @BeforeEach
     void initializeMocks() {
@@ -27,6 +42,8 @@ class ScanningCensorshipServiceTest {
         final String agency = "XYZ Corporation";
         final LocalDateTime postedAt = LocalDateTime.now();
         this.mockArticle = new CommonArticle(title, text, source, author, agency, postedAt);
+
+        this.censorshipService = new ScanningCensorshipService();
     }
 
     @Test
@@ -38,7 +55,6 @@ class ScanningCensorshipServiceTest {
 
         CensorshipRuleSet mockCensorshipRuleSet = new CommonCensorshipRuleSet(
                 prohibitedWords, replacedWords, caseSensitive, ruleSetName);
-        CensorshipService censorshipService = new ScanningCensorshipService();
         Article censoredArticle = censorshipService.censor(this.mockArticle, mockCensorshipRuleSet);
 
         // Article text should be the same, since there's no censorship applied
@@ -65,7 +81,6 @@ class ScanningCensorshipServiceTest {
 
         CensorshipRuleSet mockCensorshipRuleSet = new CommonCensorshipRuleSet(
                 prohibitedWords, replacedWords, caseSensitive, ruleSetName);
-        CensorshipService censorshipService = new ScanningCensorshipService();
         Article censoredArticle = censorshipService.censor(this.mockArticle, mockCensorshipRuleSet);
 
         // Article text should be censored
@@ -92,7 +107,6 @@ class ScanningCensorshipServiceTest {
 
         CensorshipRuleSet mockCensorshipRuleSet = new CommonCensorshipRuleSet(
                 prohibitedWords, replacedWords, caseSensitive, ruleSetName);
-        CensorshipService censorshipService = new ScanningCensorshipService();
         Article censoredArticle = censorshipService.censor(this.mockArticle, mockCensorshipRuleSet);
 
         // Article text should be censored
