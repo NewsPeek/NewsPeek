@@ -26,10 +26,14 @@ class CensorshipServiceTest {
     @Parameter
     public CensorshipService censorshipService;
 
+    @Parameter(1)
+    public boolean caseSensitive;
+
     @Parameters
-    public static CensorshipService[] data() {
-        return new CensorshipService[] {
-                new ScanningCensorshipService()
+    public static Object[] data() {
+        return new Object[][] {
+                {new ScanningCensorshipService(), false},
+                {new ScanningCensorshipService(), true},
         };
     }
 
@@ -42,15 +46,12 @@ class CensorshipServiceTest {
         final String agency = "XYZ Corporation";
         final LocalDateTime postedAt = LocalDateTime.now();
         this.mockArticle = new CommonArticle(title, text, source, author, agency, postedAt);
-
-        this.censorshipService = new ScanningCensorshipService();
     }
 
     @Test
     void censorNothingTest() {
         final Set<String> prohibitedWords = new HashSet<>();
         final Map<String, String> replacedWords = new HashMap<>();
-        final Boolean caseSensitive = false;
         final String ruleSetName = "Mock Ruleset";
 
         CensorshipRuleSet mockCensorshipRuleSet = new CommonCensorshipRuleSet(
@@ -61,58 +62,99 @@ class CensorshipServiceTest {
         assertEquals(censoredArticle.getText(), censoredArticle.getText());
 
         // Nothing else should have changed
-        assertEquals(mockArticle.getTitle(), censoredArticle.getTitle());
-        assertEquals(mockArticle.getSource(), censoredArticle.getSource());
-        assertEquals(mockArticle.getAuthor(), censoredArticle.getAuthor());
-        assertEquals(mockArticle.getAgency(), censoredArticle.getAgency());
-        assertEquals(mockArticle.getPostedAt(), censoredArticle.getPostedAt());
+        assertNothingElseChanged(mockArticle, censoredArticle);
     }
 
-    /*
     @Test
-    void censorProhibitedCaseInsensitiveTest() {
+    void censorProhibitedTest() {
         final Set<String> prohibitedWords = new HashSet<>();
         final Map<String, String> replacedWords = new HashMap<>();
-        final Boolean caseSensitive = false;
         final String ruleSetName = "Mock Ruleset";
 
-        prohibitedWords.add("ipsum");
         prohibitedWords.add("lorem");
+        prohibitedWords.add("ipsum");
+        prohibitedWords.add("amet");
 
         CensorshipRuleSet mockCensorshipRuleSet = new CommonCensorshipRuleSet(
                 prohibitedWords, replacedWords, caseSensitive, ruleSetName);
         Article censoredArticle = censorshipService.censor(this.mockArticle, mockCensorshipRuleSet);
 
         // Article text should be censored
-        assertEquals("xxxxx xxxxx dolor sit amet. xxxxx xxxxx DOLOR sIT aMeT.", censoredArticle.getText());
+        if (caseSensitive) {
+            assertEquals("xxxxx xxxxx dolor sit xxxx. Lorem Ipsum DOLOR sIT aMeT.", censoredArticle.getText());
+        } else {
+            assertEquals("xxxxx xxxxx dolor sit xxxx. xxxxx xxxxx DOLOR sIT xxxx.", censoredArticle.getText());
+        }
 
-        // Nothing else should have changed
-        assertEquals(mockArticle.getTitle(), censoredArticle.getTitle());
-        assertEquals(mockArticle.getSource(), censoredArticle.getSource());
-        assertEquals(mockArticle.getAuthor(), censoredArticle.getAuthor());
-        assertEquals(mockArticle.getAgency(), censoredArticle.getAgency());
-        assertEquals(mockArticle.getPostedAt(), censoredArticle.getPostedAt());
+        assertNothingElseChanged(mockArticle, censoredArticle);
     }
-    */
 
     @Test
-    void censorProhibitedCaseSensitiveTest() {
+    void censorProhibitedSpaceAroundTest() {
         final Set<String> prohibitedWords = new HashSet<>();
         final Map<String, String> replacedWords = new HashMap<>();
-        final Boolean caseSensitive = true;
         final String ruleSetName = "Mock Ruleset";
 
-        prohibitedWords.add("ipsum");
         prohibitedWords.add("lorem");
+        prohibitedWords.add("ipsum");
+        prohibitedWords.add("amet");
 
         CensorshipRuleSet mockCensorshipRuleSet = new CommonCensorshipRuleSet(
                 prohibitedWords, replacedWords, caseSensitive, ruleSetName);
+
+        final String title = "Sample Article";
+        final String text = " lorem ipsum dolor sit amet. Lorem Ipsum DOLOR sIT aMeT. "; // note spaces around text
+        final String source = "https://example.com";
+        final String author = "John Cena";
+        final String agency = "XYZ Corporation";
+        final LocalDateTime postedAt = LocalDateTime.now();
+        final Article mockArticle = new CommonArticle(title, text, source, author, agency, postedAt);
+
         Article censoredArticle = censorshipService.censor(this.mockArticle, mockCensorshipRuleSet);
 
         // Article text should be censored
-        assertEquals("xxxxx xxxxx dolor sit amet. Lorem Ipsum DOLOR sIT aMeT.", censoredArticle.getText());
+        if (caseSensitive) {
+            assertEquals(" xxxxx xxxxx dolor sit xxxx. Lorem Ipsum DOLOR sIT aMeT. ", censoredArticle.getText());
+        } else {
+            assertEquals(" xxxxx xxxxx dolor sit xxxx. xxxxx xxxxx DOLOR sIT xxxx. ", censoredArticle.getText());
+        }
 
-        // Nothing else should have changed
+        assertNothingElseChanged(mockArticle, censoredArticle);
+    }
+
+    void censorProhibitedPunctuationAroundTest() {
+        final Set<String> prohibitedWords = new HashSet<>();
+        final Map<String, String> replacedWords = new HashMap<>();
+        final String ruleSetName = "Mock Ruleset";
+
+        prohibitedWords.add("lorem");
+        prohibitedWords.add("ipsum");
+        prohibitedWords.add("amet");
+
+        CensorshipRuleSet mockCensorshipRuleSet = new CommonCensorshipRuleSet(
+                prohibitedWords, replacedWords, caseSensitive, ruleSetName);
+
+        final String title = "Sample Article";
+        final String text = ",lorem ipsum dolor sit amet. Lorem Ipsum DOLOR sIT aMeT.!"; // note spaces around text
+        final String source = "https://example.com";
+        final String author = "John Cena";
+        final String agency = "XYZ Corporation";
+        final LocalDateTime postedAt = LocalDateTime.now();
+        final Article mockArticle = new CommonArticle(title, text, source, author, agency, postedAt);
+
+        Article censoredArticle = censorshipService.censor(this.mockArticle, mockCensorshipRuleSet);
+
+        // Article text should be censored
+        if (caseSensitive) {
+            assertEquals(",xxxxx xxxxx dolor sit xxxx. Lorem Ipsum DOLOR sIT aMeT.!", censoredArticle.getText());
+        } else {
+            assertEquals(",xxxxx xxxxx dolor sit xxxx. xxxxx xxxxx DOLOR sIT xxxx.!", censoredArticle.getText());
+        }
+
+        assertNothingElseChanged(mockArticle, censoredArticle);
+    }
+
+    private void assertNothingElseChanged(Article mockArticle, Article censoredArticle) {
         assertEquals(mockArticle.getTitle(), censoredArticle.getTitle());
         assertEquals(mockArticle.getSource(), censoredArticle.getSource());
         assertEquals(mockArticle.getAuthor(), censoredArticle.getAuthor());
