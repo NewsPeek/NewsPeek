@@ -96,6 +96,12 @@
             <version>5.8.1</version>
         </dependency>
         <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>5.8.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>com.wu-man</groupId>
             <artifactId>jreadability</artifactId>
             <version>1.4-SNAPSHOT</version>

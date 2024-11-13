@@ -5,36 +5,30 @@ import entity.article.CommonArticle;
 import entity.censorship_rule_set.CensorshipRuleSet;
 import entity.censorship_rule_set.CommonCensorshipRuleSet;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameter;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@RunWith(Parameterized.class)
 class CensorshipServiceTest {
     private Article mockArticle;
 
-    @Parameter
-    public CensorshipService censorshipService;
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][] {
 
-    @Parameter(1)
-    public boolean caseSensitive;
+        });
+    }
 
-    @Parameters
-    public static Object[] data() {
-        return new Object[][] {
-                {new ScanningCensorshipService(), false},
-                {new ScanningCensorshipService(), true},
-        };
+    private static Stream<Arguments> provideAllTestCases() {
+        return Stream.of(
+                Arguments.of(new ScanningCensorshipService(), true),
+                Arguments.of(new ScanningCensorshipService(), false)
+        );
     }
 
     @BeforeEach
@@ -48,8 +42,9 @@ class CensorshipServiceTest {
         this.mockArticle = new CommonArticle(title, text, source, author, agency, postedAt);
     }
 
-    @Test
-    void censorNothingTest() {
+    @ParameterizedTest
+    @MethodSource("provideAllTestCases")
+    void censorNothingTest(CensorshipService censorshipService, Boolean caseSensitive) {
         final Set<String> prohibitedWords = new HashSet<>();
         final Map<String, String> replacedWords = new HashMap<>();
         final String ruleSetName = "Mock Ruleset";
@@ -65,8 +60,9 @@ class CensorshipServiceTest {
         assertNothingElseChanged(mockArticle, censoredArticle);
     }
 
-    @Test
-    void censorProhibitedTest() {
+    @ParameterizedTest
+    @MethodSource("provideAllTestCases")
+    void censorProhibitedTest(CensorshipService censorshipService, Boolean caseSensitive) {
         final Set<String> prohibitedWords = new HashSet<>();
         final Map<String, String> replacedWords = new HashMap<>();
         final String ruleSetName = "Mock Ruleset";
@@ -89,8 +85,9 @@ class CensorshipServiceTest {
         assertNothingElseChanged(mockArticle, censoredArticle);
     }
 
-    @Test
-    void censorProhibitedSpaceAroundTest() {
+    @ParameterizedTest
+    @MethodSource("provideAllTestCases")
+    void censorProhibitedSpaceAroundTest(CensorshipService censorshipService, Boolean caseSensitive) {
         final Set<String> prohibitedWords = new HashSet<>();
         final Map<String, String> replacedWords = new HashMap<>();
         final String ruleSetName = "Mock Ruleset";
@@ -122,7 +119,9 @@ class CensorshipServiceTest {
         assertNothingElseChanged(mockArticle, censoredArticle);
     }
 
-    void censorProhibitedPunctuationAroundTest() {
+    @ParameterizedTest
+    @MethodSource("provideAllTestCases")
+    void censorProhibitedPunctuationAroundTest(CensorshipService censorshipService, Boolean caseSensitive) {
         final Set<String> prohibitedWords = new HashSet<>();
         final Map<String, String> replacedWords = new HashMap<>();
         final String ruleSetName = "Mock Ruleset";
