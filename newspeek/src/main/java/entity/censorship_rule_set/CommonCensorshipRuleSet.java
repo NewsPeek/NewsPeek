@@ -1,7 +1,6 @@
 package entity.censorship_rule_set;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class CommonCensorshipRuleSet implements CensorshipRuleSet {
     private final Set<String> prohibitedWords;
@@ -10,10 +9,28 @@ public class CommonCensorshipRuleSet implements CensorshipRuleSet {
     private final String ruleSetName;
 
     public CommonCensorshipRuleSet(Set<String> prohibitedWords, Map<String, String> replacedWords, Boolean caseSensitive, String ruleSetName) {
-        this.prohibitedWords = prohibitedWords;
-        this.replacedWords = replacedWords;
         this.caseSensitive = caseSensitive;
         this.ruleSetName = ruleSetName;
+
+        if (caseSensitive) {
+            // Simply use the given set and map
+            this.prohibitedWords = prohibitedWords;
+            this.replacedWords = replacedWords;
+        } else {
+            // Create new set and map for lowercasing
+            this.prohibitedWords = new HashSet<>();
+            this.replacedWords = new HashMap<>();
+
+            // Lowercase all prohibited words
+            for (String word : prohibitedWords) {
+                this.prohibitedWords.add(word.toLowerCase());
+            }
+
+            // Lowercase all replacement target words (but not the words they're replaced with)
+            for (String word : replacedWords.keySet()) {
+                this.replacedWords.put(word.toLowerCase(), replacedWords.get(word));
+            }
+        }
     }
 
     @Override
