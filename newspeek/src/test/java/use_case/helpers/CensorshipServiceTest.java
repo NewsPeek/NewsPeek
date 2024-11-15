@@ -16,7 +16,6 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CensorshipServiceTest {
-    private Article mockArticle;
 
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
@@ -27,31 +26,30 @@ class CensorshipServiceTest {
     private static Stream<Arguments> provideAllTestCases() {
         return Stream.of(
                 Arguments.of(new ScanningCensorshipService(), true),
-                Arguments.of(new ScanningCensorshipService(), false)
+                Arguments.of(new ScanningCensorshipService(), false),
+                Arguments.of(new CharByCharCensorshipService(), true),
+                Arguments.of(new CharByCharCensorshipService(), false)
         );
     }
 
-    @BeforeEach
-    void initializeMocks() {
+    @ParameterizedTest
+    @MethodSource("provideAllTestCases")
+    void censorNothingTest(CensorshipService censorshipService, Boolean caseSensitive) {
         final String title = "Sample Article";
         final String text = "lorem ipsum dolor sit amet. Lorem Ipsum DOLOR sIT aMeT.";
         final String source = "https://example.com";
         final String author = "John Cena";
         final String agency = "XYZ Corporation";
         final LocalDateTime postedAt = LocalDateTime.now();
-        this.mockArticle = new CommonArticle(title, text, source, author, agency, postedAt);
-    }
+        final Article mockArticle = new CommonArticle(title, text, source, author, agency, postedAt);
 
-    @ParameterizedTest
-    @MethodSource("provideAllTestCases")
-    void censorNothingTest(CensorshipService censorshipService, Boolean caseSensitive) {
         final Set<String> prohibitedWords = new HashSet<>();
         final Map<String, String> replacedWords = new HashMap<>();
         final String ruleSetName = "Mock Ruleset";
 
         CensorshipRuleSet mockCensorshipRuleSet = new CommonCensorshipRuleSet(
                 prohibitedWords, replacedWords, caseSensitive, ruleSetName);
-        Article censoredArticle = censorshipService.censor(this.mockArticle, mockCensorshipRuleSet);
+        Article censoredArticle = censorshipService.censor(mockArticle, mockCensorshipRuleSet);
 
         // Article text should be the same, since there's no censorship applied
         assertEquals(censoredArticle.getText(), censoredArticle.getText());
@@ -63,6 +61,14 @@ class CensorshipServiceTest {
     @ParameterizedTest
     @MethodSource("provideAllTestCases")
     void censorProhibitedTest(CensorshipService censorshipService, Boolean caseSensitive) {
+        final String title = "Sample Article";
+        final String text = "lorem ipsum dolor sit amet. Lorem Ipsum DOLOR sIT aMeT.";
+        final String source = "https://example.com";
+        final String author = "John Cena";
+        final String agency = "XYZ Corporation";
+        final LocalDateTime postedAt = LocalDateTime.now();
+        final Article mockArticle = new CommonArticle(title, text, source, author, agency, postedAt);
+
         final Set<String> prohibitedWords = new HashSet<>();
         final Map<String, String> replacedWords = new HashMap<>();
         final String ruleSetName = "Mock Ruleset";
@@ -73,7 +79,7 @@ class CensorshipServiceTest {
 
         CensorshipRuleSet mockCensorshipRuleSet = new CommonCensorshipRuleSet(
                 prohibitedWords, replacedWords, caseSensitive, ruleSetName);
-        Article censoredArticle = censorshipService.censor(this.mockArticle, mockCensorshipRuleSet);
+        Article censoredArticle = censorshipService.censor(mockArticle, mockCensorshipRuleSet);
 
         // Article text should be censored
         if (caseSensitive) {
@@ -88,6 +94,14 @@ class CensorshipServiceTest {
     @ParameterizedTest
     @MethodSource("provideAllTestCases")
     void censorProhibitedSpaceAroundTest(CensorshipService censorshipService, Boolean caseSensitive) {
+        final String title = "Sample Article";
+        final String text = " lorem ipsum dolor sit amet. Lorem Ipsum DOLOR sIT aMeT. "; // note spaces around text
+        final String source = "https://example.com";
+        final String author = "John Cena";
+        final String agency = "XYZ Corporation";
+        final LocalDateTime postedAt = LocalDateTime.now();
+        final Article mockArticle = new CommonArticle(title, text, source, author, agency, postedAt);
+
         final Set<String> prohibitedWords = new HashSet<>();
         final Map<String, String> replacedWords = new HashMap<>();
         final String ruleSetName = "Mock Ruleset";
@@ -99,15 +113,7 @@ class CensorshipServiceTest {
         CensorshipRuleSet mockCensorshipRuleSet = new CommonCensorshipRuleSet(
                 prohibitedWords, replacedWords, caseSensitive, ruleSetName);
 
-        final String title = "Sample Article";
-        final String text = " lorem ipsum dolor sit amet. Lorem Ipsum DOLOR sIT aMeT. "; // note spaces around text
-        final String source = "https://example.com";
-        final String author = "John Cena";
-        final String agency = "XYZ Corporation";
-        final LocalDateTime postedAt = LocalDateTime.now();
-        final Article mockArticle = new CommonArticle(title, text, source, author, agency, postedAt);
-
-        Article censoredArticle = censorshipService.censor(this.mockArticle, mockCensorshipRuleSet);
+        Article censoredArticle = censorshipService.censor(mockArticle, mockCensorshipRuleSet);
 
         // Article text should be censored
         if (caseSensitive) {
@@ -122,6 +128,14 @@ class CensorshipServiceTest {
     @ParameterizedTest
     @MethodSource("provideAllTestCases")
     void censorProhibitedPunctuationAroundTest(CensorshipService censorshipService, Boolean caseSensitive) {
+        final String title = "Sample Article";
+        final String text = ",lorem ipsum dolor sit amet. Lorem Ipsum DOLOR sIT aMeT.!"; // note spaces around text
+        final String source = "https://example.com";
+        final String author = "John Cena";
+        final String agency = "XYZ Corporation";
+        final LocalDateTime postedAt = LocalDateTime.now();
+        final Article mockArticle = new CommonArticle(title, text, source, author, agency, postedAt);
+
         final Set<String> prohibitedWords = new HashSet<>();
         final Map<String, String> replacedWords = new HashMap<>();
         final String ruleSetName = "Mock Ruleset";
@@ -133,15 +147,7 @@ class CensorshipServiceTest {
         CensorshipRuleSet mockCensorshipRuleSet = new CommonCensorshipRuleSet(
                 prohibitedWords, replacedWords, caseSensitive, ruleSetName);
 
-        final String title = "Sample Article";
-        final String text = ",lorem ipsum dolor sit amet. Lorem Ipsum DOLOR sIT aMeT.!"; // note spaces around text
-        final String source = "https://example.com";
-        final String author = "John Cena";
-        final String agency = "XYZ Corporation";
-        final LocalDateTime postedAt = LocalDateTime.now();
-        final Article mockArticle = new CommonArticle(title, text, source, author, agency, postedAt);
-
-        Article censoredArticle = censorshipService.censor(this.mockArticle, mockCensorshipRuleSet);
+        Article censoredArticle = censorshipService.censor(mockArticle, mockCensorshipRuleSet);
 
         // Article text should be censored
         if (caseSensitive) {
