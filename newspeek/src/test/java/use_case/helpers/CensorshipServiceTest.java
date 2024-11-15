@@ -16,13 +16,6 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CensorshipServiceTest {
-
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-
-        });
-    }
-
     private static Stream<Arguments> provideAllTestCases() {
         return Stream.of(
                 Arguments.of(new ScanningCensorshipService(), true),
