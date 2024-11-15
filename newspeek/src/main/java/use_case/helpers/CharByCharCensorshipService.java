@@ -31,10 +31,16 @@ public class CharByCharCensorshipService implements CensorshipService {
     }
 
     private String censorWord (String word, CensorshipRuleSet ruleset) {
-        if (ruleset.getProhibitions().contains(word)) {
+        String searchWord;
+        if (!ruleset.isCaseSensitive()) {
+            searchWord = word.toLowerCase();
+        } else {
+            searchWord = word;
+        }
+        if (ruleset.getProhibitions().contains(searchWord)) {
             return prohibit(word);
         } else {
-            return ruleset.getReplacements().getOrDefault(word, word);
+            return ruleset.getReplacements().getOrDefault(searchWord, word);
         }
     }
 
