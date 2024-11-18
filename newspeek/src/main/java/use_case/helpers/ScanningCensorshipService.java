@@ -17,22 +17,75 @@ public class ScanningCensorshipService implements CensorshipService {
         String[] articlePunctuation = result.getText().split(PUNCTUATION_REGEX);
 
 
-        for(int i = 0; i < articleWords.length; i++){
-            String word = articleWords[i];
+        // Input validation
+        if(invalidInput(articleWords, articlePunctuation, result)) {
+            return result;
+        }
+
+
+        int wordAdjustment = 0;
+
+        if(articleWords[0].isEmpty()) {
+            wordAdjustment = 1;
+        }
+
+
+        for(int i = 0; i < articleWords.length - wordAdjustment; i++){
+            String word = articleWords[i + wordAdjustment];
 
             censoredText.append(articlePunctuation[i]);
 
-            if(ruleset.getProhibitions().contains(word)) {
-                censoredText.append(censorWord(word));
-            }
-            else censoredText.append(ruleset.getReplacements().getOrDefault(word, word));
+
+
+            censoredText.append(getCensored(word, ruleset));
         }
 
-        if(articlePunctuation.length > articleWords.length) {
-            censoredText.append(articlePunctuation[articlePunctuation.length - 1]);
-        }
+        endAdjustment(articleWords, articlePunctuation, censoredText, wordAdjustment);
+
         result.setText(censoredText.toString());
         return result;
+    }
+
+    private String getCensored (String word, CensorshipRuleSet ruleset) {
+        String searchWord;
+        if (!ruleset.isCaseSensitive()) {
+            searchWord = word.toLowerCase();
+        } else {
+            searchWord = word;
+        }
+        if (ruleset.getProhibitions().contains(searchWord)) {
+            return censorWord(word);
+        } else {
+            return ruleset.getReplacements().getOrDefault(searchWord, word);
+        }
+    }
+
+
+
+    /* Detects if words and punctuation are in edge cases.
+     * If it is in one of these edge cases, it will edit result to match
+     *
+     */
+    private boolean invalidInput(String[] words, String[] punctuation, Article result){
+        StringBuilder resultText = new StringBuilder();
+        if(words.length == 0) {
+            resultText.append(punctuation[0]);
+            result.setText(resultText.toString());
+            return true;
+        }
+        else if (punctuation.length == 0){
+            resultText.append(words[0]);
+            result.setText(resultText.toString());
+            return true;
+        }
+        else return words[0].isEmpty() && punctuation[0].isEmpty();
+    }
+
+    private void endAdjustment(String[] articleWords, String[] articlePunctuation,
+                               StringBuilder censoredText, int wordAdjustment) {
+        if(wordAdjustment == 1 | articleWords.length < articlePunctuation.length) {
+            censoredText.append(articlePunctuation[articlePunctuation.length-1]);
+        }
     }
 
     private String censorWord(String word) {
