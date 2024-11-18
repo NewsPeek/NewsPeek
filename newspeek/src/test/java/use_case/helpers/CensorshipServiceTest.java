@@ -120,6 +120,40 @@ class CensorshipServiceTest {
 
     @ParameterizedTest
     @MethodSource("provideAllTestCases")
+    void censorReplaceTest(CensorshipService censorshipService, Boolean caseSensitive) {
+        final String title = "Sample Article";
+        final String text = "lorem ipsum dolor sit amet. Lorem Ipsum DOLOR sIT aMeT. ";
+        final String source = "https://example.com";
+        final String author = "John Cena";
+        final String agency = "XYZ Corporation";
+        final LocalDateTime postedAt = LocalDateTime.now();
+        final Article mockArticle = new CommonArticle(title, text, source, author, agency, postedAt);
+
+        final Set<String> prohibitedWords = new HashSet<>();
+        final Map<String, String> replacedWords = new HashMap<>();
+        final String ruleSetName = "Mock Ruleset";
+
+        replacedWords.put("lorem", "sed");
+        replacedWords.put("dolor", "do");
+        replacedWords.put("amet", "eiusmod");
+
+        CensorshipRuleSet mockCensorshipRuleSet = new CommonCensorshipRuleSet(
+                prohibitedWords, replacedWords, caseSensitive, ruleSetName);
+
+        Article censoredArticle = censorshipService.censor(mockArticle, mockCensorshipRuleSet);
+
+        // Article text should be replaced
+        if (caseSensitive) {
+            assertEquals("sed ipsum do sit eiusmod. Lorem Ipsum DOLOR sIT aMeT. ", censoredArticle.getText());
+        } else {
+            assertEquals("sed ipsum do sit eiusmod. sed Ipsum do sIT eiusmod. ", censoredArticle.getText());
+        }
+
+        assertNothingElseChanged(mockArticle, censoredArticle);
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideAllTestCases")
     void censorProhibitedPunctuationAroundTest(CensorshipService censorshipService, Boolean caseSensitive) {
         final String title = "Sample Article";
         final String text = ",lorem ipsum dolor sit amet. Lorem Ipsum DOLOR sIT aMeT.!"; // note spaces around text
