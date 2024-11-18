@@ -22,19 +22,23 @@ public class RandomArticleInteractor implements RandomArticleInputBoundary {
 
     @Override
     public void execute(RandomArticleInputData randomArticleInputData) {
-        // Get article from Data Access Object
-        final String country = randomArticleInputData.getCountry();
-        final Article article = apiDataAccessInterface.getRandomArticle(country);
+        try {
+            // Get article from Data Access Object
+            final String country = randomArticleInputData.getCountry();
+            final Article article = apiDataAccessInterface.getRandomArticle(country);
 
-        // Censor article
-        final CensorshipService censorshipService = new ScanningCensorshipService();
-        final CensorshipRuleSet censorshipRuleSet = randomArticleInputData.getCensorshipRuleSet();
-        final Article censoredArticle = censorshipService.censor(article, censorshipRuleSet);
+            // Censor article
+            final CensorshipService censorshipService = new ScanningCensorshipService();
+            final CensorshipRuleSet censorshipRuleSet = randomArticleInputData.getCensorshipRuleSet();
+            final Article censoredArticle = censorshipService.censor(article, censorshipRuleSet);
 
-        // Populate output data
-        final RandomArticleOutputData randomArticleOutputData = new RandomArticleOutputData(censoredArticle, false);
+            // Populate output data
+            final RandomArticleOutputData randomArticleOutputData = new RandomArticleOutputData(censoredArticle, false);
 
-        // Prepare success view
-        presenter.prepareSuccessView(randomArticleOutputData);
+            // Prepare success view
+            presenter.prepareSuccessView(randomArticleOutputData);
+        } catch (Exception e) {
+            presenter.prepareFailView(e.getMessage());
+        }
     }
 }

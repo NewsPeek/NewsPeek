@@ -6,15 +6,14 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 import data_access.APIDataAccessObject;
-import entity.article.Article;
 import entity.article.ArticleFactory;
 import entity.article.CommonArticleFactory;
 import interface_adapter.ReaderViewModel;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.random_article.RandomArticleController;
 import interface_adapter.random_article.RandomArticlePresenter;
-import data_access.scraper.JReadabilityScraper;
-import data_access.scraper.Scraper;
+import use_case.helpers.JReadabilityScraper;
+import use_case.helpers.Scraper;
 import use_case.random_article.RandomArticleInputBoundary;
 import use_case.random_article.RandomArticleInteractor;
 import use_case.random_article.RandomArticleOutputBoundary;
@@ -41,7 +40,7 @@ public class AppBuilder {
     private ReaderView readerView;
     private ReaderViewModel readerViewModel;
 
-    private ArticleFactory articleFactory = new CommonArticleFactory();
+    private final ArticleFactory articleFactory = new CommonArticleFactory();
     private APIDataAccessObject apiDataAccessObject;
 
     public AppBuilder() {
@@ -59,13 +58,18 @@ public class AppBuilder {
         return this;
     }
 
+    public AppBuilder addApiDataAccessObject() {
+        Scraper scraper = new JReadabilityScraper(articleFactory);
+        this.apiDataAccessObject = new APIDataAccessObject(scraper);
+
+        return this;
+    }
+
     /**
      * Adds the Random Article Use Case to the application.
      * @return this builder
      */
     public AppBuilder addRandomArticleUseCase() {
-        Scraper scraper = new JReadabilityScraper(articleFactory);
-        this.apiDataAccessObject = new APIDataAccessObject(articleFactory, scraper);
         final RandomArticleOutputBoundary randomArticleOutputBoundary = new RandomArticlePresenter(readerViewModel);
         final RandomArticleInputBoundary randomArticleInteractor = new RandomArticleInteractor(
                 apiDataAccessObject, randomArticleOutputBoundary);
