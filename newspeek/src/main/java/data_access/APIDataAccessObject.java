@@ -31,12 +31,12 @@ public class APIDataAccessObject implements RandomArticleAPIDataAccessInterface 
 
     private final Scraper scraper;
 
-    public APIDataAccessObject(Scraper scraper, String apiKeyPath) {
+    public APIDataAccessObject(Scraper scraper) {
         this.scraper = scraper;
-        this.apiKey = this.loadApiKey(apiKeyPath);
+        this.apiKey = this.loadApiKey();
     }
 
-    private String loadApiKey(String path) {
+    private String loadApiKey() {
         Dotenv dotenv = Dotenv.load(); // Automatically loads the .env file
         String apiKey = dotenv.get("NEWS_API_KEY");
 

@@ -58,9 +58,9 @@ public class AppBuilder {
         return this;
     }
 
-    public AppBuilder addApiDataAccessObject(String dotenvPath) {
+    public AppBuilder addApiDataAccessObject() {
         Scraper scraper = new JReadabilityScraper(articleFactory);
-        this.apiDataAccessObject = new APIDataAccessObject(scraper, dotenvPath);
+        this.apiDataAccessObject = new APIDataAccessObject(scraper);
 
         return this;
     }
