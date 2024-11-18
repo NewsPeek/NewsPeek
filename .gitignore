@@ -115,3 +115,6 @@ fabric.properties
 
 # Target directories for compiled Java code
 **/target
+
+### NewsPeek gitignore ###
+.env
