@@ -7,6 +7,7 @@ import use_case.helpers.Scraper;
 import use_case.random_article.RandomArticleAPIDataAccessInterface;
 import data_access.NewsAPIException;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URLConnection;
@@ -52,7 +53,7 @@ public class APIDataAccessObject implements RandomArticleAPIDataAccessInterface 
         return this.scraper.scrapeArticle(url);
     }
 
-    public Article getArticleFromURL(String url) {
+    public Article getArticleFromURL(String url) throws IOException {
         return this.scraper.scrapeArticle(url);
     }
 
