@@ -63,12 +63,18 @@ public class APIDataAccessObject implements RandomArticleAPIDataAccessInterface 
                 "&apiKey=" +
                 apiKey;
 
+        // Make API request
         final JsonObject response = get(url);
         if (!Objects.equals(response.get("status").getAsString(), "ok")) {
             throw new NewsAPIException("NewsAPI call failed: " + response.get("message").getAsString());
         }
 
+        // Extract article URLS
         JsonArray articles = response.get("articles").getAsJsonArray();
+
+        if (articles.isEmpty()) {
+            throw new NewsAPIException("NewsAPI call failed: no articles found for country '" + country + "'.");
+        }
 
         ArrayList<String> urls = new ArrayList<>(articles.size());
 
@@ -76,6 +82,7 @@ public class APIDataAccessObject implements RandomArticleAPIDataAccessInterface 
             urls.add(article.getAsJsonObject().get("url").getAsString());
         }
 
+        // Return a random one
         return urls.get(new Random().nextInt(urls.size()));
     }
 
