@@ -1,29 +1,97 @@
 package data_access;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import entity.article.Article;
-import entity.article.ArticleFactory;
 import use_case.helpers.Scraper;
 import use_case.random_article.RandomArticleAPIDataAccessInterface;
+import data_access.NewsAPIException;
 
-import java.io.*;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URLConnection;
+import java.net.URL;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.Random;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import io.github.cdimascio.dotenv.Dotenv;
 
 /**
  * DAO for to read articles from the web.
  */
 public class APIDataAccessObject implements RandomArticleAPIDataAccessInterface {
-    private final ArticleFactory articleFactory;
+    private static final String API_ENDPOINT_RANDOM = "https://newsapi.org/v2/top-headlines";
+    private final String apiKey;
+
     private final Scraper scraper;
 
-    public APIDataAccessObject(ArticleFactory articleFactory, Scraper scraper) {
-        this.articleFactory = articleFactory;
+    public APIDataAccessObject(Scraper scraper, String apiKeyPath) {
         this.scraper = scraper;
+        this.apiKey = this.loadApiKey(apiKeyPath);
+    }
+
+    private String loadApiKey(String path) {
+        Dotenv dotenv = Dotenv.load(); // Automatically loads the .env file
+        String apiKey = dotenv.get("NEWS_API_KEY");
+
+        if (apiKey == null || apiKey.isEmpty()) {
+            throw new RuntimeException("NEWS_API_KEY is missing in .env file");
+        }
+
+        return apiKey;
     }
 
     @Override
-    public Article getRandomArticle(String country) {
-        // TODO add actual API call
-        String url = "https://example.com";
-        final Article article = this.scraper.scrapeArticle(url);
-        return article;
+    public Article getRandomArticle(String country) throws java.io.IOException, NewsAPIException {
+        String url = getRandomURL(country);
+        return this.scraper.scrapeArticle(url);
+    }
+
+    public Article getArticleFromURL(String url) {
+        return this.scraper.scrapeArticle(url);
+    }
+
+    private String getRandomURL(String country) throws java.io.IOException, NewsAPIException {
+        String url = API_ENDPOINT_RANDOM +
+                "?country=" +
+                country +
+                "&apiKey=" +
+                apiKey;
+
+        final JsonObject response = get(url);
+        if (!Objects.equals(response.get("status").getAsString(), "ok")) {
+            throw new NewsAPIException("NewsAPI call failed: " + response.get("message").getAsString());
+        }
+
+        JsonArray articles = response.get("articles").getAsJsonArray();
+
+        ArrayList<String> urls = new ArrayList<>(articles.size());
+
+        for (JsonElement article : articles) {
+            urls.add(article.getAsJsonObject().get("url").getAsString());
+        }
+
+        return urls.get(new Random().nextInt(urls.size()));
+    }
+
+    private JsonObject get(String urlString) throws java.io.IOException {
+        try {
+            URLConnection request = new URL(urlString).openConnection();
+            request.connect();
+            InputStreamReader inputStreamReader = new InputStreamReader((InputStream) request.getContent());
+
+            return JsonParser.parseReader(inputStreamReader).getAsJsonObject();
+        } catch (MalformedURLException e) {
+            System.err.println("APIDataAccessObject: Unrecoverable error: malformed URL.");
+            e.printStackTrace();
+            System.exit(1);
+        }
+        /* unreachable */
+        return null;
     }
 }

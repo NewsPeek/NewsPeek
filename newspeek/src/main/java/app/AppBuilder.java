@@ -6,7 +6,6 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 import data_access.APIDataAccessObject;
-import entity.article.Article;
 import entity.article.ArticleFactory;
 import entity.article.CommonArticleFactory;
 import interface_adapter.ReaderViewModel;
@@ -41,7 +40,7 @@ public class AppBuilder {
     private ReaderView readerView;
     private ReaderViewModel readerViewModel;
 
-    private ArticleFactory articleFactory = new CommonArticleFactory();
+    private final ArticleFactory articleFactory = new CommonArticleFactory();
     private APIDataAccessObject apiDataAccessObject;
 
     public AppBuilder() {
@@ -59,13 +58,18 @@ public class AppBuilder {
         return this;
     }
 
+    public AppBuilder addApiDataAccessObject(String dotenvPath) {
+        Scraper scraper = new JReadabilityScraper(articleFactory);
+        this.apiDataAccessObject = new APIDataAccessObject(scraper, dotenvPath);
+
+        return this;
+    }
+
     /**
      * Adds the Random Article Use Case to the application.
      * @return this builder
      */
     public AppBuilder addRandomArticleUseCase() {
-        Scraper scraper = new JReadabilityScraper(articleFactory);
-        this.apiDataAccessObject = new APIDataAccessObject(articleFactory, scraper);
         final RandomArticleOutputBoundary randomArticleOutputBoundary = new RandomArticlePresenter(readerViewModel);
         final RandomArticleInputBoundary randomArticleInteractor = new RandomArticleInteractor(
                 apiDataAccessObject, randomArticleOutputBoundary);
