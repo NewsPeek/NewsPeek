@@ -40,7 +40,7 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         JScrollPane articleScrollPane = new JScrollPane(articleTextArea);
 
         randomArticleButton.addActionListener(evt ->{
-            String country = "Canada";
+            String country = "us";
             CensorshipRuleSet censorshipRuleSet = new CommonCensorshipRuleSet( Set.of("violence"), Map.of(),
                     false, "Basic Rules");
             randomArticleController.execute(country,censorshipRuleSet);
