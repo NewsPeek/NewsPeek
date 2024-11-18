@@ -21,6 +21,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import io.github.cdimascio.dotenv.Dotenv;
+import io.github.cdimascio.dotenv.DotenvException;
 
 /**
  * DAO for to read articles from the web.
@@ -37,8 +38,14 @@ public class APIDataAccessObject implements RandomArticleAPIDataAccessInterface 
     }
 
     private String loadApiKey(String path) {
+        try {
         Dotenv dotenv = Dotenv.load(); // Automatically loads the .env file
         String apiKey = dotenv.get("NEWS_API_KEY");
+        } catch (DotenvException e) {
+            System.err.println("Error in dotenv file, supposed to be at '" + path + "'.");
+            e.printStackTrace();
+            System.exit(1);
+        }
 
         if (apiKey == null || apiKey.isEmpty()) {
             throw new RuntimeException("NEWS_API_KEY is missing in .env file");
