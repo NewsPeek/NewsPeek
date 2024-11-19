@@ -4,8 +4,9 @@ import entity.article.Article;
 import entity.censorship_rule_set.CensorshipRuleSet;
 
 public class ScanningCensorshipService implements CensorshipService {
-
+    // finds words by splitting on punctuation and spaces
     private static final String WORD_REGEX = "[ -.,()\\[\\]{};:\"']+";
+    // finds punctuation by splitting on everything *except* punctuation and spaces
     private static final String PUNCTUATION_REGEX = "[^ -.,()\\[\\]{};:\"']+";
     @Override
     public Article censor(Article article, CensorshipRuleSet ruleset) {
