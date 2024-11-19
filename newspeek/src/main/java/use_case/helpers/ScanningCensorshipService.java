@@ -69,17 +69,17 @@ public class ScanningCensorshipService implements CensorshipService {
      */
     private boolean invalidInput(String[] words, String[] punctuation, Article result){
         StringBuilder resultText = new StringBuilder();
-        if(words.length == 0) {
+        if (words.length == 0) {
             resultText.append(punctuation[0]);
             result.setText(resultText.toString());
             return true;
         }
-        else if (punctuation.length == 0){
+        if (punctuation.length == 0){
             resultText.append(words[0]);
             result.setText(resultText.toString());
             return true;
         }
-        else return words[0].isEmpty() && punctuation[0].isEmpty();
+        return words[0].isEmpty() && punctuation[0].isEmpty();
     }
 
     private void endAdjustment(String[] articleWords, String[] articlePunctuation,
