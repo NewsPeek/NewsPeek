@@ -32,7 +32,13 @@ public class JReadabilityScraper implements Scraper {
 
             readability.init();
 
-            return scrapeFromCleanHTML(readability.outerHtml(), url);
+            final String cleanHTML = readability.outerHtml();
+
+            if (cleanHTML.contains("Sorry, readability was unable to parse this page for content.")) {
+                throw new IOException("JReadabilityScraper: couldn't scrape");
+            }
+
+            return scrapeFromCleanHTML(cleanHTML, url);
         } catch (MalformedURLException e) {
             System.err.println("JReadabilityScraper: Unrecoverable error: malformed URL.");
             e.printStackTrace();
