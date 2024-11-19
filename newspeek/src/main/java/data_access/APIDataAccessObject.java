@@ -13,9 +13,7 @@ import java.net.MalformedURLException;
 import java.net.URLConnection;
 import java.net.URL;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -49,15 +47,24 @@ public class APIDataAccessObject implements RandomArticleAPIDataAccessInterface 
 
     @Override
     public Article getRandomArticle(String country) throws java.io.IOException, NewsAPIException {
-        String url = getRandomURL(country);
-        return this.scraper.scrapeArticle(url);
+        AbstractList<String> urls = getTopURLs(country);
+        Collections.shuffle(urls);
+
+        for (String url : urls) {
+            try {
+                return this.scraper.scrapeArticle(url);
+            } catch (IOException ignored) {
+                // continue through the articles
+            }
+        }
+        throw new NewsAPIException("All returned articles couldn't be scraped.");
     }
 
     public Article getArticleFromURL(String url) throws IOException {
         return this.scraper.scrapeArticle(url);
     }
 
-    private String getRandomURL(String country) throws java.io.IOException, NewsAPIException {
+    private AbstractList<String> getTopURLs(String country) throws java.io.IOException, NewsAPIException {
         String url = API_ENDPOINT_RANDOM +
                 "?country=" +
                 country +
@@ -83,8 +90,7 @@ public class APIDataAccessObject implements RandomArticleAPIDataAccessInterface 
             urls.add(article.getAsJsonObject().get("url").getAsString());
         }
 
-        // Return a random one
-        return urls.get(new Random().nextInt(urls.size()));
+        return urls;
     }
 
     private JsonObject get(String urlString) throws java.io.IOException {
