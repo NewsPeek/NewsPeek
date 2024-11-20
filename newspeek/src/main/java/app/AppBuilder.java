@@ -7,7 +7,6 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 import data_access.APIDataAccessObject;
-import entity.article.ArticleFactory;
 import interface_adapter.ReaderViewModel;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.random_article.RandomArticleController;
@@ -38,7 +37,6 @@ public class AppBuilder {
     private ReaderView readerView;
     private ReaderViewModel readerViewModel;
 
-    private final ArticleFactory articleFactory = new ArticleFactory();
     private APIDataAccessObject apiDataAccessObject;
 
     public AppBuilder() {
@@ -61,7 +59,7 @@ public class AppBuilder {
      * @return this builder
      */
     public AppBuilder addApiDataAccessObject() {
-        Scraper scraper = new JReadabilityScraper(articleFactory);
+        Scraper scraper = new JReadabilityScraper();
         this.apiDataAccessObject = new APIDataAccessObject(scraper);
 
         return this;

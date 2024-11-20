@@ -1,7 +1,6 @@
 package use_case.helpers;
 
 import entity.article.Article;
-import entity.article.ArticleFactory;
 import jreadability.Readability;
 
 import java.io.IOException;
@@ -11,17 +10,10 @@ import java.time.LocalDateTime;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.safety.Safelist;
 import org.jsoup.select.Elements;
 
 public class JReadabilityScraper implements Scraper {
     private static final int TIMEOUT_MS = 10_000;
-    private final ArticleFactory articleFactory;
-
-    public JReadabilityScraper(ArticleFactory articleFactory) {
-        this.articleFactory = articleFactory;
-    }
-
 
     @Override
     public Article scrapeArticle(String url) throws IOException {
@@ -65,6 +57,6 @@ public class JReadabilityScraper implements Scraper {
         final String agency = "Unknown agency";
         final LocalDateTime postedAt = LocalDateTime.now();
 
-        return this.articleFactory.create(title, text, url, author, agency, postedAt);
+        return new Article(title, text, url, author, agency, postedAt);
     }
 }
