@@ -3,11 +3,16 @@ package use_case.helpers;
 import entity.article.Article;
 import entity.censorship_rule_set.CensorshipRuleSet;
 
+/**
+ * CensorshipService implementation which splits the text into punctuation and words,
+ * censors the words, and reassembles the text.
+ */
 public class ScanningCensorshipService implements CensorshipService {
     // finds words by splitting on punctuation and spaces
     private static final String WORD_REGEX = "[ -.,()\\[\\]{};:\"']+";
     // finds punctuation by splitting on everything *except* punctuation and spaces
     private static final String PUNCTUATION_REGEX = "[^ -.,()\\[\\]{};:\"']+";
+
     @Override
     public Article censor(Article article, CensorshipRuleSet ruleset) {
         // loop through the words in the article.getText() and apply censorship rules
@@ -17,27 +22,20 @@ public class ScanningCensorshipService implements CensorshipService {
         String[] articleWords = result.getText().split(WORD_REGEX);
         String[] articlePunctuation = result.getText().split(PUNCTUATION_REGEX);
 
-
         // Input validation
-        if(invalidInput(articleWords, articlePunctuation, result)) {
+        if (invalidInput(articleWords, articlePunctuation, result)) {
             return result;
         }
 
-
         int wordAdjustment = 0;
 
-        if(articleWords[0].isEmpty()) {
+        if (articleWords[0].isEmpty()) {
             wordAdjustment = 1;
         }
 
-
-        for(int i = 0; i < articleWords.length - wordAdjustment; i++){
+        for (int i = 0; i < articleWords.length - wordAdjustment; i++) {
             String word = articleWords[i + wordAdjustment];
-
             censoredText.append(articlePunctuation[i]);
-
-
-
             censoredText.append(getCensored(word, ruleset));
         }
 
@@ -47,7 +45,7 @@ public class ScanningCensorshipService implements CensorshipService {
         return result;
     }
 
-    private String getCensored (String word, CensorshipRuleSet ruleset) {
+    private String getCensored(String word, CensorshipRuleSet ruleset) {
         String searchWord;
         if (!ruleset.isCaseSensitive()) {
             searchWord = word.toLowerCase();
@@ -61,20 +59,22 @@ public class ScanningCensorshipService implements CensorshipService {
         }
     }
 
-
-
-    /* Detects if words and punctuation are in edge cases.
+    /**
+     * Detects if words and punctuation are in edge cases.
      * If it is in one of these edge cases, it will edit result to match
-     *
+     * @param words array of words to test the length of
+     * @param punctuation array of punctuation strings to test the length of
+     * @param result article to set the text of
+     * @return whether the input was processed without error
      */
-    private boolean invalidInput(String[] words, String[] punctuation, Article result){
+    private boolean invalidInput(String[] words, String[] punctuation, Article result) {
         StringBuilder resultText = new StringBuilder();
         if (words.length == 0) {
             resultText.append(punctuation[0]);
             result.setText(resultText.toString());
             return true;
         }
-        if (punctuation.length == 0){
+        if (punctuation.length == 0) {
             resultText.append(words[0]);
             result.setText(resultText.toString());
             return true;
@@ -84,8 +84,8 @@ public class ScanningCensorshipService implements CensorshipService {
 
     private void endAdjustment(String[] articleWords, String[] articlePunctuation,
                                StringBuilder censoredText, int wordAdjustment) {
-        if(wordAdjustment == 1 | articleWords.length < articlePunctuation.length) {
-            censoredText.append(articlePunctuation[articlePunctuation.length-1]);
+        if (wordAdjustment == 1 | articleWords.length < articlePunctuation.length) {
+            censoredText.append(articlePunctuation[articlePunctuation.length - 1]);
         }
     }
 

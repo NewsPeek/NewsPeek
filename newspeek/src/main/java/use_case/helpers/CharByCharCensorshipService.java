@@ -3,6 +3,9 @@ package use_case.helpers;
 import entity.article.Article;
 import entity.censorship_rule_set.CensorshipRuleSet;
 
+/**
+ * CensorshipService implementation which traverses the text one character at a time, building words and censoring them.
+ */
 public class CharByCharCensorshipService implements CensorshipService {
 
     private static final String PUNCTUATION = " -.,()[]{};:\"'";
@@ -13,11 +16,13 @@ public class CharByCharCensorshipService implements CensorshipService {
         StringBuilder censoredText = new StringBuilder();
         StringBuilder word = new StringBuilder();
 
-        for (char character : article.getText().toCharArray()){
-            if (PUNCTUATION.indexOf(character) != -1) { //is punctuation
+        for (char character : article.getText().toCharArray()) {
+            if (PUNCTUATION.indexOf(character) != -1) {
+                // character is punctuation
                 censoredText.append(censorWord(word.toString(), ruleset));
                 censoredText.append(character);
-                word = new StringBuilder(); // reset word to empty
+                // reset word to empty to begin building a new one
+                word = new StringBuilder();
             } else {
                 word.append(character);
             }
@@ -30,7 +35,7 @@ public class CharByCharCensorshipService implements CensorshipService {
         return result;
     }
 
-    private String censorWord (String word, CensorshipRuleSet ruleset) {
+    private String censorWord(String word, CensorshipRuleSet ruleset) {
         String searchWord;
         if (!ruleset.isCaseSensitive()) {
             searchWord = word.toLowerCase();
@@ -44,7 +49,7 @@ public class CharByCharCensorshipService implements CensorshipService {
         }
     }
 
-    private String prohibit (String word) {
+    private String prohibit(String word) {
         return new String(new char[word.length()]).replace("\0", "x");
     }
 }

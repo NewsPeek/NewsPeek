@@ -1,27 +1,23 @@
-package use_case.helpers;
-
-import entity.article.Article;
-import entity.article.ArticleFactory;
-import jreadability.Readability;
+package data_access.scraper;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.safety.Safelist;
 import org.jsoup.select.Elements;
 
+import entity.article.Article;
+import jreadability.Readability;
+
+/**
+ * Scraper implementation using the JReadability library.
+ */
 public class JReadabilityScraper implements Scraper {
     private static final int TIMEOUT_MS = 10_000;
-    private final ArticleFactory articleFactory;
-
-    public JReadabilityScraper(ArticleFactory articleFactory) {
-        this.articleFactory = articleFactory;
-    }
-
 
     @Override
     public Article scrapeArticle(String url) throws IOException {
@@ -39,9 +35,9 @@ public class JReadabilityScraper implements Scraper {
             }
 
             return scrapeFromCleanHTML(cleanHTML, url);
-        } catch (MalformedURLException e) {
+        } catch (MalformedURLException exception) {
             System.err.println("JReadabilityScraper: Unrecoverable error: malformed URL.");
-            e.printStackTrace();
+            exception.printStackTrace();
             System.exit(1);
         }
         /* unreachable */
@@ -65,6 +61,6 @@ public class JReadabilityScraper implements Scraper {
         final String agency = "Unknown agency";
         final LocalDateTime postedAt = LocalDateTime.now();
 
-        return this.articleFactory.create(title, text, url, author, agency, postedAt);
+        return new Article(title, text, url, author, agency, postedAt);
     }
 }
