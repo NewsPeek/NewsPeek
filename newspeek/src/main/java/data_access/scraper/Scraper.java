@@ -1,4 +1,4 @@
-package use_case.helpers;
+package data_access.scraper;
 
 import java.io.IOException;
 
