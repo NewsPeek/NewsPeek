@@ -8,7 +8,6 @@ import javax.swing.WindowConstants;
 
 import data_access.APIDataAccessObject;
 import entity.article.ArticleFactory;
-import entity.article.CommonArticleFactory;
 import interface_adapter.ReaderViewModel;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.random_article.RandomArticleController;
@@ -39,7 +38,7 @@ public class AppBuilder {
     private ReaderView readerView;
     private ReaderViewModel readerViewModel;
 
-    private final ArticleFactory articleFactory = new CommonArticleFactory();
+    private final ArticleFactory articleFactory = new ArticleFactory();
     private APIDataAccessObject apiDataAccessObject;
 
     public AppBuilder() {

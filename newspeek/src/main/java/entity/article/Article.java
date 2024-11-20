@@ -2,40 +2,53 @@ package entity.article;
 
 import java.time.LocalDateTime;
 
-public interface Article {
-    /**
-     * Returns the title of the article.
-     * @return the title of the article.
-     */
-    String getTitle();
+public class Article {
+    private final String title;
+    private String text;
+    private final String author;
+    private final String agency;
+    private final String source; // url or filesystem path from which the article is sourced
+    private final java.time.LocalDateTime postedAt;
 
-    /**
-     * Returns the full text of the article.
-     * @return the full text of the article.
-     */
-    String getText();
 
-    /**
-     * Replaces the full text of the article.
-     * @param text the new full text of the article.
-     */
-    void setText(String text);
+    public Article(String title, String text, String source, String author, String agency, java.time.LocalDateTime postedAt) {
+        this.title = title;
+        this.text = text;
+        this.author = author;
+        this.agency = agency;
+        this.source = source;
+        this.postedAt = postedAt;
+    }
 
-    /**
-     * Returns the source of the article, such as a URL or file path.
-     * @return the source of the article.
-     */
-    String getSource();
+    public String getTitle() {
+        return this.title;
+    }
 
-    /**
-     * Returns a copy of the article.
-     * @return a copy of the article.
-     */
-    Article copy();
+    public String getText() {
+        return this.text;
+    }
 
-    String getAuthor();
+    public void setText(String text) {
+        this.text = text;
+    }
 
-    String getAgency();
+    public String getSource() {
+        return this.source;
+    }
 
-    LocalDateTime getPostedAt();
+    public Article copy() {
+        return new Article(this.title, this.text, this.source, this.author, this.agency, this.postedAt);
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public String getAgency() {
+        return agency;
+    }
+
+    public LocalDateTime getPostedAt() {
+        return postedAt;
+    }
 }
