@@ -2,7 +2,7 @@ package data_access;
 
 // TODO: add `implements` statements for the DataAccessInterface for each use case
 /**
- * DAO for to read articles from files.
+ * DAO to read articles from files.
  * Note that saving censored articles is done by ArticleSaveDataAccessObject, not this class.
  */
 public class FileArticleDataAccessObject /* implements ______DataAccessInterface */ {

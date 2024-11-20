@@ -5,6 +5,8 @@ import entity.censorship_rule_set.CensorshipRuleSet;
 import use_case.helpers.CensorshipService;
 import use_case.helpers.ScanningCensorshipService;
 
+import javax.swing.*;
+
 /**
  * The Random Article interactor.
  */
