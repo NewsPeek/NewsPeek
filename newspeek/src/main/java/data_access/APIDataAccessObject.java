@@ -16,7 +16,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import entity.article.Article;
 import io.github.cdimascio.dotenv.Dotenv;
-import use_case.helpers.Scraper;
+import data_access.scraper.Scraper;
 import use_case.random_article.RandomArticleAPIDataAccessInterface;
 
 /**
