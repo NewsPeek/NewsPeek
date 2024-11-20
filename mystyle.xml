@@ -291,11 +291,7 @@
             <property name="tokens" value="LITERAL_FOR"/>
             <property name="tokens" value="STATIC_INIT"/>
             <property name="tokens" value="LITERAL_WHILE"/>
-            <property name="tokens" value="LITERAL_CATCH"/>
-            <property name="tokens" value="LITERAL_ELSE"/>
             <property name="tokens" value="LITERAL_FINALLY"/>
-            <property name="tokens" value="LITERAL_IF"/>
-            <property name="tokens" value="LITERAL_TRY"/>
             <property name="tokens" value="LITERAL_SWITCH"/>
             <property name="tokens" value="ANNOTATION_DEF"/>
             <property name="tokens" value="ENUM_DEF"/>
@@ -757,7 +753,6 @@
         </module>
         <module name="MethodName"/>
         <module name="MethodTypeParameterName"/>
-        <module name="PackageName"/>
         <module name="ParameterName">
             <property name="format" value="^(id)|([a-z][a-z0-9][a-zA-Z0-9]+)$"/>
             <property name="ignoreOverridden" value="true"/>
