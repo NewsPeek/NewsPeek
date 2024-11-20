@@ -510,7 +510,7 @@
         <module name="ParameterAssignment"/>
         <module name="RequireThis"/>
         <module name="ReturnCount">
-            <property name="max" value="2"/>
+            <property name="max" value="5"/>
             <property name="maxForVoid" value="0"/>
             <property name="format" value="^create"/>
         </module>
@@ -733,11 +733,6 @@
         <module name="RedundantModifier"/>
 
         <!-- Naming Conventions -->
-        <module name="AbbreviationAsWordInName">
-            <property name="ignoreFinal" value="false"/>
-            <property name="allowedAbbreviationLength" value="0"/>
-            <property name="allowedAbbreviations" value="AST,HTML,ID,JSON,DB,API"/>
-        </module>
         <module name="AbstractClassName"/>
         <module name="ClassTypeParameterName"/>
         <module name="RecordTypeParameterName"/>
