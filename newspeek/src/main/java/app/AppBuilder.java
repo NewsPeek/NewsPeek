@@ -1,13 +1,12 @@
 package app;
 
+import java.awt.CardLayout;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 import data_access.APIDataAccessObject;
-import entity.article.ArticleFactory;
-import entity.article.CommonArticleFactory;
 import interface_adapter.ReaderViewModel;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.random_article.RandomArticleController;
@@ -18,8 +17,6 @@ import use_case.random_article.RandomArticleInputBoundary;
 import use_case.random_article.RandomArticleInteractor;
 import use_case.random_article.RandomArticleOutputBoundary;
 import view.ReaderView;
-
-import java.awt.*;
 
 /**
  * The AppBuilder class is responsible for putting together the pieces of
@@ -40,7 +37,6 @@ public class AppBuilder {
     private ReaderView readerView;
     private ReaderViewModel readerViewModel;
 
-    private final ArticleFactory articleFactory = new CommonArticleFactory();
     private APIDataAccessObject apiDataAccessObject;
 
     public AppBuilder() {
@@ -58,8 +54,12 @@ public class AppBuilder {
         return this;
     }
 
+    /**
+     * Adds an instance of the APIDataAccessObject to the application.
+     * @return this builder
+     */
     public AppBuilder addApiDataAccessObject() {
-        Scraper scraper = new JReadabilityScraper(articleFactory);
+        Scraper scraper = new JReadabilityScraper();
         this.apiDataAccessObject = new APIDataAccessObject(scraper);
 
         return this;

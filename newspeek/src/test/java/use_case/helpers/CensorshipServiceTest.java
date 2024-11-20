@@ -1,10 +1,8 @@
 package use_case.helpers;
 
 import entity.article.Article;
-import entity.article.CommonArticle;
 import entity.censorship_rule_set.CensorshipRuleSet;
 import entity.censorship_rule_set.CommonCensorshipRuleSet;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -34,7 +32,7 @@ class CensorshipServiceTest {
         final String author = "John Cena";
         final String agency = "XYZ Corporation";
         final LocalDateTime postedAt = LocalDateTime.now();
-        final Article mockArticle = new CommonArticle(title, text, source, author, agency, postedAt);
+        final Article mockArticle = new Article(title, text, source, author, agency, postedAt);
 
         final Set<String> prohibitedWords = new HashSet<>();
         final Map<String, String> replacedWords = new HashMap<>();
@@ -60,7 +58,7 @@ class CensorshipServiceTest {
         final String author = "John Cena";
         final String agency = "XYZ Corporation";
         final LocalDateTime postedAt = LocalDateTime.now();
-        final Article mockArticle = new CommonArticle(title, text, source, author, agency, postedAt);
+        final Article mockArticle = new Article(title, text, source, author, agency, postedAt);
 
         final Set<String> prohibitedWords = new HashSet<>();
         final Map<String, String> replacedWords = new HashMap<>();
@@ -93,7 +91,7 @@ class CensorshipServiceTest {
         final String author = "John Cena";
         final String agency = "XYZ Corporation";
         final LocalDateTime postedAt = LocalDateTime.now();
-        final Article mockArticle = new CommonArticle(title, text, source, author, agency, postedAt);
+        final Article mockArticle = new Article(title, text, source, author, agency, postedAt);
 
         final Set<String> prohibitedWords = new HashSet<>();
         final Map<String, String> replacedWords = new HashMap<>();
@@ -127,7 +125,7 @@ class CensorshipServiceTest {
         final String author = "John Cena";
         final String agency = "XYZ Corporation";
         final LocalDateTime postedAt = LocalDateTime.now();
-        final Article mockArticle = new CommonArticle(title, text, source, author, agency, postedAt);
+        final Article mockArticle = new Article(title, text, source, author, agency, postedAt);
 
         final Set<String> prohibitedWords = new HashSet<>();
         final Map<String, String> replacedWords = new HashMap<>();
@@ -161,7 +159,7 @@ class CensorshipServiceTest {
         final String author = "John Cena";
         final String agency = "XYZ Corporation";
         final LocalDateTime postedAt = LocalDateTime.now();
-        final Article mockArticle = new CommonArticle(title, text, source, author, agency, postedAt);
+        final Article mockArticle = new Article(title, text, source, author, agency, postedAt);
 
         final Set<String> prohibitedWords = new HashSet<>();
         final Map<String, String> replacedWords = new HashMap<>();
