@@ -1,4 +1,4 @@
-﻿package data_access;
+package data_access;
 
 import entity.censorship_rule_set.CensorshipRuleSet;
 import use_case.choose_rule_set.ChooseRuleSetDataAccessInterface;
