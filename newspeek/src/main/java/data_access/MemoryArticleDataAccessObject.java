@@ -1,15 +1,14 @@
 package data_access;
 
-import entity.article.Article;
-import entity.article.CommonArticle;
-import use_case.random_article.RandomArticleAPIDataAccessInterface;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
 
+import entity.article.Article;
+import use_case.random_article.RandomArticleAPIDataAccessInterface;
+
 /**
- * DAO to mock getting articles from the web
+ * DAO to mock getting articles from the web.
  */
 public class MemoryArticleDataAccessObject implements RandomArticleAPIDataAccessInterface {
     @Override
@@ -21,9 +20,9 @@ public class MemoryArticleDataAccessObject implements RandomArticleAPIDataAccess
         try {
             new URL(url);
             return makeMockArticle();
-        } catch (MalformedURLException e) {
+        } catch (MalformedURLException exception) {
             System.err.println("MemoryArticleDataAccessObject: Unrecoverable error: malformed URL.");
-            e.printStackTrace();
+            exception.printStackTrace();
             System.exit(1);
         }
         /* unreachable */
@@ -37,6 +36,6 @@ public class MemoryArticleDataAccessObject implements RandomArticleAPIDataAccess
         final String author = "John Cena";
         final String agency = "XYZ Corporation";
         final LocalDateTime postedAt = LocalDateTime.now();
-        return new CommonArticle(title, text, source, author, agency, postedAt);
+        return new Article(title, text, source, author, agency, postedAt);
     }
 }
