@@ -10,6 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.util.Map;
 import java.util.Set;
 
@@ -22,6 +23,7 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     private final ReaderViewModel readerViewModel;
     private RandomArticleController randomArticleController;
     private JTextArea articleTextArea;
+    private JFileChooser fileChooser;
 
     public ReaderView(ReaderViewModel readerViewModel) {
         this.readerViewModel = readerViewModel;
@@ -34,7 +36,9 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
 
         final JPanel buttons = new JPanel();
         JButton randomArticleButton = new JButton("Random Article");
+        JButton openFileButton = new JButton("Open censorship data File"); // New file chooser button
         buttons.add(randomArticleButton);
+        buttons.add(openFileButton);
         articleTextArea = new JTextArea(10,40);
         articleTextArea.setEditable(false);
         JScrollPane articleScrollPane = new JScrollPane(articleTextArea);
@@ -44,6 +48,16 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
             CensorshipRuleSet censorshipRuleSet = new CommonCensorshipRuleSet( Set.of("violence"), Map.of(),
                     false, "Basic Rules");
             randomArticleController.execute(country,censorshipRuleSet);
+        });
+
+        openFileButton.addActionListener(evt -> {
+            fileChooser = new JFileChooser();
+            int returnValue = fileChooser.showOpenDialog(this);
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = fileChooser.getSelectedFile();
+                System.out.println("file chosen");
+                // Add any further handling for the selected file if necessary
+            }
         });
 
 
