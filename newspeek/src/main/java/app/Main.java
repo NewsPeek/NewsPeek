@@ -1,8 +1,15 @@
 package app;
 
-import javax.swing.*;
+import javax.swing.JFrame;
 
+/**
+ * Main class for NewsPeek.
+ */
 public class Main {
+    /**
+     * Main entry point for NewsPeek app. Builds the app and makes it visible.
+     * @param args command-line arguments. Not used.
+     */
     public static void main(String[] args) {
         final AppBuilder appBuilder = new AppBuilder();
         final JFrame application = appBuilder
@@ -13,9 +20,5 @@ public class Main {
 
         application.pack();
         application.setVisible(true);
-    }
-
-    public static int returnFive() {
-        return 5;
     }
 }

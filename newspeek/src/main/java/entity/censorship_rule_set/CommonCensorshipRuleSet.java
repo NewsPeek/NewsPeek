@@ -1,14 +1,21 @@
 package entity.censorship_rule_set;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
+/**
+ * CensorshipRuleSet implemented with a HashSet and a HashMap.
+ */
 public class CommonCensorshipRuleSet implements CensorshipRuleSet {
     private final Set<String> prohibitedWords;
     private final Map<String, String> replacedWords;
     private final Boolean caseSensitive;
     private final String ruleSetName;
 
-    public CommonCensorshipRuleSet(Set<String> prohibitedWords, Map<String, String> replacedWords, Boolean caseSensitive, String ruleSetName) {
+    public CommonCensorshipRuleSet(Set<String> prohibitedWords, Map<String, String> replacedWords,
+                                   Boolean caseSensitive, String ruleSetName) {
         this.caseSensitive = caseSensitive;
         this.ruleSetName = ruleSetName;
 

@@ -3,6 +3,10 @@ package entity.censorship_rule_set;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * A named set of rules to prohibit and replace words in text.
+ * Can be case-sensitive or -insensitive.
+ */
 public interface CensorshipRuleSet {
     /**
      * Returns the set of words prohibited by the ruleset.
