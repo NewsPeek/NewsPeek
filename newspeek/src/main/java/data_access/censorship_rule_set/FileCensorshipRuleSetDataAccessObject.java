@@ -20,6 +20,8 @@ public class FileCensorshipRuleSetDataAccessObject implements ChooseRuleSetDataA
         Map<String, String> replacedWords = new HashMap<>();
         Boolean caseSensitive = false;
         String ruleSetName = "Default Rules";
+        prohibitedWords.add("");
+        replacedWords.put("","*");
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
