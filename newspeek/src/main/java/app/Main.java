@@ -1,5 +1,7 @@
 package app;
 
+import use_case.helpers.ScanningCensorshipService;
+
 import javax.swing.JFrame;
 
 /**
@@ -14,8 +16,11 @@ public class Main {
         final AppBuilder appBuilder = new AppBuilder();
         final JFrame application = appBuilder
                 .addApiDataAccessObject()
+                .addCensorshipRuleSetDataAccessObject()
+                .addCensorshipService(new ScanningCensorshipService())
                 .addReaderView()
                 .addRandomArticleUseCase()
+                .addChooseRuleSetUseCase()
                 .build();
 
         application.pack();

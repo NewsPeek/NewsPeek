@@ -6,13 +6,21 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-import data_access.APIDataAccessObject;
+import data_access.article.APIArticleDataAccessObject;
+import data_access.censorship_rule_set.FileCensorshipRuleSetDataAccessObject;
 import interface_adapter.ReaderViewModel;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.choose_rule_set.ChooseRuleSetController;
+import interface_adapter.choose_rule_set.ChooseRuleSetPresenter;
 import interface_adapter.random_article.RandomArticleController;
 import interface_adapter.random_article.RandomArticlePresenter;
 import data_access.scraper.JReadabilityScraper;
 import data_access.scraper.Scraper;
+import use_case.choose_rule_set.ChooseRuleSetInputBoundary;
+import use_case.choose_rule_set.ChooseRuleSetInteractor;
+import use_case.choose_rule_set.ChooseRuleSetOutputBoundary;
+import use_case.choose_rule_set.ChooseRuleSetOutputData;
+import use_case.helpers.CensorshipService;
 import use_case.random_article.RandomArticleInputBoundary;
 import use_case.random_article.RandomArticleInteractor;
 import use_case.random_article.RandomArticleOutputBoundary;
@@ -37,7 +45,9 @@ public class AppBuilder {
     private ReaderView readerView;
     private ReaderViewModel readerViewModel;
 
-    private APIDataAccessObject apiDataAccessObject;
+    private APIArticleDataAccessObject apiArticleDataAccessObject;
+    private FileCensorshipRuleSetDataAccessObject censorshipRuleSetDataAccessObject;
+    private CensorshipService censorshipService;
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
@@ -49,7 +59,7 @@ public class AppBuilder {
      */
     public AppBuilder addReaderView() {
         readerViewModel = new ReaderViewModel();
-        readerView = new ReaderView(readerViewModel);
+        readerView = new ReaderView(readerViewModel, censorshipService);
         cardPanel.add(readerView, readerView.getViewName());
         return this;
     }
@@ -60,8 +70,26 @@ public class AppBuilder {
      */
     public AppBuilder addApiDataAccessObject() {
         Scraper scraper = new JReadabilityScraper();
-        this.apiDataAccessObject = new APIDataAccessObject(scraper);
+        this.apiArticleDataAccessObject = new APIArticleDataAccessObject(scraper);
+        return this;
+    }
 
+    /**
+     * Adds an instance of the FileCensorshipRuleSetDataAccessObject to the application.
+     * @return this builder
+     */
+    public AppBuilder addCensorshipRuleSetDataAccessObject() {
+        this.censorshipRuleSetDataAccessObject = new FileCensorshipRuleSetDataAccessObject();
+        return this;
+    }
+
+    /**
+     * Adds an implementation of CensorshipService to the application.
+     * @param newCensorshipService the implementation of CensorshipService to use.
+     * @return this builder
+     */
+    public AppBuilder addCensorshipService(CensorshipService newCensorshipService) {
+        this.censorshipService = newCensorshipService;
         return this;
     }
 
@@ -72,10 +100,25 @@ public class AppBuilder {
     public AppBuilder addRandomArticleUseCase() {
         final RandomArticleOutputBoundary randomArticleOutputBoundary = new RandomArticlePresenter(readerViewModel);
         final RandomArticleInputBoundary randomArticleInteractor = new RandomArticleInteractor(
-                apiDataAccessObject, randomArticleOutputBoundary);
+                apiArticleDataAccessObject, randomArticleOutputBoundary);
 
         final RandomArticleController controller = new RandomArticleController(randomArticleInteractor);
         readerView.setRandomArticleController(controller);
+        return this;
+    }
+
+
+    /**
+     * Adds the Choose Rule Set Use Case to the application.
+     * @return this builder
+     */
+    public AppBuilder addChooseRuleSetUseCase() {
+        final ChooseRuleSetOutputBoundary chooseRuleSetOutputBoundary = new ChooseRuleSetPresenter(readerViewModel);
+        final ChooseRuleSetInputBoundary chooseRuleSetInteractor = new ChooseRuleSetInteractor(
+                censorshipRuleSetDataAccessObject, chooseRuleSetOutputBoundary);
+
+        final ChooseRuleSetController controller = new ChooseRuleSetController(chooseRuleSetInteractor);
+        readerView.setChooseRuleSetController(controller);
         return this;
     }
 
