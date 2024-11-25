@@ -27,13 +27,8 @@ public class RandomArticleInteractor implements RandomArticleInputBoundary {
             final String country = randomArticleInputData.getCountry();
             final Article article = apiDataAccessInterface.getRandomArticle(country);
 
-            // Censor article
-            final CensorshipService censorshipService = new ScanningCensorshipService();
-            final CensorshipRuleSet censorshipRuleSet = randomArticleInputData.getCensorshipRuleSet();
-            final Article censoredArticle = censorshipService.censor(article, censorshipRuleSet);
-
             // Populate output data
-            final RandomArticleOutputData randomArticleOutputData = new RandomArticleOutputData(censoredArticle, false);
+            final RandomArticleOutputData randomArticleOutputData = new RandomArticleOutputData(article, false);
 
             // Prepare success view
             presenter.prepareSuccessView(randomArticleOutputData);

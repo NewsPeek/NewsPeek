@@ -6,7 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-import data_access.APIDataAccessObject;
+import data_access.article.APIArticleDataAccessObject;
 import interface_adapter.ReaderViewModel;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.random_article.RandomArticleController;
@@ -37,7 +37,7 @@ public class AppBuilder {
     private ReaderView readerView;
     private ReaderViewModel readerViewModel;
 
-    private APIDataAccessObject apiDataAccessObject;
+    private APIArticleDataAccessObject apiArticleDataAccessObject;
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
@@ -60,7 +60,7 @@ public class AppBuilder {
      */
     public AppBuilder addApiDataAccessObject() {
         Scraper scraper = new JReadabilityScraper();
-        this.apiDataAccessObject = new APIDataAccessObject(scraper);
+        this.apiArticleDataAccessObject = new APIArticleDataAccessObject(scraper);
 
         return this;
     }
@@ -72,7 +72,7 @@ public class AppBuilder {
     public AppBuilder addRandomArticleUseCase() {
         final RandomArticleOutputBoundary randomArticleOutputBoundary = new RandomArticlePresenter(readerViewModel);
         final RandomArticleInputBoundary randomArticleInteractor = new RandomArticleInteractor(
-                apiDataAccessObject, randomArticleOutputBoundary);
+                apiArticleDataAccessObject, randomArticleOutputBoundary);
 
         final RandomArticleController controller = new RandomArticleController(randomArticleInteractor);
         readerView.setRandomArticleController(controller);

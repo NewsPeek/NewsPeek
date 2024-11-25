@@ -1,4 +1,4 @@
-package data_access;
+package data_access.article;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,13 +22,13 @@ import use_case.random_article.RandomArticleAPIDataAccessInterface;
 /**
  * DAO for to read articles from the web.
  */
-public class APIDataAccessObject implements RandomArticleAPIDataAccessInterface {
+public class APIArticleDataAccessObject implements RandomArticleAPIDataAccessInterface {
     private static final String API_ENDPOINT_RANDOM = "https://newsapi.org/v2/top-headlines";
     private final String apiKey;
 
     private final Scraper scraper;
 
-    public APIDataAccessObject(Scraper scraper) {
+    public APIArticleDataAccessObject(Scraper scraper) {
         this.scraper = scraper;
         this.apiKey = this.loadApiKey();
     }

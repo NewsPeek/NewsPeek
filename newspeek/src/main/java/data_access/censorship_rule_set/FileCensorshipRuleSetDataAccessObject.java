@@ -1,7 +1,7 @@
-package data_access;
+package data_access.censorship_rule_set;
 
 import entity.censorship_rule_set.CensorshipRuleSet;
-import entity.censorship_rule_set.CensorshipRuleSetDataAccessInterface;
+import use_case.choose_rule_set.ChooseRuleSetDataAccessInterface;
 import entity.censorship_rule_set.CommonCensorshipRuleSet;
 
 import java.io.BufferedReader;
@@ -13,9 +13,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class FileCensorshipRuleSetDataAccessObject implements CensorshipRuleSetDataAccessInterface {
+public class FileCensorshipRuleSetDataAccessObject implements ChooseRuleSetDataAccessInterface {
     @Override
-    public CensorshipRuleSet loadFromFile(File file) throws IOException {
+    public CensorshipRuleSet getCensorshipRuleSet(File file) throws IOException {
         Set<String> prohibitedWords = new HashSet<>();
         Map<String, String> replacedWords = new HashMap<>();
         Boolean caseSensitive = false;

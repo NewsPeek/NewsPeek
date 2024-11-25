@@ -1,4 +1,4 @@
-package data_access;
+package data_access.article;
 
 // TODO: add `implements` statements for the DataAccessInterface for each use case
 /**

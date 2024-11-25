@@ -1,4 +1,4 @@
-package data_access;
+package data_access.article;
 
 import java.net.MalformedURLException;
 import java.net.URL;
