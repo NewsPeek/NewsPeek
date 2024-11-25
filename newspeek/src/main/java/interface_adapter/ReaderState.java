@@ -2,6 +2,12 @@ package interface_adapter;
 
 import entity.article.Article;
 import entity.censorship_rule_set.CensorshipRuleSet;
+import entity.censorship_rule_set.CommonCensorshipRuleSet;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * The State information representing the logged-in user.
@@ -10,15 +16,22 @@ public class ReaderState {
     private Article article;
     private CensorshipRuleSet censorshipRuleSet;
     private String error;
+    private Set<String> defaultProhibitedWords;
+    private Map<String, String> defaultReplacedWords;
+    private Boolean defaultCaseSensitive;
+    private String defaultRuleSetName;
 
-//    public ReaderState(ReaderState copy) {
-//        // TODO: copy all instance variables from the other ReaderState
-//    }
 
-    // Because of the previous copy constructor, the default constructor must be explicit.
-//    public ReaderState(Article article) {
-//        this.article = article;
-//    } Not added constructor to follow convention from Login state in Lab 5
+    public ReaderState() {
+
+       defaultProhibitedWords = new HashSet<String>();
+        defaultReplacedWords = new HashMap<String, String>();
+        defaultCaseSensitive = false;
+        defaultRuleSetName = "Default Rule Set";
+        defaultProhibitedWords.add("the");
+        defaultReplacedWords.put("Trump", "peepee");
+        this.censorshipRuleSet=new CommonCensorshipRuleSet(defaultProhibitedWords, defaultReplacedWords, defaultCaseSensitive, defaultRuleSetName);
+    }
 
     public Article getArticle() {
         return article;
