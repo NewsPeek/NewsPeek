@@ -1,4 +1,4 @@
-package data_access;
+package data_access.article;
 
 /**
  * Exception thrown by NewsAPI calls in APIDataAccessObject.
