@@ -1,5 +1,6 @@
 package data_access.article;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -12,8 +13,12 @@ import use_case.random_article.RandomArticleAPIDataAccessInterface;
  */
 public class MemoryArticleDataAccessObject implements RandomArticleAPIDataAccessInterface {
     @Override
-    public Article getRandomArticle(String country) {
-        return makeMockArticle();
+    public Article getRandomArticle(String country) throws IOException {
+        if ("FAIL".equals(country)) {
+            throw new IOException("getRandomArticle intentionally failed.");
+        } else {
+            return makeMockArticle();
+        }
     }
 
     public Article getArticleFromURL(String url) {
