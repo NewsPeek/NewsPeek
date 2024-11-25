@@ -25,10 +25,12 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     private JFileChooser fileChooser;
     private CensorshipService censorshipService;
 
-    public ReaderView(ReaderViewModel readerViewModel) {
+    public ReaderView(ReaderViewModel readerViewModel, CensorshipService censorshipService) {
         this.fileChooser = new JFileChooser();
         this.readerViewModel = readerViewModel;
         this.readerViewModel.addPropertyChangeListener(this);
+
+        this.censorshipService = censorshipService;
 
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         final JLabel title = new JLabel("Reader Screen");
@@ -97,10 +99,6 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
 
     public void setChooseRuleSetController(ChooseRuleSetController chooseRuleSetController) {
         this.chooseRuleSetController = chooseRuleSetController;
-    }
-
-    public void setCensorshipService(CensorshipService censorshipService) {
-        this.censorshipService = censorshipService;
     }
 
     public void showError(ReaderState state) {
