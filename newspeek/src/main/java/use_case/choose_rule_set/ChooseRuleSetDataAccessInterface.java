@@ -1,9 +1,12 @@
 package use_case.choose_rule_set;
 
-import entity.censorship_rule_set.CensorshipRuleSet;
-
 import java.io.File;
 
+import entity.censorship_rule_set.CensorshipRuleSet;
+
+/**
+ * Data Access Interface for loading a CensorshipRuleSet from some external source.
+ */
 public interface ChooseRuleSetDataAccessInterface {
     /**
      * Returns a specified censorship rule set.

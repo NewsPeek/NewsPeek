@@ -8,18 +8,17 @@ import javax.swing.WindowConstants;
 
 import data_access.article.APIArticleDataAccessObject;
 import data_access.censorship_rule_set.FileCensorshipRuleSetDataAccessObject;
+import data_access.scraper.JReadabilityScraper;
+import data_access.scraper.Scraper;
 import interface_adapter.ReaderViewModel;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.choose_rule_set.ChooseRuleSetController;
 import interface_adapter.choose_rule_set.ChooseRuleSetPresenter;
 import interface_adapter.random_article.RandomArticleController;
 import interface_adapter.random_article.RandomArticlePresenter;
-import data_access.scraper.JReadabilityScraper;
-import data_access.scraper.Scraper;
 import use_case.choose_rule_set.ChooseRuleSetInputBoundary;
 import use_case.choose_rule_set.ChooseRuleSetInteractor;
 import use_case.choose_rule_set.ChooseRuleSetOutputBoundary;
-import use_case.choose_rule_set.ChooseRuleSetOutputData;
 import use_case.helpers.CensorshipService;
 import use_case.random_article.RandomArticleInputBoundary;
 import use_case.random_article.RandomArticleInteractor;
@@ -39,7 +38,6 @@ import view.ReaderView;
 //                  for your final project this term.
 public class AppBuilder {
     private final JPanel cardPanel = new JPanel();
-    private final CardLayout cardLayout = new CardLayout();
     private final ViewManagerModel viewManagerModel = new ViewManagerModel();
 
     private ReaderView readerView;
@@ -50,6 +48,7 @@ public class AppBuilder {
     private CensorshipService censorshipService;
 
     public AppBuilder() {
+        CardLayout cardLayout = new CardLayout();
         cardPanel.setLayout(cardLayout);
     }
 
@@ -106,7 +105,6 @@ public class AppBuilder {
         readerView.setRandomArticleController(controller);
         return this;
     }
-
 
     /**
      * Adds the Choose Rule Set Use Case to the application.

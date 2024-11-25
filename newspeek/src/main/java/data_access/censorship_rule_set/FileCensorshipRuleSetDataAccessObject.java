@@ -1,9 +1,5 @@
 package data_access.censorship_rule_set;
 
-import entity.censorship_rule_set.CensorshipRuleSet;
-import use_case.choose_rule_set.ChooseRuleSetDataAccessInterface;
-import entity.censorship_rule_set.CommonCensorshipRuleSet;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -13,6 +9,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import entity.censorship_rule_set.CensorshipRuleSet;
+import entity.censorship_rule_set.CommonCensorshipRuleSet;
+import use_case.choose_rule_set.ChooseRuleSetDataAccessInterface;
+
+/**
+ * DAO to manage censorship rule sets stored in JSON files.
+ */
 public class FileCensorshipRuleSetDataAccessObject implements ChooseRuleSetDataAccessInterface {
     @Override
     public CensorshipRuleSet getCensorshipRuleSet(File file) throws IOException {

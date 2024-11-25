@@ -16,7 +16,8 @@ public class MemoryArticleDataAccessObject implements RandomArticleAPIDataAccess
         return makeMockArticle();
     }
 
-    public Article getArticleFromURL(String url) {
+    @Override
+    public Article getArticleFromUrl(String url) {
         try {
             new URL(url);
             return makeMockArticle();

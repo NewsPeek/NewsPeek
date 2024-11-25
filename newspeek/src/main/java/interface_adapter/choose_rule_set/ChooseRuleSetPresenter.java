@@ -4,8 +4,6 @@ import interface_adapter.ReaderViewModel;
 import use_case.choose_rule_set.ChooseRuleSetOutputBoundary;
 import use_case.choose_rule_set.ChooseRuleSetOutputData;
 
-import javax.swing.*;
-
 /**
  * The Presenter for the Change Password Use Case.
  */
