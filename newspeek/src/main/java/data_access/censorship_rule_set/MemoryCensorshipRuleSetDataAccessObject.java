@@ -21,6 +21,10 @@ public class MemoryCensorshipRuleSetDataAccessObject implements ChooseRuleSetDat
         Boolean caseSensitive = false;
         String ruleSetName = "Test Rules";
 
+        prohibitedWords.add("idea");
+
+        replacedWords.put("subversion", "compliance");
+
         return new CommonCensorshipRuleSet(prohibitedWords, replacedWords, caseSensitive, ruleSetName);
     }
 }
