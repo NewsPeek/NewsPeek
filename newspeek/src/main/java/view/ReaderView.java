@@ -1,5 +1,6 @@
 package view;
 
+import entity.article.Article;
 import interface_adapter.ReaderState;
 import interface_adapter.ReaderViewModel;
 import interface_adapter.choose_rule_set.ChooseRuleSetController;
@@ -21,9 +22,10 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     private final ReaderViewModel readerViewModel;
     private RandomArticleController randomArticleController;
     private ChooseRuleSetController chooseRuleSetController;
-    private JTextArea articleTextArea;
-    private JFileChooser fileChooser;
-    private CensorshipService censorshipService;
+    private final JLabel articleTitle;
+    private final JTextArea articleTextArea;
+    private final JFileChooser fileChooser;
+    private final CensorshipService censorshipService;
 
     public ReaderView(ReaderViewModel readerViewModel, CensorshipService censorshipService) {
         this.fileChooser = new JFileChooser();
@@ -33,14 +35,16 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         this.censorshipService = censorshipService;
 
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        final JLabel title = new JLabel("Reader Screen");
-        title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         final JPanel buttons = new JPanel();
         JButton randomArticleButton = new JButton("Random Article");
         JButton loadRuleSetButton = new JButton("Open censorship data File");
         buttons.add(randomArticleButton);
         buttons.add(loadRuleSetButton);
+
+        this.articleTitle = new JLabel("No article loaded");
+        articleTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         articleTextArea = new JTextArea(10,40);
         articleTextArea.setEditable(false);
         JScrollPane articleScrollPane = new JScrollPane(articleTextArea);
@@ -52,9 +56,8 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
 
         loadRuleSetButton.addActionListener(evt -> chooseRuleSet());
 
-        this.add(title);
-
         this.add(buttons);
+        this.add(articleTitle);
         this.add(articleScrollPane);
     }
 
@@ -84,8 +87,9 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
 
     public void updateArticleText(ReaderState state) {
         if (state.getArticle() != null) {
-            String newText = this.censorshipService.censor(state.getArticle(), state.getCensorshipRuleSet()).getText();
-            articleTextArea.setText(newText);
+            Article censoredArticle = this.censorshipService.censor(state.getArticle(), state.getCensorshipRuleSet());
+            articleTextArea.setText(censoredArticle.getText());
+            articleTitle.setText(censoredArticle.getTitle());
         }
     }
 
