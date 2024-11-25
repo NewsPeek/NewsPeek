@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 import data_access.article.APIArticleDataAccessObject;
+import data_access.censorship_rule_set.FileCensorshipRuleSetDataAccessObject;
 import interface_adapter.ReaderViewModel;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.choose_rule_set.ChooseRuleSetController;
@@ -45,6 +46,7 @@ public class AppBuilder {
     private ReaderViewModel readerViewModel;
 
     private APIArticleDataAccessObject apiArticleDataAccessObject;
+    private FileCensorshipRuleSetDataAccessObject censorshipRuleSetDataAccessObject;
     private CensorshipService censorshipService;
 
     public AppBuilder() {
@@ -69,6 +71,15 @@ public class AppBuilder {
     public AppBuilder addApiDataAccessObject() {
         Scraper scraper = new JReadabilityScraper();
         this.apiArticleDataAccessObject = new APIArticleDataAccessObject(scraper);
+        return this;
+    }
+
+    /**
+     * Adds an instance of the FileCensorshipRuleSetDataAccessObject to the application.
+     * @return this builder
+     */
+    public AppBuilder addCensorshipRuleSetDataAccessObject() {
+        this.censorshipRuleSetDataAccessObject = new FileCensorshipRuleSetDataAccessObject();
         return this;
     }
 
@@ -103,7 +114,8 @@ public class AppBuilder {
      */
     public AppBuilder addChooseRuleSetUseCase() {
         final ChooseRuleSetOutputBoundary chooseRuleSetOutputBoundary = new ChooseRuleSetPresenter(readerViewModel);
-        final ChooseRuleSetInputBoundary chooseRuleSetInteractor = new ChooseRuleSetInteractor();
+        final ChooseRuleSetInputBoundary chooseRuleSetInteractor = new ChooseRuleSetInteractor(
+                censorshipRuleSetDataAccessObject, chooseRuleSetOutputBoundary);
 
         final ChooseRuleSetController controller = new ChooseRuleSetController(chooseRuleSetInteractor);
         readerView.setChooseRuleSetController(controller);
