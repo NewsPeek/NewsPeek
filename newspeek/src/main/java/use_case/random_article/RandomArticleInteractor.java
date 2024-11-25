@@ -1,11 +1,8 @@
 package use_case.random_article;
 
 import entity.article.Article;
-import entity.censorship_rule_set.CensorshipRuleSet;
-import use_case.helpers.CensorshipService;
-import use_case.helpers.ScanningCensorshipService;
 
-import javax.swing.*;
+import java.io.IOException;
 
 /**
  * The Random Article interactor.
@@ -32,8 +29,8 @@ public class RandomArticleInteractor implements RandomArticleInputBoundary {
 
             // Prepare success view
             presenter.prepareSuccessView(randomArticleOutputData);
-        } catch (Exception e) {
-            presenter.prepareFailView(e.getMessage());
+        } catch (IOException exception) {
+            presenter.prepareFailView(exception.getMessage());
         }
     }
 }

@@ -1,13 +1,10 @@
 package use_case.random_article;
 
 import data_access.article.MemoryArticleDataAccessObject;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-
-import use_case.random_article.RandomArticleInteractor;
 
 class RandomArticleInteractorTest {
     private RandomArticleAPIDataAccessInterface randomArticleDAO;

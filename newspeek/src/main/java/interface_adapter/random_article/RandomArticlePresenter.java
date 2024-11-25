@@ -1,7 +1,7 @@
 package interface_adapter.random_article;
 
-import use_case.random_article.RandomArticleOutputBoundary;
 import interface_adapter.ReaderViewModel;
+import use_case.random_article.RandomArticleOutputBoundary;
 import use_case.random_article.RandomArticleOutputData;
 
 /**
