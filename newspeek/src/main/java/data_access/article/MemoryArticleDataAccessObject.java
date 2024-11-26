@@ -32,7 +32,7 @@ public class MemoryArticleDataAccessObject implements RandomArticleAPIDataAccess
      * @param url the URL to get the article from. Must be well-formed, but not necessarily real.
      * @return a mock article.
      */
-    public Article getArticleFromURL(String url) {
+    public Article getArticleFromUrl(String url) {
         try {
             new URL(url);
             return makeMockArticle();
