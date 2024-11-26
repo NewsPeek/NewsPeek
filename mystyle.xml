@@ -37,6 +37,10 @@
         <property name="files"
                   value=".*[\\/]src[\\/](test|it|xdocs-examples)[\\/].*(?&lt;!Support)\.java"/>
     </module>
+    <module name="SuppressionSingleFilter">
+        <property name="files"
+                  value=".*[\\/]jreadability[\\/].*.java"/>
+    </module>
     <module name="SuppressWarningsFilter"/>
     <module name="SuppressWithPlainTextCommentFilter">
         <!--
