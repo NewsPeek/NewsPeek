@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 import data_access.article.APIArticleDataAccessObject;
+import data_access.article.FileArticleDataAccessObject;
 import data_access.censorship_rule_set.FileCensorshipRuleSetDataAccessObject;
 import data_access.scraper.JReadabilityScraper;
 import data_access.scraper.Scraper;
@@ -14,11 +15,16 @@ import interface_adapter.ReaderViewModel;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.choose_rule_set.ChooseRuleSetController;
 import interface_adapter.choose_rule_set.ChooseRuleSetPresenter;
+import interface_adapter.export_article.ExportArticleController;
+import interface_adapter.export_article.ExportArticlePresenter;
 import interface_adapter.random_article.RandomArticleController;
 import interface_adapter.random_article.RandomArticlePresenter;
 import use_case.choose_rule_set.ChooseRuleSetInputBoundary;
 import use_case.choose_rule_set.ChooseRuleSetInteractor;
 import use_case.choose_rule_set.ChooseRuleSetOutputBoundary;
+import use_case.export_article.ExportArticleInputBoundary;
+import use_case.export_article.ExportArticleInteractor;
+import use_case.export_article.ExportArticleOutputBoundary;
 import use_case.helpers.CensorshipService;
 import use_case.random_article.RandomArticleInputBoundary;
 import use_case.random_article.RandomArticleInteractor;
@@ -46,6 +52,7 @@ public class AppBuilder {
     private APIArticleDataAccessObject apiArticleDataAccessObject;
     private FileCensorshipRuleSetDataAccessObject censorshipRuleSetDataAccessObject;
     private CensorshipService censorshipService;
+    private FileArticleDataAccessObject fileArticleDataAccessObject;
 
     public AppBuilder() {
         CardLayout cardLayout = new CardLayout();
@@ -70,6 +77,15 @@ public class AppBuilder {
     public AppBuilder addApiDataAccessObject() {
         Scraper scraper = new JReadabilityScraper();
         this.apiArticleDataAccessObject = new APIArticleDataAccessObject(scraper);
+        return this;
+    }
+
+    /**
+     * Adds an instance of the FileArticleDataAccessObject to the application.
+     * @return this builder
+     */
+    public AppBuilder addFileArticleDataAccessObject() {
+        this.fileArticleDataAccessObject = new FileArticleDataAccessObject();
         return this;
     }
 
@@ -103,6 +119,20 @@ public class AppBuilder {
 
         final RandomArticleController controller = new RandomArticleController(randomArticleInteractor);
         readerView.setRandomArticleController(controller);
+        return this;
+    }
+
+    /**
+     * Adds the Export Article Use Case to the application.
+     * @return this builder
+     */
+    public AppBuilder addExportArticleUseCase() {
+        final ExportArticleOutputBoundary presenter = new ExportArticlePresenter(readerViewModel);
+        final ExportArticleInputBoundary interactor = new ExportArticleInteractor(
+                fileArticleDataAccessObject, presenter);
+
+        final ExportArticleController controller = new ExportArticleController(interactor);
+        readerView.setExportArticleController(controller);
         return this;
     }
 

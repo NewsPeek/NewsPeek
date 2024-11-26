@@ -11,6 +11,7 @@ import entity.article.Article;
 import interface_adapter.ReaderState;
 import interface_adapter.ReaderViewModel;
 import interface_adapter.choose_rule_set.ChooseRuleSetController;
+import interface_adapter.export_article.ExportArticleController;
 import interface_adapter.random_article.RandomArticleController;
 import use_case.helpers.CensorshipService;
 
@@ -23,9 +24,12 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
 
     private static final String VIEW_NAME = "reader";
 
+    private final ReaderViewModel viewModel;
+
     // Use cases
     private RandomArticleController randomArticleController;
     private ChooseRuleSetController chooseRuleSetController;
+    private ExportArticleController exportArticleController;
 
     // Swing objects
     private final JLabel articleTitle;
@@ -34,9 +38,10 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
 
     private final CensorshipService censorshipService;
 
-    public ReaderView(ReaderViewModel readerViewModel, CensorshipService censorshipService) {
+    public ReaderView(ReaderViewModel viewModel, CensorshipService censorshipService) {
         this.fileChooser = new JFileChooser();
-        readerViewModel.addPropertyChangeListener(this);
+        this.viewModel = viewModel;
+        this.viewModel.addPropertyChangeListener(this);
 
         this.censorshipService = censorshipService;
 
@@ -44,8 +49,10 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
 
         final JPanel buttons = new JPanel();
         JButton randomArticleButton = new JButton("Random Article");
+        JButton exportArticleButton = new JButton("Export article");
         JButton loadRuleSetButton = new JButton("Open censorship data File");
         buttons.add(randomArticleButton);
+        buttons.add(exportArticleButton);
         buttons.add(loadRuleSetButton);
 
         this.articleTitle = new JLabel("No article loaded");
@@ -64,8 +71,11 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
             randomArticleController.execute(country);
         });
 
-        loadRuleSetButton.addActionListener(evt -> chooseRuleSet());
+        exportArticleButton.addActionListener(evt -> {
+            exportArticleController.execute(this.viewModel.getState().getArticle());
+        });
 
+        loadRuleSetButton.addActionListener(evt -> chooseRuleSet());
     }
 
     @Override
@@ -95,19 +105,28 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     /**
      * Attach the controller for the Random Article use case.
      * Must be executed before showing the view to the user to prevent a program crash.
-     * @param randomArticleController the controller to attach.
+     * @param controller the controller to attach.
      */
-    public void setRandomArticleController(RandomArticleController randomArticleController) {
-        this.randomArticleController = randomArticleController;
+    public void setRandomArticleController(RandomArticleController controller) {
+        this.randomArticleController = controller;
     }
 
     /**
      * Attach the controller for the Choose Rule Set use case.
      * Must be executed before showing the view to the user to prevent a program crash.
-     * @param chooseRuleSetController the controller to attach.
+     * @param controller the controller to attach.
      */
-    public void setChooseRuleSetController(ChooseRuleSetController chooseRuleSetController) {
-        this.chooseRuleSetController = chooseRuleSetController;
+    public void setChooseRuleSetController(ChooseRuleSetController controller) {
+        this.chooseRuleSetController = controller;
+    }
+
+    /**
+     * Attach the controller for the Export Article use case.
+     * Must be executed before showing the view to the user to prevent a program crash.
+     * @param controller the controller to attach.
+     */
+    public void setExportArticleController(ExportArticleController controller) {
+        this.exportArticleController = controller;
     }
 
     /**
