@@ -1,11 +1,11 @@
-package use_case.export_article;
+package use_case.save_article;
 
 import entity.article.Article;
 
 /**
  * Data Access Interface for saving censored Articles.
  */
-public interface ExportArticleDataAccessInterface {
+public interface SaveArticleDataAccessInterface {
     /**
      * Saves the article.
      * @param article the article to save.

@@ -15,20 +15,20 @@ import interface_adapter.ReaderViewModel;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.choose_rule_set.ChooseRuleSetController;
 import interface_adapter.choose_rule_set.ChooseRuleSetPresenter;
-import interface_adapter.export_article.ExportArticleController;
-import interface_adapter.export_article.ExportArticlePresenter;
 import interface_adapter.random_article.RandomArticleController;
 import interface_adapter.random_article.RandomArticlePresenter;
+import interface_adapter.save_article.SaveArticleController;
+import interface_adapter.save_article.SaveArticlePresenter;
 import use_case.choose_rule_set.ChooseRuleSetInputBoundary;
 import use_case.choose_rule_set.ChooseRuleSetInteractor;
 import use_case.choose_rule_set.ChooseRuleSetOutputBoundary;
-import use_case.export_article.ExportArticleInputBoundary;
-import use_case.export_article.ExportArticleInteractor;
-import use_case.export_article.ExportArticleOutputBoundary;
 import use_case.helpers.CensorshipService;
 import use_case.random_article.RandomArticleInputBoundary;
 import use_case.random_article.RandomArticleInteractor;
 import use_case.random_article.RandomArticleOutputBoundary;
+import use_case.save_article.SaveArticleInputBoundary;
+import use_case.save_article.SaveArticleInteractor;
+import use_case.save_article.SaveArticleOutputBoundary;
 import view.ReaderView;
 
 /**
@@ -123,16 +123,16 @@ public class AppBuilder {
     }
 
     /**
-     * Adds the Export Article Use Case to the application.
+     * Adds the Save Article Use Case to the application.
      * @return this builder
      */
-    public AppBuilder addExportArticleUseCase() {
-        final ExportArticleOutputBoundary presenter = new ExportArticlePresenter(readerViewModel);
-        final ExportArticleInputBoundary interactor = new ExportArticleInteractor(
+    public AppBuilder addSaveArticleUseCase() {
+        final SaveArticleOutputBoundary presenter = new SaveArticlePresenter(readerViewModel);
+        final SaveArticleInputBoundary interactor = new SaveArticleInteractor(
                 fileArticleDataAccessObject, presenter);
 
-        final ExportArticleController controller = new ExportArticleController(interactor);
-        readerView.setExportArticleController(controller);
+        final SaveArticleController controller = new SaveArticleController(interactor);
+        readerView.setSaveArticleController(controller);
         return this;
     }
 

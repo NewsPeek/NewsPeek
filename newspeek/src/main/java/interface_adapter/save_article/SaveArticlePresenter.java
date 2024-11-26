@@ -1,21 +1,21 @@
-package interface_adapter.export_article;
+package interface_adapter.save_article;
 
 import interface_adapter.ReaderViewModel;
-import use_case.export_article.ExportArticleOutputBoundary;
-import use_case.export_article.ExportArticleOutputData;
+import use_case.save_article.SaveArticleOutputBoundary;
+import use_case.save_article.SaveArticleOutputData;
 
 /**
  * The Presenter for the Change Password Use Case.
  */
-public class ExportArticlePresenter implements ExportArticleOutputBoundary {
+public class SaveArticlePresenter implements SaveArticleOutputBoundary {
     private final ReaderViewModel readerViewModel;
 
-    public ExportArticlePresenter(ReaderViewModel readerViewModel) {
+    public SaveArticlePresenter(ReaderViewModel readerViewModel) {
         this.readerViewModel = readerViewModel;
     }
 
     @Override
-    public void prepareSuccessView(ExportArticleOutputData outputData) {
+    public void prepareSuccessView(SaveArticleOutputData outputData) {
         // TODO: decide if user needs confirmation
     }
 

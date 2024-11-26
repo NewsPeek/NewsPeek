@@ -21,7 +21,7 @@ public class Main {
                 .addCensorshipService(new ScanningCensorshipService())
                 .addReaderView()
                 .addRandomArticleUseCase()
-                .addExportArticleUseCase()
+                .addSaveArticleUseCase()
                 .addChooseRuleSetUseCase()
                 .build();
 

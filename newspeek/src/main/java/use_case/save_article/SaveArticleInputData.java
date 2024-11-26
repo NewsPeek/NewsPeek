@@ -1,14 +1,14 @@
-package use_case.export_article;
+package use_case.save_article;
 
 import entity.article.Article;
 
 /**
- * Input data for the Export Article use case. Contains the article to save.
+ * Input data for the Save Article use case. Contains the article to save.
  */
-public class ExportArticleInputData {
+public class SaveArticleInputData {
     private final Article article;
 
-    public ExportArticleInputData(Article article) {
+    public SaveArticleInputData(Article article) {
         this.article = article;
     }
 

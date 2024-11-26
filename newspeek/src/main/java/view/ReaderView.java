@@ -11,8 +11,8 @@ import entity.article.Article;
 import interface_adapter.ReaderState;
 import interface_adapter.ReaderViewModel;
 import interface_adapter.choose_rule_set.ChooseRuleSetController;
-import interface_adapter.export_article.ExportArticleController;
 import interface_adapter.random_article.RandomArticleController;
+import interface_adapter.save_article.SaveArticleController;
 import use_case.helpers.CensorshipService;
 
 /**
@@ -29,7 +29,7 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     // Use cases
     private RandomArticleController randomArticleController;
     private ChooseRuleSetController chooseRuleSetController;
-    private ExportArticleController exportArticleController;
+    private SaveArticleController saveArticleController;
 
     // Swing objects
     private final JLabel articleTitle;
@@ -49,10 +49,10 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
 
         final JPanel buttons = new JPanel();
         JButton randomArticleButton = new JButton("Random Article");
-        JButton exportArticleButton = new JButton("Export article");
+        JButton saveArticleButton = new JButton("Save Article");
         JButton loadRuleSetButton = new JButton("Open censorship data File");
         buttons.add(randomArticleButton);
-        buttons.add(exportArticleButton);
+        buttons.add(saveArticleButton);
         buttons.add(loadRuleSetButton);
 
         this.articleTitle = new JLabel("No article loaded");
@@ -71,8 +71,8 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
             randomArticleController.execute(country);
         });
 
-        exportArticleButton.addActionListener(evt -> {
-            exportArticleController.execute(this.viewModel.getState().getArticle());
+        saveArticleButton.addActionListener(evt -> {
+            saveArticleController.execute(this.viewModel.getState().getArticle());
         });
 
         loadRuleSetButton.addActionListener(evt -> chooseRuleSet());
@@ -121,12 +121,12 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     }
 
     /**
-     * Attach the controller for the Export Article use case.
+     * Attach the controller for the Save Article use case.
      * Must be executed before showing the view to the user to prevent a program crash.
      * @param controller the controller to attach.
      */
-    public void setExportArticleController(ExportArticleController controller) {
-        this.exportArticleController = controller;
+    public void setSaveArticleController(SaveArticleController controller) {
+        this.saveArticleController = controller;
     }
 
     /**

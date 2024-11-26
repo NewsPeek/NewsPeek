@@ -1,14 +1,14 @@
-package use_case.export_article;
+package use_case.save_article;
 
 /**
  * Output boundary for the Choose Rule Set use case.
  */
-public interface ExportArticleOutputBoundary {
+public interface SaveArticleOutputBoundary {
     /**
      * Do nothing. TODO: decide if it should do nothing.
      * @param outputData an object containing the data to be returned to the ReaderView.
      */
-    void prepareSuccessView(ExportArticleOutputData outputData);
+    void prepareSuccessView(SaveArticleOutputData outputData);
 
     /**
      * Display an error returned by the Interactor in a pop-up.
