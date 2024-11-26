@@ -1,7 +1,6 @@
 package entity.article;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 /**
  * Article entity with a title, body text, author, agency, source, and posting time.

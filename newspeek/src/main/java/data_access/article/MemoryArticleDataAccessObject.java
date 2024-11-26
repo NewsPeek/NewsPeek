@@ -23,7 +23,7 @@ public class MemoryArticleDataAccessObject implements RandomArticleAPIDataAccess
         if ("FAIL".equals(country)) {
             throw new IOException("getRandomArticle intentionally failed.");
         } else {
-            return makeMockArticle();
+            return Article.mockArticle();
         }
     }
 
@@ -35,7 +35,7 @@ public class MemoryArticleDataAccessObject implements RandomArticleAPIDataAccess
     public Article getArticleFromUrl(String url) {
         try {
             new URL(url);
-            return makeMockArticle();
+            return Article.mockArticle();
         } catch (MalformedURLException exception) {
             System.err.println("MemoryArticleDataAccessObject: Unrecoverable error: malformed URL.");
             exception.printStackTrace();
@@ -43,15 +43,5 @@ public class MemoryArticleDataAccessObject implements RandomArticleAPIDataAccess
         }
         /* unreachable */
         return null;
-    }
-
-    private static Article makeMockArticle() {
-        final String title = "Sample Article";
-        final String text = "lorem ipsum dolor sit amet. Lorem Ipsum DOLOR sIT aMeT.";
-        final String source = "https://example.com";
-        final String author = "John Cena";
-        final String agency = "XYZ Corporation";
-        final LocalDateTime postedAt = LocalDateTime.now();
-        return new Article(title, text, source, author, agency, postedAt);
     }
 }
