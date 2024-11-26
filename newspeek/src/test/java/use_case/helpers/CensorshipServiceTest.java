@@ -26,13 +26,9 @@ class CensorshipServiceTest {
     @ParameterizedTest
     @MethodSource("provideAllTestCases")
     void censorNothingTest(CensorshipService censorshipService, Boolean caseSensitive) {
-        final String title = "Sample Article";
         final String text = "lorem ipsum dolor sit amet. Lorem Ipsum DOLOR sIT aMeT.";
-        final String source = "https://example.com";
-        final String author = "John Cena";
-        final String agency = "XYZ Corporation";
-        final LocalDateTime postedAt = LocalDateTime.now();
-        final Article mockArticle = new Article(title, text, source, author, agency, postedAt);
+        final Article mockArticle = Article.mockArticle();
+        mockArticle.setText(text);
 
         final Set<String> prohibitedWords = new HashSet<>();
         final Map<String, String> replacedWords = new HashMap<>();
@@ -52,13 +48,9 @@ class CensorshipServiceTest {
     @ParameterizedTest
     @MethodSource("provideAllTestCases")
     void censorProhibitedTest(CensorshipService censorshipService, Boolean caseSensitive) {
-        final String title = "Sample Article";
         final String text = "lorem ipsum dolor sit amet. Lorem Ipsum DOLOR sIT aMeT.";
-        final String source = "https://example.com";
-        final String author = "John Cena";
-        final String agency = "XYZ Corporation";
-        final LocalDateTime postedAt = LocalDateTime.now();
-        final Article mockArticle = new Article(title, text, source, author, agency, postedAt);
+        final Article mockArticle = Article.mockArticle();
+        mockArticle.setText(text);
 
         final Set<String> prohibitedWords = new HashSet<>();
         final Map<String, String> replacedWords = new HashMap<>();
@@ -85,13 +77,9 @@ class CensorshipServiceTest {
     @ParameterizedTest
     @MethodSource("provideAllTestCases")
     void censorProhibitedSpaceAroundTest(CensorshipService censorshipService, Boolean caseSensitive) {
-        final String title = "Sample Article";
         final String text = " lorem ipsum dolor sit amet. Lorem Ipsum DOLOR sIT aMeT. "; // note spaces around text
-        final String source = "https://example.com";
-        final String author = "John Cena";
-        final String agency = "XYZ Corporation";
-        final LocalDateTime postedAt = LocalDateTime.now();
-        final Article mockArticle = new Article(title, text, source, author, agency, postedAt);
+        final Article mockArticle = Article.mockArticle();
+        mockArticle.setText(text);
 
         final Set<String> prohibitedWords = new HashSet<>();
         final Map<String, String> replacedWords = new HashMap<>();
@@ -119,13 +107,9 @@ class CensorshipServiceTest {
     @ParameterizedTest
     @MethodSource("provideAllTestCases")
     void censorReplaceTest(CensorshipService censorshipService, Boolean caseSensitive) {
-        final String title = "Sample Article";
         final String text = "lorem ipsum dolor sit amet. Lorem Ipsum DOLOR sIT aMeT. ";
-        final String source = "https://example.com";
-        final String author = "John Cena";
-        final String agency = "XYZ Corporation";
-        final LocalDateTime postedAt = LocalDateTime.now();
-        final Article mockArticle = new Article(title, text, source, author, agency, postedAt);
+        final Article mockArticle = Article.mockArticle();
+        mockArticle.setText(text);
 
         final Set<String> prohibitedWords = new HashSet<>();
         final Map<String, String> replacedWords = new HashMap<>();
@@ -153,13 +137,9 @@ class CensorshipServiceTest {
     @ParameterizedTest
     @MethodSource("provideAllTestCases")
     void censorProhibitedPunctuationAroundTest(CensorshipService censorshipService, Boolean caseSensitive) {
-        final String title = "Sample Article";
         final String text = ",lorem ipsum dolor sit amet. Lorem Ipsum DOLOR sIT aMeT.!"; // note spaces around text
-        final String source = "https://example.com";
-        final String author = "John Cena";
-        final String agency = "XYZ Corporation";
-        final LocalDateTime postedAt = LocalDateTime.now();
-        final Article mockArticle = new Article(title, text, source, author, agency, postedAt);
+        final Article mockArticle = Article.mockArticle();
+        mockArticle.setText(text);
 
         final Set<String> prohibitedWords = new HashSet<>();
         final Map<String, String> replacedWords = new HashMap<>();

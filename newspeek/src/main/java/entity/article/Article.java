@@ -1,12 +1,15 @@
 package entity.article;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * Article entity with a title, body text, author, agency, source, and posting time.
  * The fundamental entity of NewsPeek.
  */
 public class Article {
+    private static Article mockArticle;
+
     private final String title;
     private String text;
     private final String author;
@@ -88,5 +91,21 @@ public class Article {
      */
     public LocalDateTime getPostedAt() {
         return postedAt;
+    }
+
+    /**
+     * Return a mock article for testing, with dummy data in all fields.
+     * @return a mock article. This will be the same object every time.
+     */
+    public static Article mockArticle() {
+        if (mockArticle == null) {
+            mockArticle = new Article("Sample Article",
+                    "lorem ipsum dolor sit amet. Lorem Ipsum DOLOR sIT aMeT.",
+                    "https://example.com",
+                    "John Cena",
+                    "XYZ Corporation",
+                    LocalDateTime.now());
+        }
+        return mockArticle;
     }
 }
