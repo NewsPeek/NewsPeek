@@ -1,8 +1,8 @@
 package use_case.random_article;
 
-import entity.article.Article;
-
 import java.io.IOException;
+
+import entity.article.Article;
 
 /**
  * The Random Article interactor.
