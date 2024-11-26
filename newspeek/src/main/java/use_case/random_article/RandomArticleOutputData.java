@@ -15,10 +15,18 @@ public class RandomArticleOutputData {
         this.useCaseFailed = useCaseFailed;
     }
 
+    /**
+     * Returns the article found by this use case. If isUseCaseFailed() is true, this return value is undefined.
+     * @return the article found by this use case.
+     */
     public Article getArticle() {
         return this.article;
     }
 
+    /**
+     * Returns whether the use case failed and an error should be displayed.
+     * @return whether the use case failed.
+     */
     public boolean isUseCaseFailed() {
         return useCaseFailed;
     }

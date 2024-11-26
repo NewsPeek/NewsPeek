@@ -10,6 +10,10 @@ public class RandomArticleInputData {
         this.country = country;
     }
 
+    /**
+     * Returns the country which the use case will find an article from.
+     * @return the country which the use case will find an article from.
+     */
     public String getCountry() {
         return country;
     }
