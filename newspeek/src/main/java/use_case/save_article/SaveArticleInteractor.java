@@ -20,12 +20,16 @@ public class SaveArticleInteractor implements SaveArticleInputBoundary {
     @Override
     public void execute(SaveArticleInputData inputData) {
         Article article = inputData.getArticle();
-        try {
-            dataAccessInterface.saveArticle(article);
-            SaveArticleOutputData outputData = new SaveArticleOutputData();
-            presenter.prepareSuccessView(outputData);
-        } catch (IOException exception) {
-            presenter.prepareFailView(exception.getMessage());
+        if (article == null) {
+            presenter.prepareFailView("Please load an article before saving.");
+        } else {
+            try {
+                dataAccessInterface.saveArticle(article);
+                SaveArticleOutputData outputData = new SaveArticleOutputData();
+                presenter.prepareSuccessView(outputData);
+            } catch (IOException exception) {
+                presenter.prepareFailView(exception.getMessage());
+            }
         }
     }
 }
