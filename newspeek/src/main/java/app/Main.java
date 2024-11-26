@@ -1,8 +1,8 @@
 package app;
 
-import use_case.helpers.ScanningCensorshipService;
-
 import javax.swing.JFrame;
+
+import use_case.helpers.ScanningCensorshipService;
 
 /**
  * Main class for NewsPeek.

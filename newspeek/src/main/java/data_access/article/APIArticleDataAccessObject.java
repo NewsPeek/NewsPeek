@@ -14,9 +14,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import data_access.scraper.Scraper;
 import entity.article.Article;
 import io.github.cdimascio.dotenv.Dotenv;
-import data_access.scraper.Scraper;
 import use_case.random_article.RandomArticleAPIDataAccessInterface;
 
 /**
@@ -60,6 +60,7 @@ public class APIArticleDataAccessObject implements RandomArticleAPIDataAccessInt
         throw new NewsAPIException("All returned articles couldn't be scraped.");
     }
 
+    @Override
     public Article getArticleFromUrl(String url) throws IOException {
         return this.scraper.scrapeArticle(url);
     }
