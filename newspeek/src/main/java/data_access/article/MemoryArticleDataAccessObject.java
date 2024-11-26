@@ -56,11 +56,11 @@ public class MemoryArticleDataAccessObject
     /**
      * Store the given article in a memory database.
      * @param article the article to save.
-     * @throws IOException to simulate a filesystem error in testing, if the article title is "FAIL"
+     * @throws IOException to simulate a filesystem error in testing, if the article text is "FAIL"
      */
     @Override
     public void saveArticle(Article article) throws IOException {
-        if ("FAIL".equals(article.getTitle())) {
+        if ("FAIL".equals(article.getText())) {
             throw new IOException("saveArticle intentionally failed.");
         }
         String id;
