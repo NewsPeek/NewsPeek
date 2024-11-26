@@ -1,20 +1,16 @@
 package data_access.article;
 
-// TODO: add `implements` statements for the DataAccessInterface for each use case
+import java.io.IOException;
+
+import entity.article.Article;
+import use_case.export_article.ExportArticleDataAccessInterface;
+
 /**
- * DAO to read articles from files.
- * Note that saving censored articles is done by ArticleSaveDataAccessObject, not this class.
+ * DAO to store articles in files.
  */
-public class FileArticleDataAccessObject /* implements ______DataAccessInterface */ {
-    // TODO: implement
-    /*
-    public FileArticleDataAccessObject(String csvPath, FileArticleFactory articleFactory) throws IOException {
-
-    }
-
+public class FileArticleDataAccessObject implements ExportArticleDataAccessInterface {
     @Override
-    public Article get(String path) {
-        return FileArticleFactory.create(...);
+    public void saveArticle(Article article) throws IOException {
+        // TODO: implement
     }
-    */
 }
