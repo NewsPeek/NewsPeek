@@ -114,8 +114,17 @@ public class FileArticleDataAccessObject implements SaveArticleDataAccessInterfa
             this.titleCache = new HashMap<>();
             for (final File file : Objects.requireNonNull(this.directory.listFiles())) {
                 if (file.isFile() && file.getName().endsWith(".json")) {
-                    Article article = loadArticle(file);
-                    titleCache.put(file.getName(), article.getTitle());
+                    try {
+                        Article article = loadArticle(file);
+                        titleCache.put(file.getName(), article.getTitle());
+                    } catch (IOException exception) {
+                        // File couldn't be read; delete it from storage
+                        System.out.println("Deleting invalid saved article " + file.getName()
+                                + " due to the following exception: " + exception.getMessage());
+                        if (!file.delete()) {
+                            throw new IOException("Could not delete invalid saved article " + file.getName());
+                        }
+                    }
                 }
             }
         }
@@ -173,7 +182,11 @@ public class FileArticleDataAccessObject implements SaveArticleDataAccessInterfa
     private Article loadArticle(File file) throws IOException {
         JsonReader reader = new JsonReader(new FileReader(file));
         try {
-            return gson.fromJson(reader, Article.class);
+            Article article = gson.fromJson(reader, Article.class);
+            if (article == null) {
+                throw new IOException("Article " + file.getName() + " is null.");
+            }
+            return article;
         } catch (JsonIOException | JsonSyntaxException exception) {
             throw new IOException(exception);
         }
