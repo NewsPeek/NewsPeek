@@ -134,12 +134,10 @@ public class FileArticleDataAccessObject implements SaveArticleDataAccessInterfa
             } while (this.titleCache.containsKey(id));
 
             File saveFile = new File(this.directory, id);
-            String json = gson.toJson(article);
-            System.out.println(json);
 
             // Auto-closes after write
             try (FileWriter fileWriter = new FileWriter(saveFile)) {
-                fileWriter.write(json);
+                fileWriter.write(gson.toJson(article));
             }
 
             // Only add to title cache after file writing so that if the save fails, the article
