@@ -17,12 +17,14 @@ import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import entity.article.Article;
 import io.github.cdimascio.dotenv.Dotenv;
+import use_case.load_article.LoadArticleDataAccessInterface;
 import use_case.save_article.SaveArticleDataAccessInterface;
 
 /**
  * DAO to store articles in files.
  */
-public class FileArticleDataAccessObject implements SaveArticleDataAccessInterface {
+public class FileArticleDataAccessObject
+        implements SaveArticleDataAccessInterface, LoadArticleDataAccessInterface {
     // The (open) filesystem directory in which the files are stored.
     private final File directory;
 
@@ -163,6 +165,7 @@ public class FileArticleDataAccessObject implements SaveArticleDataAccessInterfa
      * @return the article with the given ID.
      * @throws IOException if the article can't be found, or there's an issue with the directory.
      */
+    @Override
     public Article loadArticle(String id) throws IOException {
         validateDirectory();
         for (final File file : Objects.requireNonNull(this.directory.listFiles())) {
