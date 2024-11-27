@@ -3,7 +3,7 @@ package use_case.random_article;
 import entity.article.Article;
 
 /**
- * Output Data for the Logout Use Case.
+ * Output Data for the Random Article Use Case, containing the article and the use case status.
  */
 public class RandomArticleOutputData {
 

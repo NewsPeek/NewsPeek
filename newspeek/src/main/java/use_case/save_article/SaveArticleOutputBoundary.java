@@ -1,7 +1,7 @@
 package use_case.save_article;
 
 /**
- * Output boundary for the Choose Rule Set use case.
+ * Output boundary for the Save Article use case.
  */
 public interface SaveArticleOutputBoundary {
     /**

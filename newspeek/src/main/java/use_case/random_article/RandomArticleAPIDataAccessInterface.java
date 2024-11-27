@@ -5,7 +5,7 @@ import java.io.IOException;
 import entity.article.Article;
 
 /**
- * DAO for the Logout Use Case.
+ * DAO for the Random Article Use Case.
  */
 public interface RandomArticleAPIDataAccessInterface {
     /**
