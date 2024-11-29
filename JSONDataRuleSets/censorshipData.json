@@ -1,0 +1,74 @@
+{
+  "censoredWords": [
+    {
+      "original": "freedom",
+      "censored": "permitted choices"
+    },
+    {
+      "original": "protest",
+      "censored": "public indecency"
+    },
+    {
+      "original": "democracy",
+      "censored": "guided participation"
+    },
+    {
+      "original": "equality",
+      "censored": "allocated privileges"
+    },
+    {
+      "original": "justice",
+      "censored": "administrative fairness"
+    },
+    {
+      "original": "rights",
+      "censored": "Allocated privileges"
+    },
+    {
+      "original": "corruption",
+      "censored": "misaligned incentives"
+    },
+    {
+      "original": "internet",
+      "censored": "Information highway"
+    },
+    {
+      "original": "media",
+      "censored": "approved outlets"
+    },
+    {
+      "original": "education",
+      "censored": "state-directed learning"
+    },
+    {
+      "original": "science",
+      "censored": "approved knowledge"
+    },
+    {
+      "original": "culture",
+      "censored": "traditional values"
+    },
+    {
+      "original": "evolution",
+      "censored": "religion"
+    }
+  ],
+  "prohibitedWords": [
+    "revolution",
+    "dictator",
+    "oppression",
+    "censorship",
+    "resistance",
+    "whistleblower",
+    "tyranny",
+    "exploitation",
+    "authoritarian",
+    "poverty",
+    "propaganda",
+    "strike",
+    "boycott",
+    "uprising",
+    "rebel",
+    "opinion"
+  ]
+}
