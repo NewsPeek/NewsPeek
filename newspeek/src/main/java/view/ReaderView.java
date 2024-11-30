@@ -6,6 +6,8 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 import entity.article.Article;
 import interface_adapter.ReaderState;
@@ -18,7 +20,7 @@ import use_case.helpers.CensorshipService;
  * The View for when the user is reading a censored article.
  */
 public class ReaderView extends JPanel implements PropertyChangeListener {
-    private static final int DEFAULT_TEXTAREA_ROWS = 10;
+    private static final int DEFAULT_TEXTAREA_ROWS = 20;
     private static final int DEFAULT_TEXTAREA_COLUMNS = 40;
 
     private static final String VIEW_NAME = "reader";
@@ -28,6 +30,7 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     private ChooseRuleSetController chooseRuleSetController;
 
     // Swing objects
+    private final JLabel title;
     private final JLabel articleTitle;
     private final JTextArea articleTextArea;
     private final JFileChooser fileChooser;
@@ -40,37 +43,72 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
 
         this.censorshipService = censorshipService;
 
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        this.setLayout(new BorderLayout(10, 10));
+        this.setBackground(new Color(245, 245, 245));
+        this.setPreferredSize(new Dimension(800, 800));
 
-        final JPanel buttons = new JPanel();
+        // Title Section
+        this.title = new JLabel("Newspeek");
+        title.setHorizontalAlignment(SwingConstants.CENTER);
+        title.setFont(new Font("SansSerif", Font.BOLD, 36));
+        title.setBorder(new EmptyBorder(10, 0, 10, 0));
+        title.setForeground(new Color(70, 130, 180)); // Stylish blue color for the title
+
+        // Buttons Panel
+        final JPanel buttonsPanel = new JPanel();
+        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
+        buttonsPanel.setBackground(new Color(230, 230, 250));
+        buttonsPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+
         JButton randomArticleButton = new JButton("Random Article");
-        JButton loadRuleSetButton = new JButton("Open censorship data File");
-        buttons.add(randomArticleButton);
-        buttons.add(loadRuleSetButton);
+        JButton loadRuleSetButton = new JButton("Open Censorship Data File");
+        styleButton(randomArticleButton);
+        styleButton(loadRuleSetButton);
 
+        buttonsPanel.add(randomArticleButton);
+
+        buttonsPanel.add(loadRuleSetButton);
+
+        // Article Title
         this.articleTitle = new JLabel("No article loaded");
-        articleTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+        articleTitle.setHorizontalAlignment(SwingConstants.CENTER);
+        articleTitle.setFont(new Font("SansSerif", Font.BOLD, 20));
+        articleTitle.setBorder(new EmptyBorder(10, 0, 10, 0));
 
+        // Article Text Area
         articleTextArea = new JTextArea(DEFAULT_TEXTAREA_ROWS, DEFAULT_TEXTAREA_COLUMNS);
         articleTextArea.setEditable(false);
+        articleTextArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        articleTextArea.setBackground(new Color(255, 250, 240));
+        articleTextArea.setBorder(new LineBorder(Color.GRAY, 2));
+        articleTextArea.setLineWrap(true);
+        articleTextArea.setWrapStyleWord(true);
+
         JScrollPane articleScrollPane = new JScrollPane(articleTextArea);
+        articleScrollPane.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        this.add(buttons);
-        this.add(articleTitle);
-        this.add(articleScrollPane);
+        // Main Content Panel
+        JPanel contentPanel = new JPanel(new BorderLayout(10, 10));
+        contentPanel.setBackground(new Color(245, 245, 245));
+        contentPanel.add(articleTitle, BorderLayout.NORTH);
+        contentPanel.add(articleScrollPane, BorderLayout.CENTER);
 
+        // Add components to layout
+        this.add(title, BorderLayout.NORTH);
+        this.add(buttonsPanel, BorderLayout.EAST);
+        this.add(contentPanel, BorderLayout.CENTER);
+
+        // Button actions
         randomArticleButton.addActionListener(evt -> {
             String country = "us";
             randomArticleController.execute(country);
         });
 
         loadRuleSetButton.addActionListener(evt -> chooseRuleSet());
-
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        System.out.println("PropertyChangeEvent received: " + evt.getPropertyName());
         if (evt.getPropertyName().equals("article")) {
             final ReaderState state = (ReaderState) evt.getNewValue();
             updateArticleText(state);
@@ -84,36 +122,18 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         }
     }
 
-    /**
-     * Return the name of the current view.
-     * @return the name of the current view.
-     */
     public String getViewName() {
         return VIEW_NAME;
     }
 
-    /**
-     * Attach the controller for the Random Article use case.
-     * Must be executed before showing the view to the user to prevent a program crash.
-     * @param randomArticleController the controller to attach.
-     */
     public void setRandomArticleController(RandomArticleController randomArticleController) {
         this.randomArticleController = randomArticleController;
     }
 
-    /**
-     * Attach the controller for the Choose Rule Set use case.
-     * Must be executed before showing the view to the user to prevent a program crash.
-     * @param chooseRuleSetController the controller to attach.
-     */
     public void setChooseRuleSetController(ChooseRuleSetController chooseRuleSetController) {
         this.chooseRuleSetController = chooseRuleSetController;
     }
 
-    /**
-     * Handle a change to the article being displayed.
-     * @param state the new state of the ReaderView.
-     */
     private void updateArticleText(ReaderState state) {
         if (state.getArticle() != null) {
             Article censoredArticle = this.censorshipService.censor(state.getArticle(), state.getCensorshipRuleSet());
@@ -122,9 +142,6 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         }
     }
 
-    /**
-     * Display a file chooser and load the censorship ruleset from the chosen file.
-     */
     private void chooseRuleSet() {
         int returnValue = fileChooser.showOpenDialog(this);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
@@ -137,5 +154,14 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         if (state.getError() != null) {
             JOptionPane.showMessageDialog(this, state.getError(), "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void styleButton(JButton button) {
+        button.setFont(new Font("SansSerif", Font.BOLD, 14));
+        button.setForeground(Color.WHITE);
+        button.setBackground(new Color(60, 130, 180));
+        button.setBorder(new LineBorder(new Color(230, 230, 250), 7, false));
+        button.setFocusPainted(false);
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
     }
 }
