@@ -3,8 +3,6 @@ package use_case.helpers;
 import entity.article.Article;
 import entity.censorship_rule_set.CensorshipRuleSet;
 
-import java.util.Objects;
-
 /**
  * CensorshipService implementation which splits the text into punctuation and words,
  * censors the words, and reassembles the text.
@@ -14,15 +12,15 @@ public class ScanningCensorshipService implements CensorshipService {
     private static final String WORD_REGEX = "[ -.,()\\[\\]{};:\"']+";
     // finds punctuation by splitting on everything *except* punctuation and spaces
     private static final String PUNCTUATION_REGEX = "[^ -.,()\\[\\]{};:\"']+";
-    private int replacedWordsCount; // Counter for replaced words
-    private int censoredWordsCount; // Counter for censored words
+
 
     @Override
     public Article censor(Article article, CensorshipRuleSet ruleset) {
-        censoredWordsCount = 0;
-        replacedWordsCount = 0;
-        // loop through the words in the article.getText() and apply censorship rules
         Article result = article.copy();
+
+        int censoredWordsCount = 0;
+        int replacedWordsCount = 0;
+        // loop through the words in the article.getText() and apply censorship rules
         StringBuilder censoredText = new StringBuilder();
 
         String[] articleWords = result.getText().split(WORD_REGEX);
@@ -41,19 +39,14 @@ public class ScanningCensorshipService implements CensorshipService {
         for (int i = 0; i < articleWords.length - wordAdjustment; i++) {
             String word = articleWords[i + wordAdjustment];
             censoredText.append(articlePunctuation[i]);
-            censoredText.append(getCensored(word, ruleset));
-            if (!Objects.equals(getCensored(word, ruleset), word)){
-                if (Objects.equals(getCensored(word, ruleset), new String(new char[word.length()]).replace("\0", "x"))){
-                    censoredWordsCount++;
-                }
-                else {
-                    replacedWordsCount++;
-                }
-            }
+            Tuple3<String, Integer, Integer> censorshipResult = getCensored(word, ruleset);
+            censoredText.append(censorshipResult.getFirst());
+            censoredWordsCount += censorshipResult.getSecond();
+            replacedWordsCount += censorshipResult.getThird();
         }
 
-        article.setCensoredWords(censoredWordsCount);
-        article.setReplacedWords(replacedWordsCount);
+        result.setCensoredWords(censoredWordsCount);
+        result.setReplacedWords(replacedWordsCount);
         endAdjustment(articleWords, articlePunctuation, censoredText, wordAdjustment);
 
         result.setText(censoredText.toString());
@@ -61,9 +54,13 @@ public class ScanningCensorshipService implements CensorshipService {
     }
 
 
-
-
-    private String getCensored(String word, CensorshipRuleSet ruleset) {
+    /**
+     * Censor the word if needed and return it, keeping track of censorship statistics.
+     * @param word word to censor
+     * @param ruleset the ruleset to apply
+     * @return a Tuple3 containing the censored word, the number of words censored, and the number of words replaced.
+     */
+    private Tuple3<String, Integer, Integer> getCensored(String word, CensorshipRuleSet ruleset) {
         String searchWord;
         if (!ruleset.isCaseSensitive()) {
             searchWord = word.toLowerCase();
@@ -71,10 +68,14 @@ public class ScanningCensorshipService implements CensorshipService {
             searchWord = word;
         }
         if (ruleset.getProhibitions().contains(searchWord)) {
-            return censorWord(word);
-
+            // Censor word
+            return new Tuple3<>(censorWord(word), 1, 0);
+        } else if (ruleset.getReplacements().containsKey(searchWord)) {
+            // Replace word
+            return new Tuple3<>(ruleset.getReplacements().get(searchWord), 0, 1);
         } else {
-            return ruleset.getReplacements().getOrDefault(searchWord, word);
+            // Do nothing
+            return new Tuple3<>(word, 0, 0);
         }
     }
 
@@ -111,6 +112,4 @@ public class ScanningCensorshipService implements CensorshipService {
     private String censorWord(String word) {
         return new String(new char[word.length()]).replace("\0", "x");
     }
-
-
 }
