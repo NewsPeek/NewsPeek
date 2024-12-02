@@ -2,7 +2,6 @@ package interface_adapter.save_article;
 
 import interface_adapter.ReaderViewModel;
 import use_case.save_article.SaveArticleOutputBoundary;
-import use_case.save_article.SaveArticleOutputData;
 
 /**
  * The Presenter for the Change Password Use Case.
@@ -15,8 +14,8 @@ public class SaveArticlePresenter implements SaveArticleOutputBoundary {
     }
 
     @Override
-    public void prepareSuccessView(SaveArticleOutputData outputData) {
-        // TODO: decide if user needs confirmation
+    public void prepareSuccessView() {
+        this.readerViewModel.setAlert("Saved article successfully.");
     }
 
     @Override

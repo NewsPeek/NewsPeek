@@ -5,10 +5,9 @@ package use_case.save_article;
  */
 public interface SaveArticleOutputBoundary {
     /**
-     * Do nothing. TODO: decide if it should do nothing.
-     * @param outputData an object containing the data to be returned to the ReaderView.
+     * Inform the user that the article was saved.
      */
-    void prepareSuccessView(SaveArticleOutputData outputData);
+    void prepareSuccessView();
 
     /**
      * Display an error returned by the Interactor in a pop-up.

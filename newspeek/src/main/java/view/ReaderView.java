@@ -187,6 +187,9 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         } else if (evt.getPropertyName().equals("error")) {
             final ReaderState state = (ReaderState) evt.getNewValue();
             showError(state);
+        } else if (evt.getPropertyName().equals("alert")) {
+            final ReaderState state = (ReaderState) evt.getNewValue();
+            showAlert(state);
         }
     }
 
@@ -259,6 +262,12 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     private void showError(ReaderState state) {
         if (state.getError() != null) {
             JOptionPane.showMessageDialog(this, state.getError(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void showAlert(ReaderState state) {
+        if (state.getAlert() != null) {
+            JOptionPane.showMessageDialog(this, state.getAlert(), "Alert", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
