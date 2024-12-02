@@ -23,6 +23,8 @@ import use_case.helpers.CensorshipService;
 import use_case.random_article.RandomArticleInputBoundary;
 import use_case.random_article.RandomArticleInteractor;
 import use_case.random_article.RandomArticleOutputBoundary;
+import use_case.load_url.*;
+import interface_adapter.load_URL.*;
 import view.ReaderView;
 
 /**
@@ -103,6 +105,19 @@ public class AppBuilder {
 
         final RandomArticleController controller = new RandomArticleController(randomArticleInteractor);
         readerView.setRandomArticleController(controller);
+        return this;
+    }
+
+    /**
+     * Adds the LoadURL Use Case to the application
+     * @return this builder
+     */
+    public AppBuilder addLoadURLUseCase() {
+        final LoadURLOutputBoundary loadURLBoundary = new LoadURLPresenter();
+        final LoadURLInputBoundary loadURLInteractor = new LoadURLInteractor();
+
+        final LoadURLController controller = new LoadURLController(loadURLInteractor);
+        readerView.setLoadURLController(controller);
         return this;
     }
 

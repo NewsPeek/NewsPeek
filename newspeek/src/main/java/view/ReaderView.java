@@ -11,6 +11,7 @@ import entity.article.Article;
 import interface_adapter.ReaderState;
 import interface_adapter.ReaderViewModel;
 import interface_adapter.choose_rule_set.ChooseRuleSetController;
+import interface_adapter.load_URL.LoadURLController;
 import interface_adapter.random_article.RandomArticleController;
 import use_case.helpers.CensorshipService;
 
@@ -25,6 +26,7 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
 
     // Use cases
     private RandomArticleController randomArticleController;
+    private LoadURLController loadURLController;
     private ChooseRuleSetController chooseRuleSetController;
 
     // Swing objects
@@ -66,6 +68,8 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
             randomArticleController.execute(country);
         });
 
+        loadArticleFromURL.addActionListener(evt -> chooseURL());
+
         loadRuleSetButton.addActionListener(evt -> chooseRuleSet());
 
     }
@@ -103,6 +107,10 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         this.randomArticleController = randomArticleController;
     }
 
+    public void setLoadURLController(LoadURLController loadURLController){
+        this.loadURLController = loadURLController;
+    }
+
     /**
      * Attach the controller for the Choose Rule Set use case.
      * Must be executed before showing the view to the user to prevent a program crash.
@@ -133,6 +141,13 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
             File selectedFile = fileChooser.getSelectedFile();
             chooseRuleSetController.execute(selectedFile);
         }
+    }
+
+    /**
+     * Display a text box that allows the user to input a URL.
+     */
+    private void chooseURL() {
+        // TODO
     }
 
     private void showError(ReaderState state) {
