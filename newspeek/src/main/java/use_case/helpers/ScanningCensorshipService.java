@@ -13,7 +13,6 @@ public class ScanningCensorshipService implements CensorshipService {
     // finds punctuation by splitting on everything *except* punctuation and spaces
     private static final String PUNCTUATION_REGEX = "[^ -.,()\\[\\]{};:\"']+";
 
-
     @Override
     public Article censor(Article article, CensorshipRuleSet ruleset) {
         Article result = article.copy();
@@ -52,7 +51,6 @@ public class ScanningCensorshipService implements CensorshipService {
         result.setText(censoredText.toString());
         return result;
     }
-
 
     /**
      * Censor the word if needed and return it, keeping track of censorship statistics.
