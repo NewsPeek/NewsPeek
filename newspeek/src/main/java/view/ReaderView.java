@@ -4,6 +4,8 @@ import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.IOException;
+import java.util.Map;
 
 import javax.swing.*;
 
@@ -14,6 +16,7 @@ import interface_adapter.choose_rule_set.ChooseRuleSetController;
 import interface_adapter.random_article.RandomArticleController;
 import interface_adapter.save_article.SaveArticleController;
 import use_case.helpers.CensorshipService;
+import use_case.load_article.LoadArticleDataAccessInterface;
 
 /**
  * The View for when the user is reading a censored article.
@@ -30,20 +33,24 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     private RandomArticleController randomArticleController;
     private ChooseRuleSetController chooseRuleSetController;
     private SaveArticleController saveArticleController;
+    private LoadArticleDataAccessInterface loadArticleDataAccess;
 
     // Swing objects
     private final JLabel articleTitle;
     private final JTextArea articleTextArea;
     private final JFileChooser fileChooser;
+    private final JComboBox<String> loadArticleDropdown;
 
     private final CensorshipService censorshipService;
 
-    public ReaderView(ReaderViewModel viewModel, CensorshipService censorshipService) {
+    public ReaderView(ReaderViewModel viewModel, CensorshipService censorshipService,
+                      LoadArticleDataAccessInterface loadArticleDataAccess) {
         this.fileChooser = new JFileChooser();
         this.viewModel = viewModel;
         this.viewModel.addPropertyChangeListener(this);
 
         this.censorshipService = censorshipService;
+        this.loadArticleDataAccess = loadArticleDataAccess;
 
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -51,9 +58,11 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         JButton randomArticleButton = new JButton("Random Article");
         JButton saveArticleButton = new JButton("Save Article");
         JButton loadRuleSetButton = new JButton("Open censorship data File");
+        JButton loadArticleButton = new JButton("Load Article");
         buttons.add(randomArticleButton);
         buttons.add(saveArticleButton);
         buttons.add(loadRuleSetButton);
+        buttons.add(loadArticleButton);
 
         this.articleTitle = new JLabel("No article loaded");
         articleTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -62,7 +71,20 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         articleTextArea.setEditable(false);
         JScrollPane articleScrollPane = new JScrollPane(articleTextArea);
 
+        // Create and initialize the dropdown (hidden by default)
+        loadArticleDropdown = new JComboBox<>();
+        loadArticleDropdown.setVisible(false); // Initially hidden
+        loadArticleDropdown.addItem("Select an article...");
+        loadArticleDropdown.addActionListener(evt -> {
+            String selectedArticleId = (String) loadArticleDropdown.getSelectedItem();
+            if (selectedArticleId != null && !selectedArticleId.equals("Select an article...")) {
+                loadSelectedArticle(selectedArticleId);
+                loadArticleDropdown.setVisible(false); // Hide the dropdown after selection
+            }
+        });
+
         this.add(buttons);
+        this.add(loadArticleDropdown); // Add dropdown (hidden initially)
         this.add(articleTitle);
         this.add(articleScrollPane);
 
@@ -76,6 +98,8 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         });
 
         loadRuleSetButton.addActionListener(evt -> chooseRuleSet());
+
+        loadArticleButton.addActionListener(evt -> toggleLoadArticleDropdown());
     }
 
     @Override
@@ -94,45 +118,57 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         }
     }
 
-    /**
-     * Return the name of the current view.
-     * @return the name of the current view.
-     */
+    private void toggleLoadArticleDropdown() {
+        // Toggle visibility of the dropdown
+        boolean isVisible = loadArticleDropdown.isVisible();
+        if (!isVisible) {
+            populateLoadArticleDropdown();
+        }
+        loadArticleDropdown.setVisible(!isVisible);
+    }
+
+    private void populateLoadArticleDropdown() {
+        loadArticleDropdown.removeAllItems();
+        loadArticleDropdown.addItem("Select an article...");
+        try {
+            Map<String, String> savedArticles = loadArticleDataAccess.listSavedArticles();
+            for (Map.Entry<String, String> entry : savedArticles.entrySet()) {
+                loadArticleDropdown.addItem(entry.getKey());
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error loading saved articles: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void loadSelectedArticle(String articleId) {
+        try {
+            Article article = loadArticleDataAccess.loadArticle(articleId);
+            ReaderState state = new ReaderState();
+            state.setArticle(article); // Set the loaded article
+            viewModel.setState(state); // Update the ViewModel
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error loading article: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     public String getViewName() {
         return VIEW_NAME;
     }
 
-    /**
-     * Attach the controller for the Random Article use case.
-     * Must be executed before showing the view to the user to prevent a program crash.
-     * @param controller the controller to attach.
-     */
     public void setRandomArticleController(RandomArticleController controller) {
         this.randomArticleController = controller;
     }
 
-    /**
-     * Attach the controller for the Choose Rule Set use case.
-     * Must be executed before showing the view to the user to prevent a program crash.
-     * @param controller the controller to attach.
-     */
     public void setChooseRuleSetController(ChooseRuleSetController controller) {
         this.chooseRuleSetController = controller;
     }
 
-    /**
-     * Attach the controller for the Save Article use case.
-     * Must be executed before showing the view to the user to prevent a program crash.
-     * @param controller the controller to attach.
-     */
     public void setSaveArticleController(SaveArticleController controller) {
         this.saveArticleController = controller;
     }
 
-    /**
-     * Handle a change to the article being displayed.
-     * @param state the new state of the ReaderView.
-     */
     private void updateArticleText(ReaderState state) {
         if (state.getArticle() != null) {
             Article censoredArticle = this.censorshipService.censor(state.getArticle(), state.getCensorshipRuleSet());
@@ -141,9 +177,6 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         }
     }
 
-    /**
-     * Display a file chooser and load the censorship ruleset from the chosen file.
-     */
     private void chooseRuleSet() {
         int returnValue = fileChooser.showOpenDialog(this);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
