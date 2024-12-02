@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
  * The fundamental entity of NewsPeek.
  */
 public class Article {
+    private static Article mockArticle;
+
     private final String title;
     private String text;
     private final String author;
@@ -113,7 +115,6 @@ public class Article {
      * Returns the publishing agency of this article.
      * @return the publishing agency of this article.
      */
-
     public String getAgency() {
         return agency;
     }
@@ -158,5 +159,20 @@ public class Article {
     public void setReplacedWords(int replacedWords) {
         this.replacedWords = replacedWords;
     }
-}
 
+    /**
+     * Return a mock article for testing, with dummy data in all fields.
+     * @return a mock article. This will be the same object every time.
+     */
+    public static Article mockArticle() {
+        if (mockArticle == null) {
+            mockArticle = new Article("Sample Article",
+                    "lorem ipsum dolor sit amet. Lorem Ipsum DOLOR sIT aMeT.",
+                    "https://example.com",
+                    "John Cena",
+                    "XYZ Corporation",
+                    LocalDateTime.now());
+        }
+        return mockArticle;
+    }
+}

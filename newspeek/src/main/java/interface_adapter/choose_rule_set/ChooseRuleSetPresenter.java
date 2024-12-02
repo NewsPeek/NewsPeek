@@ -23,6 +23,6 @@ public class ChooseRuleSetPresenter implements ChooseRuleSetOutputBoundary {
     @Override
     public void prepareFailView(String error) {
         this.readerViewModel.setError("Failed to load rule set: " + error);
-        this.readerViewModel.firePropertyChanged("ruleset");
+        this.readerViewModel.firePropertyChanged("error");
     }
 }

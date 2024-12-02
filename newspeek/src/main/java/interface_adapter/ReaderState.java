@@ -17,6 +17,7 @@ public class ReaderState {
     private Article censoredArticle;
     private CensorshipRuleSet censorshipRuleSet;
     private String error;
+    private String alert;
 
     public ReaderState() {
         // Set up a default censorshipRuleSet
@@ -93,5 +94,22 @@ public class ReaderState {
      */
     public void setError(String error) {
         this.error = error;
+    }
+
+    /**
+     * Returns the most alert written by a Use Case.
+     * This alert should have been displayed the moment it was written.
+     * @return the most alert written by a Use Case.
+     */
+    public String getAlert() {
+        return alert;
+    }
+
+    /**
+     * Sets an alert to display upon processing this State.
+     * @param alert an informative alert message to show the user.
+     */
+    public void setAlert(String alert) {
+        this.alert = alert;
     }
 }

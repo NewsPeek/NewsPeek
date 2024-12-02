@@ -1,7 +1,7 @@
 package use_case.random_article;
 
 /**
- * The Input Data for the Logout Use Case.
+ * The Input Data for the Random Article Use Case.
  */
 public class RandomArticleInputData {
     private final String country;

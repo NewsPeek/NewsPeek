@@ -13,6 +13,7 @@ import interface_adapter.ReaderState;
 import interface_adapter.ReaderViewModel;
 import interface_adapter.choose_rule_set.ChooseRuleSetController;
 import interface_adapter.random_article.RandomArticleController;
+import interface_adapter.save_article.SaveArticleController;
 import use_case.helpers.CensorshipService;
 
 /**
@@ -52,9 +53,12 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     private static final Font CENSORSHIP_SUMMARY_FONT = new Font("SansSerif", Font.BOLD, 16);
     private static final Color CENSORSHIP_SUMMARY_COLOR = new Color(70, 130, 180);
 
+    private final ReaderViewModel viewModel;
+
     // Use cases
     private RandomArticleController randomArticleController;
     private ChooseRuleSetController chooseRuleSetController;
+    private SaveArticleController saveArticleController;
 
     // Swing objects
     private final JLabel title;
@@ -66,9 +70,10 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
 
     private final CensorshipService censorshipService;
 
-    public ReaderView(ReaderViewModel readerViewModel, CensorshipService censorshipService) {
+    public ReaderView(ReaderViewModel viewModel, CensorshipService censorshipService) {
         this.fileChooser = new JFileChooser();
-        readerViewModel.addPropertyChangeListener(this);
+        this.viewModel = viewModel;
+        this.viewModel.addPropertyChangeListener(this);
 
         this.censorshipService = censorshipService;
 
@@ -93,11 +98,13 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         ));
 
         JButton randomArticleButton = new JButton("Random Article");
-        JButton loadRuleSetButton = new JButton("Open Censorship Data File");
+        JButton saveArticleButton = new JButton("Save Article");
+        JButton loadRuleSetButton = new JButton("Import Censorship Ruleset");
         styleButton(randomArticleButton);
+        styleButton(saveArticleButton);
         styleButton(loadRuleSetButton);
-
         buttonsPanel.add(randomArticleButton);
+        buttonsPanel.add(saveArticleButton);
         buttonsPanel.add(loadRuleSetButton);
         buttonsPanel.add(censoredSummary);
         buttonsPanel.add(replacedSummary);
@@ -131,6 +138,10 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         randomArticleButton.addActionListener(evt -> {
             String country = "us";
             randomArticleController.execute(country);
+        });
+
+        saveArticleButton.addActionListener(evt -> {
+            saveArticleController.execute(this.viewModel.getState().getArticle());
         });
 
         loadRuleSetButton.addActionListener(evt -> chooseRuleSet());
@@ -168,36 +179,65 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("article")) {
             final ReaderState state = (ReaderState) evt.getNewValue();
-            censorAndUpdateArticleText(state);
-            updateSummaryLabel(state);
+            censorAndUpdateArticle(state);
         } else if (evt.getPropertyName().equals("ruleset")) {
             final ReaderState state = (ReaderState) evt.getNewValue();
             JOptionPane.showMessageDialog(this, "Rule set loaded: " + state.getCensorshipRuleSet().getRuleSetName());
-            censorAndUpdateArticleText(state);
-            updateSummaryLabel(state);
+            censorAndUpdateArticle(state);
         } else if (evt.getPropertyName().equals("error")) {
             final ReaderState state = (ReaderState) evt.getNewValue();
             showError(state);
+        } else if (evt.getPropertyName().equals("alert")) {
+            final ReaderState state = (ReaderState) evt.getNewValue();
+            showAlert(state);
         }
     }
 
+    /**
+     * Return the name of the current view.
+     * @return the name of the current view.
+     */
     public String getViewName() {
         return VIEW_NAME;
     }
 
-    public void setRandomArticleController(RandomArticleController randomArticleController) {
-        this.randomArticleController = randomArticleController;
+    /**
+     * Attach the controller for the Random Article use case.
+     * Must be executed before showing the view to the user to prevent a program crash.
+     * @param controller the controller to attach.
+     */
+    public void setRandomArticleController(RandomArticleController controller) {
+        this.randomArticleController = controller;
     }
 
-    public void setChooseRuleSetController(ChooseRuleSetController chooseRuleSetController) {
-        this.chooseRuleSetController = chooseRuleSetController;
+    /**
+     * Attach the controller for the Choose Rule Set use case.
+     * Must be executed before showing the view to the user to prevent a program crash.
+     * @param controller the controller to attach.
+     */
+    public void setChooseRuleSetController(ChooseRuleSetController controller) {
+        this.chooseRuleSetController = controller;
     }
 
-    private void censorAndUpdateArticleText(ReaderState state) {
+    /**
+     * Attach the controller for the Save Article use case.
+     * Must be executed before showing the view to the user to prevent a program crash.
+     * @param controller the controller to attach.
+     */
+    public void setSaveArticleController(SaveArticleController controller) {
+        this.saveArticleController = controller;
+    }
+
+    /**
+     * Handle a change to the article being displayed.
+     * @param state the new state of the ReaderView.
+     */
+    private void censorAndUpdateArticle(ReaderState state) {
         if (state.getArticle() != null) {
             state.setCensoredArticle(censorshipService.censor(state.getArticle(), state.getCensorshipRuleSet()));
+            articleTitle.setText(state.getCensoredArticle().getTitle());
             articleTextArea.setText(state.getCensoredArticle().getText());
-            articleTextArea.setText(state.getCensoredArticle().getText());
+            updateSummaryLabel(state);
         }
     }
 
@@ -208,6 +248,9 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         }
     }
 
+    /**
+     * Display a file chooser and load the censorship ruleset from the chosen file.
+     */
     private void chooseRuleSet() {
         int returnValue = fileChooser.showOpenDialog(this);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
@@ -219,6 +262,12 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     private void showError(ReaderState state) {
         if (state.getError() != null) {
             JOptionPane.showMessageDialog(this, state.getError(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void showAlert(ReaderState state) {
+        if (state.getAlert() != null) {
+            JOptionPane.showMessageDialog(this, state.getAlert(), "Alert", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
