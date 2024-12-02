@@ -23,8 +23,7 @@ public class RandomArticlePresenter implements RandomArticleOutputBoundary {
 
     @Override
     public void prepareFailView(String error) {
-        // note: this use case currently can't fail
-        System.err.println("Unhandled failurer in RandomArticlePresenter. Please fix this.");
-        System.err.println(error);
+        this.readerViewModel.setError("Failed to get random article: " + error);
+        this.readerViewModel.firePropertyChanged("error");
     }
 }

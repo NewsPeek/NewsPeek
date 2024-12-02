@@ -41,4 +41,14 @@ public class ReaderViewModel extends ViewModel<ReaderState> {
         getState().setError(error);
         firePropertyChange("error", oldState, getState());
     }
+
+    /**
+     * Sets an alert to display upon processing this State.
+     * @param alert an informative alert message to show the user.
+     */
+    public void setAlert(String alert) {
+        ReaderState oldState = getState();
+        getState().setAlert(alert);
+        firePropertyChange("alert", oldState, getState());
+    }
 }

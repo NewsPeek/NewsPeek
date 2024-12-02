@@ -25,8 +25,7 @@ public class SaveArticleInteractor implements SaveArticleInputBoundary {
         } else {
             try {
                 dataAccessInterface.saveArticle(article);
-                SaveArticleOutputData outputData = new SaveArticleOutputData();
-                presenter.prepareSuccessView(outputData);
+                presenter.prepareSuccessView();
             } catch (IOException exception) {
                 presenter.prepareFailView(exception.getMessage());
             }

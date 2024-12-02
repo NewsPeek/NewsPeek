@@ -4,7 +4,6 @@ import data_access.article.MemoryArticleDataAccessObject;
 import entity.article.Article;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import use_case.random_article.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,7 +31,7 @@ class SaveArticleInteractorTest {
 
         SaveArticleOutputBoundary successPresenter = new SaveArticleOutputBoundary() {
             @Override
-            public void prepareSuccessView(SaveArticleOutputData outputData) {
+            public void prepareSuccessView() {
                 presenterCalled[0] = true;
             }
 
@@ -63,7 +62,7 @@ class SaveArticleInteractorTest {
 
         SaveArticleOutputBoundary successPresenter = new SaveArticleOutputBoundary() {
             @Override
-            public void prepareSuccessView(SaveArticleOutputData outputData) {
+            public void prepareSuccessView() {
                 presenterCalled[0] = true;
                 fail("Use case should not succeed on a FAIL article.");
             }
@@ -93,7 +92,7 @@ class SaveArticleInteractorTest {
 
         SaveArticleOutputBoundary successPresenter = new SaveArticleOutputBoundary() {
             @Override
-            public void prepareSuccessView(SaveArticleOutputData outputData) {
+            public void prepareSuccessView() {
                 presenterCalled[0] = true;
                 fail("Use case should not succeed on a null article.");
             }
