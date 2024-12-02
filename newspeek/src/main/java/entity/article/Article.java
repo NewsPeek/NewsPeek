@@ -13,15 +13,19 @@ public class Article {
     private final String agency;
     private final String source;
     private final java.time.LocalDateTime postedAt;
+    private int censoredWords;
+    private int replacedWords;
 
     public Article(String title, String text, String source, String author, String agency,
-                   java.time.LocalDateTime postedAt) {
+                   java.time.LocalDateTime postedAt, int censoredWords, int replacedWords) {
         this.title = title;
         this.text = text;
         this.author = author;
         this.agency = agency;
         this.source = source;
         this.postedAt = postedAt;
+        this.censoredWords = censoredWords;
+        this.replacedWords = replacedWords;
     }
 
     /**
@@ -29,7 +33,7 @@ public class Article {
      * @return an identical copy of this article
      */
     public Article copy() {
-        return new Article(this.title, this.text, this.source, this.author, this.agency, this.postedAt);
+        return new Article(this.title, this.text, this.source, this.author, this.agency, this.postedAt, this.censoredWords, this.replacedWords);
     }
 
     /**
@@ -77,6 +81,7 @@ public class Article {
      * Returns the publishing agency of this article.
      * @return the publishing agency of this article.
      */
+
     public String getAgency() {
         return agency;
     }
@@ -89,4 +94,13 @@ public class Article {
     public LocalDateTime getPostedAt() {
         return postedAt;
     }
+
+    public int getCensoredWords() {return this.censoredWords;}
+
+    public int getReplacedWords() {return this.replacedWords;}
+
+    public void setCensoredWords(int censoredWord) {this.censoredWords=censoredWord;}
+
+    public void setReplacedWords(int replacedWord) {this.replacedWords=replacedWord;}
 }
+

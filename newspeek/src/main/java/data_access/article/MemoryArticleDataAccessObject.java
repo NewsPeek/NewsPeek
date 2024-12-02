@@ -52,6 +52,6 @@ public class MemoryArticleDataAccessObject implements RandomArticleAPIDataAccess
         final String author = "John Cena";
         final String agency = "XYZ Corporation";
         final LocalDateTime postedAt = LocalDateTime.now();
-        return new Article(title, text, source, author, agency, postedAt);
+        return new Article(title, text, source, author, agency, postedAt,0, 0 );
     }
 }

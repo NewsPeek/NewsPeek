@@ -32,6 +32,8 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     // Swing objects
     private final JLabel title;
     private final JLabel articleTitle;
+    private final JLabel censoredSummary;
+    private final JLabel replacedSummary;
     private final JTextArea articleTextArea;
     private final JFileChooser fileChooser;
 
@@ -52,7 +54,14 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         title.setHorizontalAlignment(SwingConstants.CENTER);
         title.setFont(new Font("SansSerif", Font.BOLD, 36));
         title.setBorder(new EmptyBorder(10, 0, 10, 0));
-        title.setForeground(new Color(70, 130, 180)); // Stylish blue color for the title
+        title.setForeground(new Color(70, 130, 180));
+
+        this.censoredSummary = new JLabel(" Censored words:");
+        this.replacedSummary = new JLabel(" Replaced words:");
+        censoredSummary.setFont(new Font("SansSerif", Font.BOLD, 16));
+        censoredSummary.setForeground(new Color(70, 130, 180));
+        replacedSummary.setFont(new Font("SansSerif", Font.BOLD, 16));
+        replacedSummary.setForeground(new Color(70, 130, 180));
 
         // Buttons Panel
         final JPanel buttonsPanel = new JPanel();
@@ -68,6 +77,8 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         buttonsPanel.add(randomArticleButton);
 
         buttonsPanel.add(loadRuleSetButton);
+        buttonsPanel.add(censoredSummary);
+        buttonsPanel.add(replacedSummary);
 
         // Article Title
         this.articleTitle = new JLabel("No article loaded");
@@ -112,10 +123,13 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         if (evt.getPropertyName().equals("article")) {
             final ReaderState state = (ReaderState) evt.getNewValue();
             updateArticleText(state);
+            updateSummaryLabel(state);
+
         } else if (evt.getPropertyName().equals("ruleset")) {
             final ReaderState state = (ReaderState) evt.getNewValue();
             JOptionPane.showMessageDialog(this, "Rule set loaded: " + state.getCensorshipRuleSet().getRuleSetName());
             updateArticleText(state);
+            updateSummaryLabel(state);
         } else if (evt.getPropertyName().equals("error")) {
             final ReaderState state = (ReaderState) evt.getNewValue();
             showError(state);
@@ -139,8 +153,17 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
             Article censoredArticle = this.censorshipService.censor(state.getArticle(), state.getCensorshipRuleSet());
             articleTextArea.setText(censoredArticle.getText());
             articleTitle.setText(censoredArticle.getTitle());
+
         }
     }
+
+    private void updateSummaryLabel(ReaderState state) {
+        if (state.getArticle() != null) {
+            censoredSummary.setText(" Censored words:"+ String.valueOf(state.getArticle().getCensoredWords()));
+            replacedSummary.setText(" Replaced words"+String.valueOf(state.getArticle().getReplacedWords()));
+        }
+    }
+
 
     private void chooseRuleSet() {
         int returnValue = fileChooser.showOpenDialog(this);

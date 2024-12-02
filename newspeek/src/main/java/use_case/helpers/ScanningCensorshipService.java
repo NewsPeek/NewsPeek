@@ -3,6 +3,8 @@ package use_case.helpers;
 import entity.article.Article;
 import entity.censorship_rule_set.CensorshipRuleSet;
 
+import java.util.Objects;
+
 /**
  * CensorshipService implementation which splits the text into punctuation and words,
  * censors the words, and reassembles the text.
@@ -12,9 +14,13 @@ public class ScanningCensorshipService implements CensorshipService {
     private static final String WORD_REGEX = "[ -.,()\\[\\]{};:\"']+";
     // finds punctuation by splitting on everything *except* punctuation and spaces
     private static final String PUNCTUATION_REGEX = "[^ -.,()\\[\\]{};:\"']+";
+    private int replacedWordsCount; // Counter for replaced words
+    private int censoredWordsCount; // Counter for censored words
 
     @Override
     public Article censor(Article article, CensorshipRuleSet ruleset) {
+        censoredWordsCount = 0;
+        replacedWordsCount = 0;
         // loop through the words in the article.getText() and apply censorship rules
         Article result = article.copy();
         StringBuilder censoredText = new StringBuilder();
@@ -32,18 +38,30 @@ public class ScanningCensorshipService implements CensorshipService {
         if (articleWords[0].isEmpty()) {
             wordAdjustment = 1;
         }
-
         for (int i = 0; i < articleWords.length - wordAdjustment; i++) {
             String word = articleWords[i + wordAdjustment];
             censoredText.append(articlePunctuation[i]);
             censoredText.append(getCensored(word, ruleset));
+            if (!Objects.equals(getCensored(word, ruleset), word)){
+                if (Objects.equals(getCensored(word, ruleset), new String(new char[word.length()]).replace("\0", "x"))){
+                    censoredWordsCount++;
+                }
+                else {
+                    replacedWordsCount++;
+                }
+            }
         }
 
+        article.setCensoredWords(censoredWordsCount);
+        article.setReplacedWords(replacedWordsCount);
         endAdjustment(articleWords, articlePunctuation, censoredText, wordAdjustment);
 
         result.setText(censoredText.toString());
         return result;
     }
+
+
+
 
     private String getCensored(String word, CensorshipRuleSet ruleset) {
         String searchWord;
@@ -54,6 +72,7 @@ public class ScanningCensorshipService implements CensorshipService {
         }
         if (ruleset.getProhibitions().contains(searchWord)) {
             return censorWord(word);
+
         } else {
             return ruleset.getReplacements().getOrDefault(searchWord, word);
         }
@@ -92,4 +111,6 @@ public class ScanningCensorshipService implements CensorshipService {
     private String censorWord(String word) {
         return new String(new char[word.length()]).replace("\0", "x");
     }
+
+
 }
