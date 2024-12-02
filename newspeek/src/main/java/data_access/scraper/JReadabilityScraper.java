@@ -61,6 +61,6 @@ public class JReadabilityScraper implements Scraper {
         final String agency = "Unknown agency";
         final LocalDateTime postedAt = LocalDateTime.now();
 
-        return new Article(title, text, url, author, agency, postedAt,0,0);
+        return new Article(title, text, url, author, agency, postedAt);
     }
 }
