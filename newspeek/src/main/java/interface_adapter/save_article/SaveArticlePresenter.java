@@ -16,6 +16,7 @@ public class SaveArticlePresenter implements SaveArticleOutputBoundary {
     @Override
     public void prepareSuccessView() {
         this.readerViewModel.setAlert("Saved article successfully.");
+        this.readerViewModel.firePropertyChanged("alert");
     }
 
     @Override
