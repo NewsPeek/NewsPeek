@@ -53,6 +53,7 @@ public class AppBuilder {
     private FileCensorshipRuleSetDataAccessObject censorshipRuleSetDataAccessObject;
     private CensorshipService censorshipService;
     private FileArticleDataAccessObject fileArticleDataAccessObject;
+    private FileCensorshipRuleSetDataAccessObject fileCensorshipRuleSetDataAccessObject;
 
     public AppBuilder() {
         CardLayout cardLayout = new CardLayout();
@@ -65,7 +66,7 @@ public class AppBuilder {
      */
     public AppBuilder addReaderView() {
         readerViewModel = new ReaderViewModel();
-        readerView = new ReaderView(readerViewModel, censorshipService);
+        readerView = new ReaderView(readerViewModel, censorshipService, fileArticleDataAccessObject);
         cardPanel.add(readerView, readerView.getViewName());
         return this;
     }
