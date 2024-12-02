@@ -98,7 +98,6 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         styleButton(loadRuleSetButton);
 
         buttonsPanel.add(randomArticleButton);
-
         buttonsPanel.add(loadRuleSetButton);
         buttonsPanel.add(censoredSummary);
         buttonsPanel.add(replacedSummary);
