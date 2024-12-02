@@ -99,7 +99,7 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
 
         JButton randomArticleButton = new JButton("Random Article");
         JButton saveArticleButton = new JButton("Save Article");
-        JButton loadRuleSetButton = new JButton("Open censorship data File");
+        JButton loadRuleSetButton = new JButton("Import Censorship Ruleset");
         styleButton(randomArticleButton);
         styleButton(saveArticleButton);
         styleButton(loadRuleSetButton);
@@ -179,13 +179,11 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("article")) {
             final ReaderState state = (ReaderState) evt.getNewValue();
-            censorAndUpdateArticleText(state);
-            updateSummaryLabel(state);
+            censorAndUpdateArticle(state);
         } else if (evt.getPropertyName().equals("ruleset")) {
             final ReaderState state = (ReaderState) evt.getNewValue();
             JOptionPane.showMessageDialog(this, "Rule set loaded: " + state.getCensorshipRuleSet().getRuleSetName());
-            censorAndUpdateArticleText(state);
-            updateSummaryLabel(state);
+            censorAndUpdateArticle(state);
         } else if (evt.getPropertyName().equals("error")) {
             final ReaderState state = (ReaderState) evt.getNewValue();
             showError(state);
@@ -231,11 +229,12 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
      * Handle a change to the article being displayed.
      * @param state the new state of the ReaderView.
      */
-    private void censorAndUpdateArticleText(ReaderState state) {
+    private void censorAndUpdateArticle(ReaderState state) {
         if (state.getArticle() != null) {
             state.setCensoredArticle(censorshipService.censor(state.getArticle(), state.getCensorshipRuleSet()));
+            articleTitle.setText(state.getCensoredArticle().getTitle());
             articleTextArea.setText(state.getCensoredArticle().getText());
-            articleTextArea.setText(state.getCensoredArticle().getText());
+            updateSummaryLabel(state);
         }
     }
 
