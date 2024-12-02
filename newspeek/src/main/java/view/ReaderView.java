@@ -44,8 +44,10 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
 
         final JPanel buttons = new JPanel();
         JButton randomArticleButton = new JButton("Random Article");
+        JButton loadArticleFromURL = new JButton("Load from URL");
         JButton loadRuleSetButton = new JButton("Open censorship data File");
         buttons.add(randomArticleButton);
+        buttons.add(loadArticleFromURL);
         buttons.add(loadRuleSetButton);
 
         this.articleTitle = new JLabel("No article loaded");
