@@ -14,6 +14,7 @@ import entity.censorship_rule_set.CommonCensorshipRuleSet;
  */
 public class ReaderState {
     private Article article;
+    private Article censoredArticle;
     private CensorshipRuleSet censorshipRuleSet;
     private String error;
 
@@ -30,19 +31,35 @@ public class ReaderState {
     }
 
     /**
-     * Returns the censored article currently being displayed.
-     * @return the censored article currently being displayed.
+     * Returns the uncensored article currently being displayed.
+     * @return the uncensored article currently being displayed.
      */
     public Article getArticle() {
         return article;
     }
 
     /**
-     * Set the censored article to be displayed.
-     * @param article the censored article to be displayed.
+     * Set the uncensored article to be displayed.
+     * @param article the uncensored article to be displayed.
      */
     public void setArticle(Article article) {
         this.article = article;
+    }
+
+    /**
+     * Returns the censored article currently being displayed.
+     * @return the censored article currently being displayed.
+     */
+    public Article getCensoredArticle() {
+        return censoredArticle;
+    }
+
+    /**
+     * Set the censored article to be displayed.
+     * @param article the censored article to be displayed.
+     */
+    public void setCensoredArticle(Article article) {
+        this.censoredArticle = article;
     }
 
     /**

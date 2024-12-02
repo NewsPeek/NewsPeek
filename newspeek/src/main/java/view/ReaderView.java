@@ -9,7 +9,6 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
-import entity.article.Article;
 import interface_adapter.ReaderState;
 import interface_adapter.ReaderViewModel;
 import interface_adapter.choose_rule_set.ChooseRuleSetController;
@@ -170,13 +169,12 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("article")) {
             final ReaderState state = (ReaderState) evt.getNewValue();
-            updateArticleText(state);
+            censorAndUpdateArticleText(state);
             updateSummaryLabel(state);
-
         } else if (evt.getPropertyName().equals("ruleset")) {
             final ReaderState state = (ReaderState) evt.getNewValue();
             JOptionPane.showMessageDialog(this, "Rule set loaded: " + state.getCensorshipRuleSet().getRuleSetName());
-            updateArticleText(state);
+            censorAndUpdateArticleText(state);
             updateSummaryLabel(state);
         } else if (evt.getPropertyName().equals("error")) {
             final ReaderState state = (ReaderState) evt.getNewValue();
@@ -196,19 +194,18 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         this.chooseRuleSetController = chooseRuleSetController;
     }
 
-    private void updateArticleText(ReaderState state) {
+    private void censorAndUpdateArticleText(ReaderState state) {
         if (state.getArticle() != null) {
-            Article censoredArticle = this.censorshipService.censor(state.getArticle(), state.getCensorshipRuleSet());
-            articleTextArea.setText(censoredArticle.getText());
-            articleTitle.setText(censoredArticle.getTitle());
-
+            state.setCensoredArticle(censorshipService.censor(state.getArticle(), state.getCensorshipRuleSet()));
+            articleTextArea.setText(state.getCensoredArticle().getText());
+            articleTextArea.setText(state.getCensoredArticle().getText());
         }
     }
 
     private void updateSummaryLabel(ReaderState state) {
         if (state.getArticle() != null) {
-            censoredSummary.setText(" Censored words: " + state.getArticle().getCensoredWords());
-            replacedSummary.setText(" Replaced words: " + state.getArticle().getReplacedWords());
+            censoredSummary.setText(" Censored words: " + state.getCensoredArticle().getCensoredWords());
+            replacedSummary.setText(" Replaced words: " + state.getCensoredArticle().getReplacedWords());
         }
     }
 
