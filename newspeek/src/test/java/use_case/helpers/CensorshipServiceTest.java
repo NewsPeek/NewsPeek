@@ -39,7 +39,11 @@ class CensorshipServiceTest {
         Article censoredArticle = censorshipService.censor(mockArticle, mockCensorshipRuleSet);
 
         // Article text should be the same, since there's no censorship applied
-        assertEquals(censoredArticle.getText(), censoredArticle.getText());
+        assertEquals(mockArticle.getText(), censoredArticle.getText());
+
+        // No censorship was applied
+        assertEquals(0, censoredArticle.getCensoredWords());
+        assertEquals(0, censoredArticle.getReplacedWords());
 
         // Nothing else should have changed
         assertNothingElseChanged(mockArticle, censoredArticle);
@@ -67,8 +71,13 @@ class CensorshipServiceTest {
         // Article text should be censored
         if (caseSensitive) {
             assertEquals("xxxxx xxxxx dolor sit xxxx. Lorem Ipsum DOLOR sIT aMeT.", censoredArticle.getText());
+            assertEquals(3, censoredArticle.getCensoredWords());
+            assertEquals(0, censoredArticle.getReplacedWords());
+
         } else {
             assertEquals("xxxxx xxxxx dolor sit xxxx. xxxxx xxxxx DOLOR sIT xxxx.", censoredArticle.getText());
+            assertEquals(6, censoredArticle.getCensoredWords());
+            assertEquals(0, censoredArticle.getReplacedWords());
         }
 
         assertNothingElseChanged(mockArticle, censoredArticle);
@@ -97,8 +106,12 @@ class CensorshipServiceTest {
         // Article text should be censored
         if (caseSensitive) {
             assertEquals(" xxxxx xxxxx dolor sit xxxx. Lorem Ipsum DOLOR sIT aMeT. ", censoredArticle.getText());
+            assertEquals(3, censoredArticle.getCensoredWords());
+            assertEquals(0, censoredArticle.getReplacedWords());
         } else {
             assertEquals(" xxxxx xxxxx dolor sit xxxx. xxxxx xxxxx DOLOR sIT xxxx. ", censoredArticle.getText());
+            assertEquals(6, censoredArticle.getCensoredWords());
+            assertEquals(0, censoredArticle.getReplacedWords());
         }
 
         assertNothingElseChanged(mockArticle, censoredArticle);
@@ -127,8 +140,12 @@ class CensorshipServiceTest {
         // Article text should be replaced
         if (caseSensitive) {
             assertEquals("sed ipsum do sit eiusmod. Lorem Ipsum DOLOR sIT aMeT. ", censoredArticle.getText());
+            assertEquals(0, censoredArticle.getCensoredWords());
+            assertEquals(3, censoredArticle.getReplacedWords());
         } else {
             assertEquals("sed ipsum do sit eiusmod. sed Ipsum do sIT eiusmod. ", censoredArticle.getText());
+            assertEquals(0, censoredArticle.getCensoredWords());
+            assertEquals(6, censoredArticle.getReplacedWords());
         }
 
         assertNothingElseChanged(mockArticle, censoredArticle);
@@ -157,8 +174,12 @@ class CensorshipServiceTest {
         // Article text should be censored
         if (caseSensitive) {
             assertEquals(",xxxxx xxxxx dolor sit xxxx. Lorem Ipsum DOLOR sIT aMeT.!", censoredArticle.getText());
+            assertEquals(3, censoredArticle.getCensoredWords());
+            assertEquals(0, censoredArticle.getReplacedWords());
         } else {
             assertEquals(",xxxxx xxxxx dolor sit xxxx. xxxxx xxxxx DOLOR sIT xxxx.!", censoredArticle.getText());
+            assertEquals(6, censoredArticle.getCensoredWords());
+            assertEquals(0, censoredArticle.getReplacedWords());
         }
 
         assertNothingElseChanged(mockArticle, censoredArticle);
