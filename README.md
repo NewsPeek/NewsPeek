@@ -149,6 +149,14 @@ For example, if `Trump` is `prohibitedWords`, `Donald Trump` will become `Donald
 
 `prohibitedWords`: a list of words to censor. They will be replaced with a string of `xxxx...` in the article.
 
+### Uncensoring the article
+
+Press the `U` key on your keyboard to temporarily disable censorship.
+The text *Uncensored* will be appear and the article will be displayed without censorship.
+
+Press `U` again to re-enable censorship.
+The text *Uncensored* will disappear and the censorship will be restored.
+
 ## License
 
 This software is licensed under the MIT License. The full text is below:
