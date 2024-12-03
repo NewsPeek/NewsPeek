@@ -35,8 +35,9 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     // Whole page
     private static final Color BACKGROUND_COLOR = new Color(245, 245, 245);
     private static final int BORDER_THICKNESS = 10;
-    private static final Dimension WINDOW_SIZE = new Dimension(800, 800);
+    private static final Dimension WINDOW_SIZE = new Dimension(850, 800);
     private static final int ELEMENT_SPACING = 10;
+    private static final Color TEXTAREA_BACKGROUND_COLOR = new Color(255, 242, 194);
 
     // NewsPeek title
     private static final Color NEWSPEEK_COLOR = new Color(70, 130, 180);
@@ -52,7 +53,7 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     // Buttons
     private static final Color BUTTONS_PANEL_BACKGROUND_COLOR = new Color(230, 230, 250);
     private static final Color BUTTON_BACKGROUND_COLOR = new Color(60, 130, 180);
-    private static final LineBorder BUTTON_BORDER_STYLE = new LineBorder(new Color(230, 230, 250), 7, false);
+    private static final LineBorder BUTTON_BORDER_STYLE = new LineBorder(new Color(6, 6, 56), 2, true);
     private static final Font BUTTON_FONT = new Font("SansSerif", Font.BOLD, 14);
 
     // Censorship summary
@@ -100,34 +101,66 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         this.replacedSummary = new JLabel("Replaced words:");
         styleCensorshipSummary();
 
-        // Buttons Panel
         final JPanel buttonsPanel = new JPanel();
-        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
+        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS)); // Vertical alignment
         buttonsPanel.setBackground(BUTTONS_PANEL_BACKGROUND_COLOR);
         buttonsPanel.setBorder(new EmptyBorder(
                 BORDER_THICKNESS, BORDER_THICKNESS, BORDER_THICKNESS, BORDER_THICKNESS
         ));
 
-        // Create and initialize the dropdown (hidden by default)
+
+// Create and initialize the dropdown (hidden by default)
         loadArticleDropdown = new JComboBox<>();
         loadArticleDropdown.setVisible(false); // Initially hidden
         loadArticleDropdown.addItem("Select an article...");
-
+        Dimension dropdownSize = new Dimension(170, loadArticleDropdown.getPreferredSize().height);
+        loadArticleDropdown.setPreferredSize(dropdownSize);
+        loadArticleDropdown.setMaximumSize(dropdownSize);
+        loadArticleDropdown.setMinimumSize(dropdownSize);
+// Initialize buttons
         JButton randomArticleButton = new JButton("Random Article");
         JButton saveArticleButton = new JButton("Save Article");
         JButton loadArticleButton = new JButton("Load Article");
-        JButton loadRuleSetButton = new JButton("Import Censorship Ruleset");
+        JButton loadRuleSetButton = new JButton("Load Ruleset");
+
+// Style buttons and set alignment
         styleButton(randomArticleButton);
         styleButton(saveArticleButton);
-        styleButton(loadRuleSetButton);
         styleButton(loadArticleButton);
+        styleButton(loadRuleSetButton);
+        styleDropdownMenu(loadArticleDropdown);
+
+// Ensure all components share the same width
+        Dimension buttonSize = new Dimension(170, 30); // Example: 150px width, 30px height
+        randomArticleButton.setMaximumSize(buttonSize);
+        saveArticleButton.setMaximumSize(buttonSize);
+        loadArticleButton.setMaximumSize(buttonSize);
+        loadRuleSetButton.setMaximumSize(buttonSize);
+        loadArticleDropdown.setMaximumSize(buttonSize); // Match button size
+
+// Align components to the left
+        randomArticleButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+        saveArticleButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+        loadArticleButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+        loadRuleSetButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+        loadArticleDropdown.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+// Add components to the panel
         buttonsPanel.add(randomArticleButton);
+        buttonsPanel.add(Box.createVerticalStrut(10)); // Add spacing between components
         buttonsPanel.add(saveArticleButton);
+        buttonsPanel.add(Box.createVerticalStrut(10));
         buttonsPanel.add(loadArticleButton);
+        buttonsPanel.add(Box.createVerticalStrut(10));
         buttonsPanel.add(loadArticleDropdown);
+        buttonsPanel.add(Box.createVerticalStrut(10));
         buttonsPanel.add(loadRuleSetButton);
         buttonsPanel.add(censoredSummary);
         buttonsPanel.add(replacedSummary);
+        Dimension panelSize = new Dimension(220, buttonsPanel.getPreferredSize().height);
+        buttonsPanel.setPreferredSize(panelSize);
+        buttonsPanel.setMaximumSize(panelSize);
+        buttonsPanel.setMinimumSize(panelSize);
 
 
         loadArticleDropdown.addActionListener(evt -> {
@@ -186,6 +219,15 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         articleTextArea.setBorder(new LineBorder(Color.GRAY, 2));
         articleTextArea.setLineWrap(true);
         articleTextArea.setWrapStyleWord(true);
+        articleTextArea.setBackground(TEXTAREA_BACKGROUND_COLOR);
+    }
+
+    private void styleDropdownMenu(JComboBox loadArticleDropdown){
+        loadArticleDropdown.setFont(ARTICLE_FONT);
+        loadArticleDropdown.setBackground(BUTTON_BACKGROUND_COLOR);
+        loadArticleDropdown.setBorder(new LineBorder(Color.GRAY, 2));
+        loadArticleDropdown.setForeground(Color.WHITE);
+        loadArticleDropdown.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 
     private void styleArticleTitle() {
