@@ -1,6 +1,7 @@
 package use_case.load_url;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 
 import entity.article.Article;
 
@@ -31,9 +32,12 @@ public class LoadURLInteractor implements LoadURLInputBoundary {
             // Load Output data into loadURLOutputData
             final LoadURLOutputData loadURLOutputData = new LoadURLOutputData(urlData, false);
             loadURLPresenter.prepareSuccessView(loadURLOutputData);
-        }
-        catch (IOException ex) {
-            loadURLPresenter.prepareFailView("Loading the URL did not work.");
+        } catch (IOException ex) {
+            if (ex instanceof MalformedURLException) {
+                loadURLPresenter.prepareFailView("Invalid URL: " + ex.getMessage());
+            } else {
+                loadURLPresenter.prepareFailView("Failed loading from URL: " + ex.getMessage());
+            }
         }
     }
 }
