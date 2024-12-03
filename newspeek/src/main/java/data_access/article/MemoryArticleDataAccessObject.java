@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import entity.article.Article;
 import use_case.load_article.LoadArticleDataAccessInterface;
+import use_case.load_url.LoadURLDataAccessInterface;
 import use_case.random_article.RandomArticleAPIDataAccessInterface;
 import use_case.save_article.SaveArticleDataAccessInterface;
 
@@ -16,7 +17,8 @@ import use_case.save_article.SaveArticleDataAccessInterface;
  * DAO to store articles in memory.
  */
 public class MemoryArticleDataAccessObject
-        implements RandomArticleAPIDataAccessInterface, SaveArticleDataAccessInterface, LoadArticleDataAccessInterface {
+        implements RandomArticleAPIDataAccessInterface, SaveArticleDataAccessInterface,
+        LoadArticleDataAccessInterface, LoadURLDataAccessInterface {
     private final Map<String, Article> articles = new HashMap<>();
 
     /**
