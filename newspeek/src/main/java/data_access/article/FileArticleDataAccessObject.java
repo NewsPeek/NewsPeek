@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -11,6 +13,8 @@ import java.util.UUID;
 
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
+import com.google.gson.stream.JsonWriter;
 import entity.article.Article;
 import io.github.cdimascio.dotenv.Dotenv;
 import use_case.load_article.LoadArticleDataAccessInterface;
@@ -40,7 +44,32 @@ public class FileArticleDataAccessObject
 
         this.titleCache = null;
 
-        gson = new Gson();
+        /**
+         * Adapter to allow serializing LocalDateTime objects with Gson.
+         */
+        class LocalDateTimeAdapter extends TypeAdapter<java.time.LocalDateTime> {
+            @Override
+            public void write(JsonWriter writer, LocalDateTime value) throws IOException {
+                if (value == null) {
+                    writer.nullValue();
+                } else {
+                    writer.value(value.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+                }
+            }
+
+            @Override
+            public LocalDateTime read(JsonReader reader) throws IOException {
+                if (reader.peek() == JsonToken.NULL) {
+                    reader.nextNull();
+                    return null;
+                }
+                return java.time.LocalDateTime.parse(reader.nextString());
+            }
+        }
+
+        gson = new GsonBuilder()
+                .registerTypeAdapter(java.time.LocalDateTime.class, new LocalDateTimeAdapter())
+                .create();
     }
 
     private String loadPathFromDotenv() {
