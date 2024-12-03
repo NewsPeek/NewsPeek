@@ -1,12 +1,9 @@
 package interface_adapter.choose_rule_set;
 
-import entity.censorship_rule_set.CensorshipRuleSet;
+import java.io.File;
+
 import use_case.choose_rule_set.ChooseRuleSetInputBoundary;
 import use_case.choose_rule_set.ChooseRuleSetInputData;
-import use_case.random_article.RandomArticleInputBoundary;
-import use_case.random_article.RandomArticleInputData;
-
-import java.io.File;
 
 /**
  * Controller for the Change Password Use Case.

@@ -4,8 +4,6 @@ import interface_adapter.ReaderViewModel;
 import use_case.choose_rule_set.ChooseRuleSetOutputBoundary;
 import use_case.choose_rule_set.ChooseRuleSetOutputData;
 
-import javax.swing.*;
-
 /**
  * The Presenter for the Change Password Use Case.
  */
@@ -25,6 +23,6 @@ public class ChooseRuleSetPresenter implements ChooseRuleSetOutputBoundary {
     @Override
     public void prepareFailView(String error) {
         this.readerViewModel.setError("Failed to load rule set: " + error);
-        this.readerViewModel.firePropertyChanged("ruleset");
+        this.readerViewModel.firePropertyChanged("error");
     }
 }

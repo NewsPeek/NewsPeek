@@ -1,8 +1,8 @@
 package app;
 
-import use_case.helpers.ScanningCensorshipService;
-
 import javax.swing.JFrame;
+
+import use_case.helpers.ScanningCensorshipService;
 
 /**
  * Main class for NewsPeek.
@@ -16,10 +16,12 @@ public class Main {
         final AppBuilder appBuilder = new AppBuilder();
         final JFrame application = appBuilder
                 .addApiDataAccessObject()
+                .addFileArticleDataAccessObject()
                 .addCensorshipRuleSetDataAccessObject()
                 .addCensorshipService(new ScanningCensorshipService())
                 .addReaderView()
                 .addRandomArticleUseCase()
+                .addSaveArticleUseCase()
                 .addChooseRuleSetUseCase()
                 .build();
 

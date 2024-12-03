@@ -37,6 +37,10 @@
         <property name="files"
                   value=".*[\\/]src[\\/](test|it|xdocs-examples)[\\/].*(?&lt;!Support)\.java"/>
     </module>
+    <module name="SuppressionSingleFilter">
+        <property name="files"
+                  value=".*[\\/]jreadability[\\/].*.java"/>
+    </module>
     <module name="SuppressWarningsFilter"/>
     <module name="SuppressWithPlainTextCommentFilter">
         <!--
@@ -591,7 +595,6 @@
         </module>
 
         <!-- Imports -->
-        <module name="AvoidStarImport"/>
         <module name="AvoidStaticImport"/>
         <module name="CustomImportOrder">
             <property name="customImportOrderRules"

@@ -13,7 +13,6 @@ import java.beans.PropertyChangeSupport;
  * @param <T> The type of state object contained in the model.
  */
 public class ViewModel<T> {
-
     private final String viewName;
 
     private final PropertyChangeSupport support = new PropertyChangeSupport(this);
@@ -24,14 +23,18 @@ public class ViewModel<T> {
         this.viewName = viewName;
     }
 
-    public String getViewName() {
-        return this.viewName;
-    }
-
+    /**
+     * Returns the current state of this ViewModel.
+     * @return the current state of this ViewModel.
+     */
     public T getState() {
         return this.state;
     }
 
+    /**
+     * Sets the state of this ViewModel.
+     * @param state the new state of this ViewModel.
+     */
     public void setState(T state) {
         this.state = state;
     }
@@ -44,17 +47,21 @@ public class ViewModel<T> {
     }
 
     /**
-     * Fires a property changed event for the state of this ViewModel, which
-     * allows the user to specify a different propertyName. This can be useful
-     * when a class is listening for multiple kinds of property changes.
-     * <p/>
-     * For example, the LoggedInView listens for two kinds of property changes;
-     * it can use the property name to distinguish which property has changed.
-     * @param propertyName the label for the property that was changed
+     * Fires a property changed event for the state of this ViewModel, assuming the old state was null.
+     *
+     * @param propertyName the label for the property that was changed.
      */
     public void firePropertyChanged(String propertyName) {
         this.support.firePropertyChange(propertyName, null, this.state);
     }
+
+    /**
+     * Fires a property changed event for the state of this ViewModel.
+     *
+     * @param propertyName the label for the property that was changed.
+     * @param oldValue the property's value before it changed.
+     * @param newValue the property's value after it changed.
+     */
     public void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
         this.support.firePropertyChange(propertyName, oldValue, newValue);
     }
