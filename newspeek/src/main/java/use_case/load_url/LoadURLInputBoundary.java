@@ -1,4 +1,5 @@
 package use_case.load_url;
+
 /**
  * Interface to execute the LoadURL Use Case.
  */

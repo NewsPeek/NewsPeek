@@ -18,6 +18,7 @@ public class ReaderState {
     private CensorshipRuleSet censorshipRuleSet;
     private String error;
     private String alert;
+    private Map<String, String> savedArticleList;
 
     public ReaderState() {
         // Set up a default censorshipRuleSet
@@ -31,6 +32,13 @@ public class ReaderState {
                 defaultProhibitedWords, defaultReplacedWords, defaultCaseSensitive, defaultRuleSetName);
     }
 
+    public Map<String, String> getArticleList(){
+        return savedArticleList;
+    }
+
+    public void setArticleList(Map<String, String> articleList){
+        this.savedArticleList = articleList;
+    }
     /**
      * Returns the uncensored article currently being displayed.
      * @return the uncensored article currently being displayed.
@@ -111,5 +119,16 @@ public class ReaderState {
      */
     public void setAlert(String alert) {
         this.alert = alert;
+    }
+
+    public Map<String, String> getSavedArticleList() {
+        return savedArticleList;
+    }
+
+    public void setSavedArticleList(Map<String, String> savedArticleList) {
+        this.savedArticleList = savedArticleList;
+    }
+
+    public void firePropertyChanged(String article) {
     }
 }
