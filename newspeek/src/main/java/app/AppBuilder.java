@@ -29,6 +29,8 @@ import use_case.random_article.RandomArticleOutputBoundary;
 import use_case.save_article.SaveArticleInputBoundary;
 import use_case.save_article.SaveArticleInteractor;
 import use_case.save_article.SaveArticleOutputBoundary;
+import use_case.load_url.*;
+import interface_adapter.load_URL.*;
 import view.ReaderView;
 
 /**
@@ -133,6 +135,20 @@ public class AppBuilder {
 
         final SaveArticleController controller = new SaveArticleController(interactor);
         readerView.setSaveArticleController(controller);
+        return this;
+    }
+
+    /**
+     * Adds the LoadURL Use Case to the application
+     * @return this builder
+     */
+    public AppBuilder addLoadURLUseCase() {
+        final LoadURLOutputBoundary loadURLOutputBoundary = new LoadURLPresenter(readerViewModel);
+        final LoadURLInputBoundary loadURLInteractor = new LoadURLInteractor(apiArticleDataAccessObject,
+                loadURLOutputBoundary);
+
+        final LoadURLController controller = new LoadURLController(loadURLInteractor);
+        readerView.setLoadURLController(controller);
         return this;
     }
 

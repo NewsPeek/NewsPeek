@@ -22,6 +22,7 @@ public class Main {
                 .addReaderView()
                 .addRandomArticleUseCase()
                 .addSaveArticleUseCase()
+                .addLoadURLUseCase()
                 .addChooseRuleSetUseCase()
                 .build();
 

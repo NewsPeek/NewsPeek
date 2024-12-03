@@ -17,6 +17,7 @@ import javax.swing.border.LineBorder;
 import interface_adapter.ReaderState;
 import interface_adapter.ReaderViewModel;
 import interface_adapter.choose_rule_set.ChooseRuleSetController;
+import interface_adapter.load_URL.LoadURLController;
 import interface_adapter.random_article.RandomArticleController;
 import interface_adapter.save_article.SaveArticleController;
 import use_case.helpers.CensorshipService;
@@ -66,6 +67,7 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
 
     // Use cases
     private RandomArticleController randomArticleController;
+    private LoadURLController loadURLController;
     private ChooseRuleSetController chooseRuleSetController;
     private SaveArticleController saveArticleController;
 
@@ -113,13 +115,16 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         ));
 
         JButton randomArticleButton = new JButton("Random Article");
+        JButton loadArticleFromURL = new JButton("Load from URL");
         JButton saveArticleButton = new JButton("Save Article");
         JButton loadRuleSetButton = new JButton("Import Censorship Ruleset");
         styleButton(randomArticleButton);
         styleButton(saveArticleButton);
+        styleButton(loadArticleFromURL);
         styleButton(loadRuleSetButton);
         buttonsPanel.add(randomArticleButton);
         buttonsPanel.add(saveArticleButton);
+        buttonsPanel.add(loadArticleFromURL);
         buttonsPanel.add(loadRuleSetButton);
         buttonsPanel.add(censoredSummary);
         buttonsPanel.add(replacedSummary);
@@ -156,10 +161,11 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
             randomArticleController.execute(country);
         });
 
-        saveArticleButton.addActionListener(evt -> {
-            saveArticleController.execute(this.viewModel.getState().getArticle());
-        });
+        saveArticleButton.addActionListener(evt ->
+            saveArticleController.execute(this.viewModel.getState().getArticle())
+        );
 
+        loadArticleFromURL.addActionListener(evt -> chooseURL());
         loadRuleSetButton.addActionListener(evt -> chooseRuleSet());
 
         InputMap inputmap = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -256,6 +262,10 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         this.randomArticleController = controller;
     }
 
+    public void setLoadURLController(LoadURLController loadURLController){
+        this.loadURLController = loadURLController;
+    }
+
     /**
      * Attach the controller for the Choose Rule Set use case.
      * Must be executed before showing the view to the user to prevent a program crash.
@@ -304,6 +314,14 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
             File selectedFile = fileChooser.getSelectedFile();
             chooseRuleSetController.execute(selectedFile);
         }
+    }
+
+    /**
+     * Display a text box that allows the user to input a URL.
+     */
+    private void chooseURL() {
+        String url = JOptionPane.showInputDialog("Enter URL");
+        loadURLController.execute(url);
     }
 
     private void showError(ReaderState state) {
