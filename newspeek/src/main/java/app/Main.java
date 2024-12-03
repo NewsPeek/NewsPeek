@@ -16,10 +16,12 @@ public class Main {
         final AppBuilder appBuilder = new AppBuilder();
         final JFrame application = appBuilder
                 .addApiDataAccessObject()
+                .addFileArticleDataAccessObject()
                 .addCensorshipRuleSetDataAccessObject()
                 .addCensorshipService(new ScanningCensorshipService())
                 .addReaderView()
                 .addRandomArticleUseCase()
+                .addSaveArticleUseCase()
                 .addLoadURLUseCase()
                 .addChooseRuleSetUseCase()
                 .build();
