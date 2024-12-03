@@ -3,6 +3,8 @@ package interface_adapter;
 import entity.article.Article;
 import entity.censorship_rule_set.CensorshipRuleSet;
 
+import java.util.Map;
+
 /**
  * The View Model for the Reader View.
  */
@@ -40,6 +42,13 @@ public class ReaderViewModel extends ViewModel<ReaderState> {
         ReaderState oldState = getState();
         getState().setError(error);
         firePropertyChange("error", oldState, getState());
+    }
+
+
+    public void setArticleList(Map<String,String> articleList) {
+        ReaderState oldState = getState();
+        getState().setArticleList(articleList);
+        firePropertyChange("article-list", oldState, getState());
     }
 
     /**

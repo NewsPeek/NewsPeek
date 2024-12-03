@@ -23,6 +23,8 @@ public class Main {
                 .addRandomArticleUseCase()
                 .addSaveArticleUseCase()
                 .addChooseRuleSetUseCase()
+                .addPopulateListUseCase()
+                .addLoadArticleUseCase()
                 .build();
 
         application.pack();

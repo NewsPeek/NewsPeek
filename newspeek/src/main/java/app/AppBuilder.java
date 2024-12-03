@@ -15,6 +15,10 @@ import interface_adapter.ReaderViewModel;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.choose_rule_set.ChooseRuleSetController;
 import interface_adapter.choose_rule_set.ChooseRuleSetPresenter;
+import interface_adapter.load_article.LoadArticleController;
+import interface_adapter.load_article.LoadArticlePresenter;
+import interface_adapter.populate_list.PopulateListController;
+import interface_adapter.populate_list.PopulateListPresenter;
 import interface_adapter.random_article.RandomArticleController;
 import interface_adapter.random_article.RandomArticlePresenter;
 import interface_adapter.save_article.SaveArticleController;
@@ -23,6 +27,13 @@ import use_case.choose_rule_set.ChooseRuleSetInputBoundary;
 import use_case.choose_rule_set.ChooseRuleSetInteractor;
 import use_case.choose_rule_set.ChooseRuleSetOutputBoundary;
 import use_case.helpers.CensorshipService;
+import use_case.load_article.LoadArticleDataAccessInterface;
+import use_case.load_article.LoadArticleInputBoundary;
+import use_case.load_article.LoadArticleInteractor;
+import use_case.load_article.LoadArticleOutputBoundary;
+import use_case.populate_list_with_articles.PopulateListInputBoundary;
+import use_case.populate_list_with_articles.PopulateListInteractor;
+import use_case.populate_list_with_articles.PopulateListOutputBoundary;
 import use_case.random_article.RandomArticleInputBoundary;
 import use_case.random_article.RandomArticleInteractor;
 import use_case.random_article.RandomArticleOutputBoundary;
@@ -53,6 +64,8 @@ public class AppBuilder {
     private FileCensorshipRuleSetDataAccessObject censorshipRuleSetDataAccessObject;
     private CensorshipService censorshipService;
     private FileArticleDataAccessObject fileArticleDataAccessObject;
+    private FileCensorshipRuleSetDataAccessObject fileCensorshipRuleSetDataAccessObject;
+    private LoadArticleDataAccessInterface loadArticleDataAccessInterface;
 
     public AppBuilder() {
         CardLayout cardLayout = new CardLayout();
@@ -133,6 +146,28 @@ public class AppBuilder {
 
         final SaveArticleController controller = new SaveArticleController(interactor);
         readerView.setSaveArticleController(controller);
+        return this;
+    }
+
+
+
+    public AppBuilder addPopulateListUseCase() {
+        final PopulateListOutputBoundary presenter = new PopulateListPresenter(readerViewModel);
+        final PopulateListInputBoundary interactor = new PopulateListInteractor(
+                fileArticleDataAccessObject, presenter);
+
+        final PopulateListController controller = new PopulateListController(interactor);
+        readerView.setPopulateListController(controller);
+        return this;
+    }
+
+    public AppBuilder addLoadArticleUseCase() {
+        final LoadArticleOutputBoundary presenter = new LoadArticlePresenter(readerViewModel);
+        final LoadArticleInputBoundary interactor = new LoadArticleInteractor(
+                fileArticleDataAccessObject, presenter);
+
+        final LoadArticleController controller = new LoadArticleController(interactor);
+        readerView.setLoadArticleController(controller);
         return this;
     }
 
