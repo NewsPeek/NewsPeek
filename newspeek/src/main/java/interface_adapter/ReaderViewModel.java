@@ -1,9 +1,9 @@
 package interface_adapter;
 
+import java.util.Map;
+
 import entity.article.Article;
 import entity.censorship_rule_set.CensorshipRuleSet;
-
-import java.util.Map;
 
 /**
  * The View Model for the Reader View.
@@ -44,8 +44,11 @@ public class ReaderViewModel extends ViewModel<ReaderState> {
         firePropertyChange("error", oldState, getState());
     }
 
-
-    public void setArticleList(Map<String,String> articleList) {
+    /**
+     * Setter for the article list.
+     * @param articleList the list of articles to set the attribute to.
+     */
+    public void setArticleList(Map<String, String> articleList) {
         ReaderState oldState = getState();
         getState().setArticleList(articleList);
         firePropertyChange("article-list", oldState, getState());
