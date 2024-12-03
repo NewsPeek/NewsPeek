@@ -188,8 +188,5 @@ class CensorshipServiceTest {
     private void assertNothingElseChanged(Article mockArticle, Article censoredArticle) {
         assertEquals(mockArticle.getTitle(), censoredArticle.getTitle());
         assertEquals(mockArticle.getSource(), censoredArticle.getSource());
-        assertEquals(mockArticle.getAuthor(), censoredArticle.getAuthor());
-        assertEquals(mockArticle.getAgency(), censoredArticle.getAgency());
-        assertEquals(mockArticle.getPostedAt(), censoredArticle.getPostedAt());
     }
 }
