@@ -1,9 +1,14 @@
 package view;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.security.Key;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -12,6 +17,7 @@ import javax.swing.border.LineBorder;
 import interface_adapter.ReaderState;
 import interface_adapter.ReaderViewModel;
 import interface_adapter.choose_rule_set.ChooseRuleSetController;
+import interface_adapter.load_URL.LoadURLController;
 import interface_adapter.random_article.RandomArticleController;
 import interface_adapter.save_article.SaveArticleController;
 import use_case.helpers.CensorshipService;
@@ -53,10 +59,15 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     private static final Font CENSORSHIP_SUMMARY_FONT = new Font("SansSerif", Font.BOLD, 16);
     private static final Color CENSORSHIP_SUMMARY_COLOR = new Color(70, 130, 180);
 
+    //Uncensored Notification
+    private static final Font UNCENSORED_NOFITICATION_FONT = new Font("SansSerif", Font.BOLD, 24);
+    private static final Color UNCENSORED_NOTIFICATION_COLOR = new Color(255, 30, 30);
+
     private final ReaderViewModel viewModel;
 
     // Use cases
     private RandomArticleController randomArticleController;
+    private LoadURLController loadURLController;
     private ChooseRuleSetController chooseRuleSetController;
     private SaveArticleController saveArticleController;
 
@@ -65,6 +76,7 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     private final JLabel articleTitle;
     private final JLabel censoredSummary;
     private final JLabel replacedSummary;
+    private final JLabel uncensoredNotif;
     private final JTextArea articleTextArea;
     private final JFileChooser fileChooser;
 
@@ -89,6 +101,11 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         this.replacedSummary = new JLabel("Replaced words:");
         styleCensorshipSummary();
 
+        this.uncensoredNotif = new JLabel("UNCENSORED");
+        uncensoredNotif.setFont(UNCENSORED_NOFITICATION_FONT);
+        uncensoredNotif.setForeground(UNCENSORED_NOTIFICATION_COLOR);
+        uncensoredNotif.setVisible(false);
+
         // Buttons Panel
         final JPanel buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
@@ -98,16 +115,20 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         ));
 
         JButton randomArticleButton = new JButton("Random Article");
+        JButton loadArticleFromURL = new JButton("Load from URL");
         JButton saveArticleButton = new JButton("Save Article");
         JButton loadRuleSetButton = new JButton("Import Censorship Ruleset");
         styleButton(randomArticleButton);
         styleButton(saveArticleButton);
+        styleButton(loadArticleFromURL);
         styleButton(loadRuleSetButton);
         buttonsPanel.add(randomArticleButton);
         buttonsPanel.add(saveArticleButton);
+        buttonsPanel.add(loadArticleFromURL);
         buttonsPanel.add(loadRuleSetButton);
         buttonsPanel.add(censoredSummary);
         buttonsPanel.add(replacedSummary);
+        buttonsPanel.add(uncensoredNotif);
 
         // Article Title
         this.articleTitle = new JLabel("No article loaded");
@@ -140,11 +161,42 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
             randomArticleController.execute(country);
         });
 
-        saveArticleButton.addActionListener(evt -> {
-            saveArticleController.execute(this.viewModel.getState().getArticle());
-        });
+        saveArticleButton.addActionListener(evt ->
+            saveArticleController.execute(this.viewModel.getState().getArticle())
+        );
 
+        loadArticleFromURL.addActionListener(evt -> chooseURL());
         loadRuleSetButton.addActionListener(evt -> chooseRuleSet());
+
+        InputMap inputmap = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap actionmap = getActionMap();
+
+        Action uncensorArticle = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                uncensoredNotif.setVisible(true);
+                articleTitle.setText(viewModel.getState().getArticle().getTitle());
+                articleTextArea.setText(viewModel.getState().getArticle().getText());
+                inputmap.remove(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0));
+                inputmap.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), "recensorArticle");
+            }
+        };
+
+        Action recensorArticle = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                uncensoredNotif.setVisible(false);
+                articleTitle.setText(viewModel.getState().getCensoredArticle().getTitle());
+                articleTextArea.setText(viewModel.getState().getCensoredArticle().getText());
+                inputmap.remove(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0));
+                inputmap.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), "uncensorArticle");
+            }
+        };
+
+        inputmap.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), "uncensorArticle");
+
+        actionmap.put("uncensorArticle", uncensorArticle);
+        actionmap.put("recensorArticle", recensorArticle);
     }
 
     private void styleArticle() {
@@ -210,6 +262,10 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         this.randomArticleController = controller;
     }
 
+    public void setLoadURLController(LoadURLController loadURLController){
+        this.loadURLController = loadURLController;
+    }
+
     /**
      * Attach the controller for the Choose Rule Set use case.
      * Must be executed before showing the view to the user to prevent a program crash.
@@ -234,6 +290,7 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
      */
     private void censorAndUpdateArticle(ReaderState state) {
         if (state.getArticle() != null) {
+            uncensoredNotif.setVisible(false);
             state.setCensoredArticle(censorshipService.censor(state.getArticle(), state.getCensorshipRuleSet()));
             articleTitle.setText(state.getCensoredArticle().getTitle());
             articleTextArea.setText(state.getCensoredArticle().getText());
@@ -257,6 +314,14 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
             File selectedFile = fileChooser.getSelectedFile();
             chooseRuleSetController.execute(selectedFile);
         }
+    }
+
+    /**
+     * Display a text box that allows the user to input a URL.
+     */
+    private void chooseURL() {
+        String url = JOptionPane.showInputDialog("Enter URL");
+        loadURLController.execute(url);
     }
 
     private void showError(ReaderState state) {
