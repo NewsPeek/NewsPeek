@@ -28,7 +28,7 @@ public class LoadURLPresenter implements LoadURLOutputBoundary {
      */
     @Override
     public void prepareFailView(String error) {
-        this.readerViewModel.setError("Failed to load article: " + error);
+        this.readerViewModel.setError(error);
         this.readerViewModel.firePropertyChanged("error");
     }
 }

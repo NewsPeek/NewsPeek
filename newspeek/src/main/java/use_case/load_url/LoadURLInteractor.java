@@ -3,6 +3,7 @@ package use_case.load_url;
 import entity.article.Article;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 
 public class LoadURLInteractor implements LoadURLInputBoundary{
 
@@ -27,9 +28,12 @@ public class LoadURLInteractor implements LoadURLInputBoundary{
             // Load Output data into loadURLOutputData
             final LoadURLOutputData loadURLOutputData = new LoadURLOutputData(URLdata, false);
             loadURLPresenter.prepareSuccessView(loadURLOutputData);
-        }
-        catch(IOException e) {
-            loadURLPresenter.prepareFailView("Loading the URL did not work.");
+        } catch (IOException ex) {
+            if (ex instanceof MalformedURLException) {
+                loadURLPresenter.prepareFailView("Invalid URL: " + ex.getMessage());
+            } else {
+                loadURLPresenter.prepareFailView("Failed loading from URL: " + ex.getMessage());
+            }
         }
     }
 }
