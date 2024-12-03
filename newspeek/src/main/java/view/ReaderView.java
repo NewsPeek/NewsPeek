@@ -5,6 +5,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 
 import javax.swing.*;
@@ -80,6 +81,14 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
 
     private final CensorshipService censorshipService;
 
+    public String getKeyByValue(Map<String,String> map, String value) {
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            if (entry.getValue().equals(value)) {
+                return entry.getKey();
+            }
+        }
+        return null; // Return null if no matching key is found
+    }
 
     public ReaderView(ReaderViewModel viewModel, CensorshipService censorshipService) {
         this.fileChooser = new JFileChooser();
@@ -164,7 +173,8 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
 
 
         loadArticleDropdown.addActionListener(evt -> {
-            String selectedArticleId = (String) loadArticleDropdown.getSelectedItem();
+            String selectedArticleTitle = (String) loadArticleDropdown.getSelectedItem();
+            String selectedArticleId = getKeyByValue(this.viewModel.getState().getSavedArticleList(), selectedArticleTitle);
             if (selectedArticleId != null && !selectedArticleId.equals("Select an article...")) {
                 loadArticleDropdown.setVisible(false); // Hide the dropdown after selection
                 loadArticleController.execute(selectedArticleId);
@@ -287,7 +297,7 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         loadArticleDropdown.addItem("Select an article...");
             Map<String, String> savedArticles = state.getSavedArticleList();
             for (Map.Entry<String, String> entry : savedArticles.entrySet()) {
-                loadArticleDropdown.addItem(entry.getKey());
+                loadArticleDropdown.addItem(entry.getValue());
             }
     }
 
