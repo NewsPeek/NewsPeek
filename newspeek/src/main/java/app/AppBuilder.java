@@ -15,6 +15,8 @@ import interface_adapter.ReaderViewModel;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.choose_rule_set.ChooseRuleSetController;
 import interface_adapter.choose_rule_set.ChooseRuleSetPresenter;
+import interface_adapter.load_URL.LoadURLController;
+import interface_adapter.load_URL.LoadURLPresenter;
 import interface_adapter.load_article.LoadArticleController;
 import interface_adapter.load_article.LoadArticlePresenter;
 import interface_adapter.populate_list.PopulateListController;
@@ -31,6 +33,9 @@ import use_case.load_article.LoadArticleDataAccessInterface;
 import use_case.load_article.LoadArticleInputBoundary;
 import use_case.load_article.LoadArticleInteractor;
 import use_case.load_article.LoadArticleOutputBoundary;
+import use_case.load_url.LoadURLInputBoundary;
+import use_case.load_url.LoadURLInteractor;
+import use_case.load_url.LoadURLOutputBoundary;
 import use_case.populate_list_with_articles.PopulateListInputBoundary;
 import use_case.populate_list_with_articles.PopulateListInteractor;
 import use_case.populate_list_with_articles.PopulateListOutputBoundary;
@@ -64,8 +69,6 @@ public class AppBuilder {
     private FileCensorshipRuleSetDataAccessObject censorshipRuleSetDataAccessObject;
     private CensorshipService censorshipService;
     private FileArticleDataAccessObject fileArticleDataAccessObject;
-    private FileCensorshipRuleSetDataAccessObject fileCensorshipRuleSetDataAccessObject;
-    private LoadArticleDataAccessInterface loadArticleDataAccessInterface;
 
     public AppBuilder() {
         CardLayout cardLayout = new CardLayout();
@@ -149,15 +152,17 @@ public class AppBuilder {
         return this;
     }
 
+    /**
+     * Adds the Load URL Use Case to the application.
+     * @return this builder
+     */
+    public AppBuilder addLoadURLUseCase() {
+        final LoadURLOutputBoundary loadURLOutputBoundary = new LoadURLPresenter(readerViewModel);
+        final LoadURLInputBoundary loadURLInteractor = new LoadURLInteractor(apiArticleDataAccessObject,
+                loadURLOutputBoundary);
 
-
-    public AppBuilder addPopulateListUseCase() {
-        final PopulateListOutputBoundary presenter = new PopulateListPresenter(readerViewModel);
-        final PopulateListInputBoundary interactor = new PopulateListInteractor(
-                fileArticleDataAccessObject, presenter);
-
-        final PopulateListController controller = new PopulateListController(interactor);
-        readerView.setPopulateListController(controller);
+        final LoadURLController controller = new LoadURLController(loadURLInteractor);
+        readerView.setLoadURLController(controller);
         return this;
     }
 
@@ -168,6 +173,16 @@ public class AppBuilder {
 
         final LoadArticleController controller = new LoadArticleController(interactor);
         readerView.setLoadArticleController(controller);
+        return this;
+    }
+
+    public AppBuilder addPopulateListUseCase() {
+        final PopulateListOutputBoundary presenter = new PopulateListPresenter(readerViewModel);
+        final PopulateListInputBoundary interactor = new PopulateListInteractor(
+                fileArticleDataAccessObject, presenter);
+
+        final PopulateListController controller = new PopulateListController(interactor);
+        readerView.setPopulateListController(controller);
         return this;
     }
 

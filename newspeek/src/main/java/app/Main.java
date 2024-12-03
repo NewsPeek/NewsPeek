@@ -25,6 +25,7 @@ public class Main {
                 .addChooseRuleSetUseCase()
                 .addPopulateListUseCase()
                 .addLoadArticleUseCase()
+                .addLoadURLUseCase()
                 .build();
 
         application.pack();

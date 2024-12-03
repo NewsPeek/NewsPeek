@@ -1,27 +1,26 @@
 package view;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Map;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
-import entity.article.Article;
 import interface_adapter.ReaderState;
 import interface_adapter.ReaderViewModel;
 import interface_adapter.choose_rule_set.ChooseRuleSetController;
 import interface_adapter.load_article.LoadArticleController;
 import interface_adapter.populate_list.PopulateListController;
+import interface_adapter.load_URL.LoadURLController;
 import interface_adapter.random_article.RandomArticleController;
 import interface_adapter.save_article.SaveArticleController;
 import use_case.helpers.CensorshipService;
-
 
 /**
  * The View for when the user is reading a censored article.
@@ -63,8 +62,15 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
 
     private final ReaderViewModel viewModel;
 
+    //Uncensored Notification
+    private static final Font UNCENSORED_NOFITICATION_FONT = new Font("SansSerif", Font.BOLD, 24);
+    private static final Color UNCENSORED_NOTIFICATION_COLOR = new Color(255, 30, 30);
+
+    private final ReaderViewModel viewModel;
+
     // Use cases
     private RandomArticleController randomArticleController;
+    private LoadURLController loadURLController;
     private ChooseRuleSetController chooseRuleSetController;
     private SaveArticleController saveArticleController;
     private LoadArticleController loadArticleController;
@@ -75,13 +81,14 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     private final JLabel articleTitle;
     private final JLabel censoredSummary;
     private final JLabel replacedSummary;
+    private final JLabel uncensoredNotif;
     private final JTextArea articleTextArea;
     private final JFileChooser fileChooser;
     private final JComboBox<String> loadArticleDropdown;
 
     private final CensorshipService censorshipService;
 
-    public String getKeyByValue(Map<String,String> map, String value) {
+    public String getKeyByValue(Map<String, String> map, String value) {
         for (Map.Entry<String, String> entry : map.entrySet()) {
             if (entry.getValue().equals(value)) {
                 return entry.getKey();
@@ -97,7 +104,6 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
 
         this.censorshipService = censorshipService;
 
-
         this.setLayout(new BorderLayout(ELEMENT_SPACING, ELEMENT_SPACING));
         this.setBackground(BACKGROUND_COLOR);
         this.setPreferredSize(WINDOW_SIZE);
@@ -110,6 +116,12 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         this.replacedSummary = new JLabel("Replaced words:");
         styleCensorshipSummary();
 
+        this.uncensoredNotif = new JLabel("UNCENSORED");
+        uncensoredNotif.setFont(UNCENSORED_NOFITICATION_FONT);
+        uncensoredNotif.setForeground(UNCENSORED_NOTIFICATION_COLOR);
+        uncensoredNotif.setVisible(false);
+
+        // Buttons Panel
         final JPanel buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS)); // Vertical alignment
         buttonsPanel.setBackground(BUTTONS_PANEL_BACKGROUND_COLOR);
@@ -118,7 +130,7 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         ));
 
 
-// Create and initialize the dropdown (hidden by default)
+        // Create and initialize the dropdown (hidden by default)
         loadArticleDropdown = new JComboBox<>();
         loadArticleDropdown.setVisible(false); // Initially hidden
         loadArticleDropdown.addItem("Select an article...");
@@ -126,20 +138,26 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         loadArticleDropdown.setPreferredSize(dropdownSize);
         loadArticleDropdown.setMaximumSize(dropdownSize);
         loadArticleDropdown.setMinimumSize(dropdownSize);
-// Initialize buttons
+
+        // Initialize buttons
         JButton randomArticleButton = new JButton("Random Article");
+        JButton loadArticleFromURL = new JButton("Load from URL");
+        JButton saveArticleButton = new JButton("Save Article");
+        JButton loadRuleSetButton = new JButton("Import Censorship Ruleset");
         JButton saveArticleButton = new JButton("Save Article");
         JButton loadArticleButton = new JButton("Load Article");
         JButton loadRuleSetButton = new JButton("Load Ruleset");
 
-// Style buttons and set alignment
+        // Style buttons and set alignment
         styleButton(randomArticleButton);
+        styleButton(saveArticleButton);
+        styleButton(loadArticleFromURL);
         styleButton(saveArticleButton);
         styleButton(loadArticleButton);
         styleButton(loadRuleSetButton);
         styleDropdownMenu(loadArticleDropdown);
 
-// Ensure all components share the same width
+        // Ensure all components share the same width
         Dimension buttonSize = new Dimension(170, 30); // Example: 150px width, 30px height
         randomArticleButton.setMaximumSize(buttonSize);
         saveArticleButton.setMaximumSize(buttonSize);
@@ -156,6 +174,8 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
 
 // Add components to the panel
         buttonsPanel.add(randomArticleButton);
+        buttonsPanel.add(saveArticleButton);
+        buttonsPanel.add(loadArticleFromURL);
         buttonsPanel.add(Box.createVerticalStrut(10)); // Add spacing between components
         buttonsPanel.add(saveArticleButton);
         buttonsPanel.add(Box.createVerticalStrut(10));
@@ -166,6 +186,7 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         buttonsPanel.add(loadRuleSetButton);
         buttonsPanel.add(censoredSummary);
         buttonsPanel.add(replacedSummary);
+        buttonsPanel.add(uncensoredNotif);
         Dimension panelSize = new Dimension(220, buttonsPanel.getPreferredSize().height);
         buttonsPanel.setPreferredSize(panelSize);
         buttonsPanel.setMaximumSize(panelSize);
@@ -180,7 +201,6 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
                 loadArticleController.execute(selectedArticleId);
             }
         });
-
 
 
         // Article Title
@@ -214,11 +234,46 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
             randomArticleController.execute(country);
         });
 
+        saveArticleButton.addActionListener(evt ->
+                saveArticleController.execute(this.viewModel.getState().getArticle())
+        );
+
+        loadArticleFromURL.addActionListener(evt -> chooseURL());
         saveArticleButton.addActionListener(evt -> {
             saveArticleController.execute(this.viewModel.getState().getArticle());
         });
 
         loadRuleSetButton.addActionListener(evt -> chooseRuleSet());
+
+        InputMap inputmap = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap actionmap = getActionMap();
+
+        Action uncensorArticle = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                uncensoredNotif.setVisible(true);
+                articleTitle.setText(viewModel.getState().getArticle().getTitle());
+                articleTextArea.setText(viewModel.getState().getArticle().getText());
+                inputmap.remove(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0));
+                inputmap.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), "recensorArticle");
+            }
+        };
+
+        Action recensorArticle = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                uncensoredNotif.setVisible(false);
+                articleTitle.setText(viewModel.getState().getCensoredArticle().getTitle());
+                articleTextArea.setText(viewModel.getState().getCensoredArticle().getText());
+                inputmap.remove(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0));
+                inputmap.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), "uncensorArticle");
+            }
+        };
+
+        inputmap.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), "uncensorArticle");
+
+        actionmap.put("uncensorArticle", uncensorArticle);
+        actionmap.put("recensorArticle", recensorArticle);
 
         loadArticleButton.addActionListener(evt -> toggleLoadArticleDropdown());
     }
@@ -232,7 +287,7 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         articleTextArea.setBackground(TEXTAREA_BACKGROUND_COLOR);
     }
 
-    private void styleDropdownMenu(JComboBox loadArticleDropdown){
+    private void styleDropdownMenu(JComboBox loadArticleDropdown) {
         loadArticleDropdown.setFont(ARTICLE_FONT);
         loadArticleDropdown.setBackground(BUTTON_BACKGROUND_COLOR);
         loadArticleDropdown.setBorder(new LineBorder(Color.GRAY, 2));
@@ -287,25 +342,32 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         boolean isVisible = loadArticleDropdown.isVisible();
         if (!isVisible) {
             populateListController.execute();
+        } else if (evt.getPropertyName().equals("alert")) {
+            final ReaderState state = (ReaderState) evt.getNewValue();
+            showAlert(state);
         }
         loadArticleDropdown.setVisible(!isVisible);
     }
 
+    /**
+     * Return the name of the current view.
+     *
+     * @return the name of the current view.
+     */
 
     private void updateDropdown(ReaderState state) {
         loadArticleDropdown.removeAllItems();
         loadArticleDropdown.addItem("Select an article...");
-            Map<String, String> savedArticles = state.getSavedArticleList();
-            for (Map.Entry<String, String> entry : savedArticles.entrySet()) {
-                loadArticleDropdown.addItem(entry.getValue());
-            }
+        Map<String, String> savedArticles = state.getSavedArticleList();
+        for (Map.Entry<String, String> entry : savedArticles.entrySet()) {
+            loadArticleDropdown.addItem(entry.getValue());
+        }
     }
-
-
 
 
     /**
      * Return the name of the current view.
+     *
      * @return the name of the current view.
      */
     public String getViewName() {
@@ -315,26 +377,32 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     /**
      * Attach the controller for the Random Article use case.
      * Must be executed before showing the view to the user to prevent a program crash.
+     *
      * @param controller the controller to attach.
      */
     public void setRandomArticleController(RandomArticleController controller) {
         this.randomArticleController = controller;
     }
 
-    public void setPopulateListController(PopulateListController controller){
+    public void setLoadURLController(LoadURLController loadURLController) {
+        this.loadURLController = loadURLController;
+    }
+
+    public void setPopulateListController(PopulateListController controller) {
         this.populateListController = controller;
     }
 
     /**
      * Attach the controller for the Choose Rule Set use case.
      * Must be executed before showing the view to the user to prevent a program crash.
+     *
      * @param controller the controller to attach.
      */
     public void setChooseRuleSetController(ChooseRuleSetController controller) {
         this.chooseRuleSetController = controller;
     }
 
-    public void setLoadArticleController(LoadArticleController controller){
+    public void setLoadArticleController(LoadArticleController controller) {
         this.loadArticleController = controller;
     }
 
@@ -343,7 +411,7 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
      * Must be executed before showing the view to the user to prevent a program crash.
      * @param controller the controller to attach.
      */
-    public void setSaveArticleController(SaveArticleController controller) {
+    public void setSaveArticleController (SaveArticleController controller) {
         this.saveArticleController = controller;
     }
 
@@ -351,8 +419,9 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
      * Handle a change to the article being displayed.
      * @param state the new state of the ReaderView.
      */
-    private void censorAndUpdateArticle(ReaderState state) {
+    private void censorAndUpdateArticle (ReaderState state) {
         if (state.getArticle() != null) {
+            uncensoredNotif.setVisible(false);
             state.setCensoredArticle(censorshipService.censor(state.getArticle(), state.getCensorshipRuleSet()));
             articleTitle.setText(state.getCensoredArticle().getTitle());
             articleTextArea.setText(state.getCensoredArticle().getText());
@@ -360,7 +429,7 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         }
     }
 
-    private void updateSummaryLabel(ReaderState state) {
+    private void updateSummaryLabel (ReaderState state){
         if (state.getArticle() != null) {
             censoredSummary.setText(" Censored words: " + state.getCensoredArticle().getCensoredWords());
             replacedSummary.setText(" Replaced words: " + state.getCensoredArticle().getReplacedWords());
@@ -370,7 +439,7 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     /**
      * Display a file chooser and load the censorship ruleset from the chosen file.
      */
-    private void chooseRuleSet() {
+    private void chooseRuleSet () {
         int returnValue = fileChooser.showOpenDialog(this);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
@@ -378,19 +447,27 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         }
     }
 
-    private void showError(ReaderState state) {
+    /**
+     * Display a text box that allows the user to input a URL.
+     */
+    private void chooseURL () {
+        String url = JOptionPane.showInputDialog("Enter URL");
+        loadURLController.execute(url);
+    }
+
+    private void showError (ReaderState state){
         if (state.getError() != null) {
             JOptionPane.showMessageDialog(this, state.getError(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private void showAlert(ReaderState state) {
+    private void showAlert (ReaderState state){
         if (state.getAlert() != null) {
             JOptionPane.showMessageDialog(this, state.getAlert(), "Alert", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
-    private void styleButton(JButton button) {
+    private void styleButton (JButton button){
         button.setFont(BUTTON_FONT);
         button.setForeground(Color.WHITE);
         button.setBackground(BUTTON_BACKGROUND_COLOR);
