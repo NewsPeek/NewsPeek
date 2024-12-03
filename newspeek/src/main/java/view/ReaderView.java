@@ -109,6 +109,7 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         styleButton(loadRuleSetButton);
         buttonsPanel.add(randomArticleButton);
         buttonsPanel.add(saveArticleButton);
+        buttonsPanel.add(loadArticleFromURL);
         buttonsPanel.add(loadRuleSetButton);
         buttonsPanel.add(censoredSummary);
         buttonsPanel.add(replacedSummary);
@@ -144,12 +145,11 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
             randomArticleController.execute(country);
         });
 
-        saveArticleButton.addActionListener(evt -> {
-            saveArticleController.execute(this.viewModel.getState().getArticle());
-        });
+        saveArticleButton.addActionListener(evt ->
+            saveArticleController.execute(this.viewModel.getState().getArticle())
+        );
 
         loadArticleFromURL.addActionListener(evt -> chooseURL());
-
         loadRuleSetButton.addActionListener(evt -> chooseRuleSet());
     }
 
