@@ -1,6 +1,7 @@
 package data_access.article;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,6 +9,7 @@ import java.util.UUID;
 
 import entity.article.Article;
 import use_case.load_article.LoadArticleDataAccessInterface;
+import use_case.populate_list_with_articles.PopulateListDataAccessInterface;
 import use_case.load_url.LoadURLDataAccessInterface;
 import use_case.random_article.RandomArticleAPIDataAccessInterface;
 import use_case.save_article.SaveArticleDataAccessInterface;
@@ -17,7 +19,7 @@ import use_case.save_article.SaveArticleDataAccessInterface;
  */
 public class MemoryArticleDataAccessObject
         implements RandomArticleAPIDataAccessInterface, SaveArticleDataAccessInterface,
-        LoadArticleDataAccessInterface, LoadURLDataAccessInterface {
+        LoadArticleDataAccessInterface, LoadURLDataAccessInterface, PopulateListDataAccessInterface {
     private final Map<String, Article> articles = new HashMap<>();
 
     /**
