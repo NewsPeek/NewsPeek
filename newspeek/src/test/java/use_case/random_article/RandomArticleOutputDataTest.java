@@ -11,16 +11,8 @@ import java.time.LocalDateTime;
 
 class RandomArticleOutputDataTest {
     @Test
-    void successTest() {
-        RandomArticleOutputData outputData = new RandomArticleOutputData(Article.mockArticle(), false);
+    void articleTest() {
+        RandomArticleOutputData outputData = new RandomArticleOutputData(Article.mockArticle());
         assertEquals(Article.mockArticle(), outputData.getArticle());
-        assertFalse(outputData.isUseCaseFailed());
-    }
-
-    @Test
-    void failureTest() {
-        RandomArticleOutputData outputData = new RandomArticleOutputData(Article.mockArticle(), true);
-        assertEquals(Article.mockArticle(), outputData.getArticle());
-        assertTrue(outputData.isUseCaseFailed());
     }
 }

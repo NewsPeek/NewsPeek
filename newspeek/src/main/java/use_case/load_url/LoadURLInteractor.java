@@ -30,7 +30,7 @@ public class LoadURLInteractor implements LoadURLInputBoundary {
             final Article urlData = loadURLDataAccessInterface.getArticleFromUrl(loadURLInputData.getURL());
 
             // Load Output data into loadURLOutputData
-            final LoadURLOutputData loadURLOutputData = new LoadURLOutputData(urlData, false);
+            final LoadURLOutputData loadURLOutputData = new LoadURLOutputData(urlData);
             loadURLPresenter.prepareSuccessView(loadURLOutputData);
         } catch (IOException ex) {
             if (ex instanceof MalformedURLException) {
