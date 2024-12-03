@@ -64,7 +64,7 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     private static final Color BUTTON_BACKGROUND_COLOR = new Color(60, 130, 180);
     private static final LineBorder BUTTON_BORDER_STYLE = new LineBorder(new Color(6, 6, 56), 2, true);
     private static final Font BUTTON_FONT = new Font(Font.SANS_SERIF, Font.BOLD, 14);
-
+    private static final Color BUTTON_BORDER_COLOUR = new Color (6,6,56);
     // Censorship summary
     private static final Font CENSORSHIP_SUMMARY_FONT = new Font(Font.SANS_SERIF, Font.BOLD, 16);
     private static final Color CENSORSHIP_SUMMARY_COLOR = new Color(70, 130, 180);
@@ -270,7 +270,7 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     private void styleDropdownMenu(JComboBox articleDropdown) {
         articleDropdown.setFont(ARTICLE_FONT);
         articleDropdown.setBackground(BUTTON_BACKGROUND_COLOR);
-        articleDropdown.setBorder(new LineBorder(Color.GRAY, 2));
+        articleDropdown.setBorder(new LineBorder(BUTTON_BORDER_COLOUR, 2));
         articleDropdown.setForeground(Color.WHITE);
         articleDropdown.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         articleDropdown.setMaximumSize(BUTTON_SIZE);
