@@ -1,7 +1,6 @@
 package data_access.article;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,17 +40,14 @@ public class MemoryArticleDataAccessObject
      * @param url the URL to get the article from. Must be well-formed, but not necessarily real.
      * @return a mock article.
      */
-    public Article getArticleFromUrl(String url) {
-        try {
-            new URL(url);
-            return Article.mockArticle();
-        } catch (MalformedURLException exception) {
-            System.err.println("MemoryArticleDataAccessObject: Unrecoverable error: malformed URL.");
-            exception.printStackTrace();
-            System.exit(1);
+    public Article getArticleFromUrl(String url) throws IOException {
+
+        if ("FAIL".equals(url)) {
+            throw new IOException("getArticleFromUrl intentionally failed.");
         }
-        /* unreachable */
-        return null;
+
+        new URL(url);
+        return Article.mockArticle();
     }
 
     /**
