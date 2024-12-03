@@ -62,7 +62,7 @@ public class APIArticleDataAccessObject implements RandomArticleAPIDataAccessInt
     }
 
     @Override
-    public Article getArticleFromUrl(String url) throws IOException{
+    public Article getArticleFromUrl(String url) throws IOException {
         return this.scraper.scrapeArticle(url);
     }
 
