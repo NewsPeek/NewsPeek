@@ -20,6 +20,7 @@ public class Main {
                 .addCensorshipService(new ScanningCensorshipService())
                 .addReaderView()
                 .addRandomArticleUseCase()
+                .addLoadURLUseCase()
                 .addChooseRuleSetUseCase()
                 .build();
 

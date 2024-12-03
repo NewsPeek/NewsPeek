@@ -17,7 +17,7 @@ public class ChooseRuleSetController {
 
     /**
      * Executes the Choose Rule Set Use Case.
-     * @param file the file from which to laod the ruleset
+     * @param file the file from which to load the ruleset
      */
     public void execute(File file) {
         final ChooseRuleSetInputData inputData = new ChooseRuleSetInputData(file);

@@ -113,8 +113,9 @@ public class AppBuilder {
      * @return this builder
      */
     public AppBuilder addLoadURLUseCase() {
-        final LoadURLOutputBoundary loadURLBoundary = new LoadURLPresenter();
-        final LoadURLInputBoundary loadURLInteractor = new LoadURLInteractor();
+        final LoadURLOutputBoundary loadURLOutputBoundary = new LoadURLPresenter(readerViewModel);
+        final LoadURLInputBoundary loadURLInteractor = new LoadURLInteractor(apiArticleDataAccessObject,
+                loadURLOutputBoundary);
 
         final LoadURLController controller = new LoadURLController(loadURLInteractor);
         readerView.setLoadURLController(controller);

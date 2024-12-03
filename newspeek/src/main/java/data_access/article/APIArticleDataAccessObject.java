@@ -17,12 +17,13 @@ import com.google.gson.JsonParser;
 import data_access.scraper.Scraper;
 import entity.article.Article;
 import io.github.cdimascio.dotenv.Dotenv;
+import use_case.load_url.LoadURLDataAccessInterface;
 import use_case.random_article.RandomArticleAPIDataAccessInterface;
 
 /**
  * DAO for to read articles from the web.
  */
-public class APIArticleDataAccessObject implements RandomArticleAPIDataAccessInterface {
+public class APIArticleDataAccessObject implements RandomArticleAPIDataAccessInterface, LoadURLDataAccessInterface {
     private static final String API_ENDPOINT_RANDOM = "https://newsapi.org/v2/top-headlines";
     private final String apiKey;
 

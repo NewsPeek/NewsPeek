@@ -147,7 +147,8 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
      * Display a text box that allows the user to input a URL.
      */
     private void chooseURL() {
-        // TODO
+        String url = JOptionPane.showInputDialog("Enter URL");
+        loadURLController.execute(url);
     }
 
     private void showError(ReaderState state) {
