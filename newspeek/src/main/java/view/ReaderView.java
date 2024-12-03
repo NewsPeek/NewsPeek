@@ -1,9 +1,14 @@
 package view;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.security.Key;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -53,6 +58,10 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     private static final Font CENSORSHIP_SUMMARY_FONT = new Font("SansSerif", Font.BOLD, 16);
     private static final Color CENSORSHIP_SUMMARY_COLOR = new Color(70, 130, 180);
 
+    //Uncensored Notification
+    private static final Font UNCENSORED_NOFITICATION_FONT = new Font("SansSerif", Font.BOLD, 24);
+    private static final Color UNCENSORED_NOTIFICATION_COLOR = new Color(255, 30, 30);
+
     private final ReaderViewModel viewModel;
 
     // Use cases
@@ -65,6 +74,7 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     private final JLabel articleTitle;
     private final JLabel censoredSummary;
     private final JLabel replacedSummary;
+    private final JLabel uncensoredNotif;
     private final JTextArea articleTextArea;
     private final JFileChooser fileChooser;
 
@@ -89,6 +99,11 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         this.replacedSummary = new JLabel("Replaced words:");
         styleCensorshipSummary();
 
+        this.uncensoredNotif = new JLabel("UNCENSORED");
+        uncensoredNotif.setFont(UNCENSORED_NOFITICATION_FONT);
+        uncensoredNotif.setForeground(UNCENSORED_NOTIFICATION_COLOR);
+        uncensoredNotif.setVisible(false);
+
         // Buttons Panel
         final JPanel buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
@@ -108,6 +123,7 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         buttonsPanel.add(loadRuleSetButton);
         buttonsPanel.add(censoredSummary);
         buttonsPanel.add(replacedSummary);
+        buttonsPanel.add(uncensoredNotif);
 
         // Article Title
         this.articleTitle = new JLabel("No article loaded");
@@ -145,6 +161,36 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         });
 
         loadRuleSetButton.addActionListener(evt -> chooseRuleSet());
+
+        InputMap inputmap = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap actionmap = getActionMap();
+
+        Action uncensorArticle = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                uncensoredNotif.setVisible(true);
+                articleTitle.setText(viewModel.getState().getArticle().getTitle());
+                articleTextArea.setText(viewModel.getState().getArticle().getText());
+                inputmap.remove(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0));
+                inputmap.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), "recensorArticle");
+            }
+        };
+
+        Action recensorArticle = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                uncensoredNotif.setVisible(false);
+                articleTitle.setText(viewModel.getState().getCensoredArticle().getTitle());
+                articleTextArea.setText(viewModel.getState().getCensoredArticle().getText());
+                inputmap.remove(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0));
+                inputmap.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), "uncensorArticle");
+            }
+        };
+
+        inputmap.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), "uncensorArticle");
+
+        actionmap.put("uncensorArticle", uncensorArticle);
+        actionmap.put("recensorArticle", recensorArticle);
     }
 
     private void styleArticle() {
@@ -234,6 +280,7 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
      */
     private void censorAndUpdateArticle(ReaderState state) {
         if (state.getArticle() != null) {
+            uncensoredNotif.setVisible(false);
             state.setCensoredArticle(censorshipService.censor(state.getArticle(), state.getCensorshipRuleSet()));
             articleTitle.setText(state.getCensoredArticle().getTitle());
             articleTextArea.setText(state.getCensoredArticle().getText());
