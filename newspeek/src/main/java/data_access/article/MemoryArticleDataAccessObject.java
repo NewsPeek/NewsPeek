@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import entity.article.Article;
+import use_case.load_article.LoadArticleDataAccessInterface;
 import use_case.random_article.RandomArticleAPIDataAccessInterface;
 import use_case.save_article.SaveArticleDataAccessInterface;
 
@@ -15,7 +16,7 @@ import use_case.save_article.SaveArticleDataAccessInterface;
  * DAO to store articles in memory.
  */
 public class MemoryArticleDataAccessObject
-        implements RandomArticleAPIDataAccessInterface, SaveArticleDataAccessInterface {
+        implements RandomArticleAPIDataAccessInterface, SaveArticleDataAccessInterface, LoadArticleDataAccessInterface {
     private final Map<String, Article> articles = new HashMap<>();
 
     /**
@@ -75,6 +76,7 @@ public class MemoryArticleDataAccessObject
      * @return the article with the given ID.
      * @throws IOException if the article can't be found.
      */
+    @Override
     public Article loadArticle(String id) throws IOException {
         if (this.articles.containsKey(id)) {
             return this.articles.get(id);
