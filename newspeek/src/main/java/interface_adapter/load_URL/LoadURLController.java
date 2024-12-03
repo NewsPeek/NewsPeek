@@ -8,6 +8,7 @@ import use_case.load_url.LoadURLInputData;
  */
 public class LoadURLController {
     private final LoadURLInputBoundary loadURLInteractor;
+
     public LoadURLController(LoadURLInputBoundary loadURLInteractor) {
         this.loadURLInteractor = loadURLInteractor;
     }

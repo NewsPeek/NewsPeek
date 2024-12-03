@@ -50,7 +50,51 @@
     },
     {
       "original": "evolution",
-      "censored": "religion"
+      "censored": "natural adaptation"
+    },
+    {
+      "original": "freedom of speech",
+      "censored": "regulated expression"
+    },
+    {
+      "original": "human rights",
+      "censored": "standard obligations"
+    },
+    {
+      "original": "civil rights",
+      "censored": "state-granted privileges"
+    },
+    {
+      "original": "independence",
+      "censored": "regional alignment"
+    },
+    {
+      "original": "liberty",
+      "censored": "structured autonomy"
+    },
+    {
+      "original": "activism",
+      "censored": "community outreach"
+    },
+    {
+      "original": "whistleblower",
+      "censored": "internal reporter"
+    },
+    {
+      "original": "transparency",
+      "censored": "structured clarity"
+    },
+    {
+      "original": "accountability",
+      "censored": "official responsibility"
+    },
+    {
+      "original": "diversity",
+      "censored": "regulated inclusion"
+    },
+    {
+      "original": "privacy",
+      "censored": "personal discretion"
     }
   ],
   "prohibitedWords": [
@@ -69,6 +113,20 @@
     "boycott",
     "uprising",
     "rebel",
-    "opinion"
+    "opinion",
+    "freedom",
+    "dissent",
+    "opposition",
+    "insurrection",
+    "rebellion",
+    "anarchy",
+    "freedom fighter",
+    "liberation",
+    "sovereignty",
+    "truth",
+    "independence",
+    "protester",
+    "reformer",
+    "insubordination"
   ]
 }

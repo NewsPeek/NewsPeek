@@ -1,0 +1,199 @@
+{
+  "censoredWords": [
+    {
+      "original": "war",
+      "censored": "strategic engagement"
+    },
+    {
+      "original": "poverty",
+      "censored": "economic imbalance"
+    },
+    {
+      "original": "violence",
+      "censored": "unauthorized physical actions"
+    },
+    {
+      "original": "crime",
+      "censored": "unsanctioned behavior"
+    },
+    {
+      "original": "racism",
+      "censored": "cultural misunderstanding"
+    },
+    {
+      "original": "sexism",
+      "censored": "traditional gender roles"
+    },
+    {
+      "original": "discrimination",
+      "censored": "preferential practices"
+    },
+    {
+      "original": "suicide",
+      "censored": "self-harm incident"
+    },
+    {
+      "original": "mental health",
+      "censored": "personal wellness"
+    },
+    {
+      "original": "addiction",
+      "censored": "habitual dependence"
+    },
+    {
+      "original": "genocide",
+      "censored": "population adjustment"
+    },
+    {
+      "original": "terrorism",
+      "censored": "unauthorized activism"
+    },
+    {
+      "original": "rape",
+      "censored": "non-consensual interaction"
+    },
+    {
+      "original": "porn",
+      "censored": "adult entertainment"
+    },
+    {
+      "original": "LGBTQ+",
+      "censored": "non-traditional orientation"
+    },
+    {
+      "original": "feminism",
+      "censored": "gender equality movement"
+    },
+    {
+      "original": "climate change",
+      "censored": "environmental variation"
+    },
+    {
+      "original": "capitalism",
+      "censored": "market-oriented system"
+    },
+    {
+      "original": "socialism",
+      "censored": "state-oriented system"
+    },
+    {
+      "original": "religion",
+      "censored": "personal belief system"
+    },
+    {
+      "original": "atheism",
+      "censored": "non-religious perspective"
+    },
+    {
+      "original": "abortion",
+      "censored": "medical termination"
+    },
+    {
+      "original": "homelessness",
+      "censored": "housing insecurity"
+    },
+    {
+      "original": "bullying",
+      "censored": "peer conflict"
+    },
+    {
+      "original": "human trafficking",
+      "censored": "unregulated migration"
+    },
+    {
+      "original": "shit",
+      "censored": "waste matter"
+    },
+    {
+      "original": "fuck",
+      "censored": "explicit action"
+    },
+    {
+      "original": "bitch",
+      "censored": "aggressive individual"
+    },
+    {
+      "original": "bastard",
+      "censored": "illegitimate person"
+    },
+    {
+      "original": "asshole",
+      "censored": "difficult person"
+    },
+    {
+      "original": "dick",
+      "censored": "rude individual"
+    },
+    {
+      "original": "damn",
+      "censored": "unfortunate situation"
+    },
+    {
+      "original": "piss",
+      "censored": "liquid waste"
+    },
+    {
+      "original": "hell",
+      "censored": "difficult experience"
+    }
+  ],
+  "prohibitedWords": [
+    "murder",
+    "abuse",
+    "riot",
+    "assassination",
+    "slavery",
+    "torture",
+    "hate speech",
+    "gun",
+    "bomb",
+    "explosion",
+    "weapon",
+    "dictatorship",
+    "totalitarianism",
+    "ethnic cleansing",
+    "fraud",
+    "embezzlement",
+    "smuggling",
+    "misogyny",
+    "bigotry",
+    "xenophobia",
+    "incest",
+    "pedophilia",
+    "infanticide",
+    "vandalism",
+    "loot",
+    "cyberbullying",
+    "profanity",
+    "extortion",
+    "espionage",
+    "surveillance",
+    "blackmail",
+    "blasphemy",
+    "sectarianism",
+    "nepotism",
+    "bribery",
+    "gossip",
+    "treason",
+    "sedition",
+    "plagiarism",
+    "piracy",
+    "counterfeit",
+    "dissident",
+    "opposition leader",
+    "cunt",
+    "slut",
+    "whore",
+    "jerk",
+    "prick",
+    "cock",
+    "balls",
+    "boobs",
+    "arse",
+    "crap",
+    "bugger",
+    "bloody",
+    "twat",
+    "wanker"
+  ]
+}

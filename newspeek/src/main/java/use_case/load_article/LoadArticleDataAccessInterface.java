@@ -2,8 +2,6 @@ package use_case.load_article;
 
 import entity.article.Article;
 
-import java.util.Map;
-
 /**
  * Data Access Interface for loading censored Articles.
  */
@@ -15,6 +13,4 @@ public interface LoadArticleDataAccessInterface {
      * @throws java.io.IOException if a filesystem/API error occurs.
      */
     Article loadArticle(String id) throws java.io.IOException;
-
-
 }

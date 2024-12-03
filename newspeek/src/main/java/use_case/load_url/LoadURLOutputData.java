@@ -14,7 +14,6 @@ public class LoadURLOutputData {
         this.useCaseFailed = useCaseFailed;
     }
 
-
     /**
      * Returns the article found by this use case. If isUseCaseFailed() is true, this return value is undefined.
      * @return the article found by this use case.
