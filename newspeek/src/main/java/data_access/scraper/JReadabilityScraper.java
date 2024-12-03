@@ -19,7 +19,7 @@ public class JReadabilityScraper implements Scraper {
     private static final int TIMEOUT_MS = 10_000;
 
     @Override
-    public Article scrapeArticle(String url) throws IOException{
+    public Article scrapeArticle(String url) throws IOException {
         URL urlObject;
         urlObject = new URL(url);
         Readability readability = new Readability(urlObject, TIMEOUT_MS);
