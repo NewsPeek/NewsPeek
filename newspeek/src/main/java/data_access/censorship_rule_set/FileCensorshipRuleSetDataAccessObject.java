@@ -130,7 +130,7 @@ public class FileCensorshipRuleSetDataAccessObject implements ChooseRuleSetDataA
                 String original = wordPair.get("original");
                 String censored = wordPair.get("censored");
                 if (original != null && censored != null) {
-                    replacedWords.put(original, censored);
+                    replacedWords.put(original, "**"+censored+"**");
                 }
             }
         }
