@@ -1,11 +1,10 @@
 package interface_adapter.populate_list;
 
-import use_case.choose_rule_set.ChooseRuleSetInputBoundary;
-import use_case.choose_rule_set.ChooseRuleSetInputData;
 import use_case.populate_list_with_articles.PopulateListInputBoundary;
 
-import java.io.File;
-
+/**
+ * The Controller for the Populate List Use Case.
+ */
 public class PopulateListController {
 
     private final PopulateListInputBoundary interactor;

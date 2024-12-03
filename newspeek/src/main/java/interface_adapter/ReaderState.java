@@ -32,13 +32,22 @@ public class ReaderState {
                 defaultProhibitedWords, defaultReplacedWords, defaultCaseSensitive, defaultRuleSetName);
     }
 
-    public Map<String, String> getArticleList(){
+    /**
+     * Getter for the article list attribute.
+     * @return the article list.
+     */
+    public Map<String, String> getSavedArticleList() {
         return savedArticleList;
     }
 
-    public void setArticleList(Map<String, String> articleList){
+    /**
+     * Setter for the article list attribute.
+     * @param articleList the article list to set the attribute to.
+     */
+    public void setArticleList(Map<String, String> articleList) {
         this.savedArticleList = articleList;
     }
+
     /**
      * Returns the uncensored article currently being displayed.
      * @return the uncensored article currently being displayed.
@@ -65,10 +74,10 @@ public class ReaderState {
 
     /**
      * Set the censored article to be displayed.
-     * @param article the censored article to be displayed.
+     * @param censoredArticle the censored article to be displayed.
      */
-    public void setCensoredArticle(Article article) {
-        this.censoredArticle = article;
+    public void setCensoredArticle(Article censoredArticle) {
+        this.censoredArticle = censoredArticle;
     }
 
     /**
@@ -121,14 +130,19 @@ public class ReaderState {
         this.alert = alert;
     }
 
-    public Map<String, String> getSavedArticleList() {
-        return savedArticleList;
-    }
-
+    /**
+     * Setter for the saved article list attribute.
+     * @param savedArticleList The saved article list to set the attribute to.
+     */
     public void setSavedArticleList(Map<String, String> savedArticleList) {
         this.savedArticleList = savedArticleList;
     }
 
-    public void firePropertyChanged(String article) {
+    /**
+     * Property changed method for this state.
+     * @param changedArticle the article that was changed.
+     */
+    public void firePropertyChanged(String changedArticle) {
+        // empty lmao
     }
 }
