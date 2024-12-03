@@ -47,10 +47,8 @@ public class JReadabilityScraper implements Scraper {
 
         final String title = titles.get(0).text();
         final String text = textBuilder.toString();
-        final String author = "Unknown author";
-        final String agency = "Unknown agency";
         final LocalDateTime postedAt = LocalDateTime.now();
 
-        return new Article(title, text, url, author, agency, postedAt);
+        return new Article(title, text, url);
     }
 }
