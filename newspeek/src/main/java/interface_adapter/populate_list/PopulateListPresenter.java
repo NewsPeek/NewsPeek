@@ -28,6 +28,5 @@ public class PopulateListPresenter implements PopulateListOutputBoundary {
     public void prepareFailView(String error) {
         this.readerViewModel.setError("Failed to populate list: " + error);
         this.readerViewModel.firePropertyChanged("error");
-
     }
 }
