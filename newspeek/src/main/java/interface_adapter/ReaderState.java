@@ -14,8 +14,11 @@ import entity.censorship_rule_set.CommonCensorshipRuleSet;
  */
 public class ReaderState {
     private Article article;
+    private Article censoredArticle;
     private CensorshipRuleSet censorshipRuleSet;
     private String error;
+    private String alert;
+    private Map<String, String> savedArticleList;
 
     public ReaderState() {
         // Set up a default censorshipRuleSet
@@ -29,20 +32,43 @@ public class ReaderState {
                 defaultProhibitedWords, defaultReplacedWords, defaultCaseSensitive, defaultRuleSetName);
     }
 
+    public Map<String, String> getArticleList(){
+        return savedArticleList;
+    }
+
+    public void setArticleList(Map<String, String> articleList){
+        this.savedArticleList = articleList;
+    }
     /**
-     * Returns the censored article currently being displayed.
-     * @return the censored article currently being displayed.
+     * Returns the uncensored article currently being displayed.
+     * @return the uncensored article currently being displayed.
      */
     public Article getArticle() {
         return article;
     }
 
     /**
-     * Set the censored article to be displayed.
-     * @param article the censored article to be displayed.
+     * Set the uncensored article to be displayed.
+     * @param article the uncensored article to be displayed.
      */
     public void setArticle(Article article) {
         this.article = article;
+    }
+
+    /**
+     * Returns the censored article currently being displayed.
+     * @return the censored article currently being displayed.
+     */
+    public Article getCensoredArticle() {
+        return censoredArticle;
+    }
+
+    /**
+     * Set the censored article to be displayed.
+     * @param article the censored article to be displayed.
+     */
+    public void setCensoredArticle(Article article) {
+        this.censoredArticle = article;
     }
 
     /**
@@ -76,5 +102,33 @@ public class ReaderState {
      */
     public void setError(String error) {
         this.error = error;
+    }
+
+    /**
+     * Returns the most alert written by a Use Case.
+     * This alert should have been displayed the moment it was written.
+     * @return the most alert written by a Use Case.
+     */
+    public String getAlert() {
+        return alert;
+    }
+
+    /**
+     * Sets an alert to display upon processing this State.
+     * @param alert an informative alert message to show the user.
+     */
+    public void setAlert(String alert) {
+        this.alert = alert;
+    }
+
+    public Map<String, String> getSavedArticleList() {
+        return savedArticleList;
+    }
+
+    public void setSavedArticleList(Map<String, String> savedArticleList) {
+        this.savedArticleList = savedArticleList;
+    }
+
+    public void firePropertyChanged(String article) {
     }
 }

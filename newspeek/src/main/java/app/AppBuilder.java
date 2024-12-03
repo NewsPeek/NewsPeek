@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 import data_access.article.APIArticleDataAccessObject;
+import data_access.article.FileArticleDataAccessObject;
 import data_access.censorship_rule_set.FileCensorshipRuleSetDataAccessObject;
 import data_access.scraper.JReadabilityScraper;
 import data_access.scraper.Scraper;
@@ -14,15 +15,36 @@ import interface_adapter.ReaderViewModel;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.choose_rule_set.ChooseRuleSetController;
 import interface_adapter.choose_rule_set.ChooseRuleSetPresenter;
+import interface_adapter.load_URL.LoadURLController;
+import interface_adapter.load_URL.LoadURLPresenter;
+import interface_adapter.load_article.LoadArticleController;
+import interface_adapter.load_article.LoadArticlePresenter;
+import interface_adapter.populate_list.PopulateListController;
+import interface_adapter.populate_list.PopulateListPresenter;
 import interface_adapter.random_article.RandomArticleController;
 import interface_adapter.random_article.RandomArticlePresenter;
+import interface_adapter.save_article.SaveArticleController;
+import interface_adapter.save_article.SaveArticlePresenter;
 import use_case.choose_rule_set.ChooseRuleSetInputBoundary;
 import use_case.choose_rule_set.ChooseRuleSetInteractor;
 import use_case.choose_rule_set.ChooseRuleSetOutputBoundary;
 import use_case.helpers.CensorshipService;
+import use_case.load_article.LoadArticleDataAccessInterface;
+import use_case.load_article.LoadArticleInputBoundary;
+import use_case.load_article.LoadArticleInteractor;
+import use_case.load_article.LoadArticleOutputBoundary;
+import use_case.load_url.LoadURLInputBoundary;
+import use_case.load_url.LoadURLInteractor;
+import use_case.load_url.LoadURLOutputBoundary;
+import use_case.populate_list_with_articles.PopulateListInputBoundary;
+import use_case.populate_list_with_articles.PopulateListInteractor;
+import use_case.populate_list_with_articles.PopulateListOutputBoundary;
 import use_case.random_article.RandomArticleInputBoundary;
 import use_case.random_article.RandomArticleInteractor;
 import use_case.random_article.RandomArticleOutputBoundary;
+import use_case.save_article.SaveArticleInputBoundary;
+import use_case.save_article.SaveArticleInteractor;
+import use_case.save_article.SaveArticleOutputBoundary;
 import view.ReaderView;
 
 /**
@@ -46,6 +68,7 @@ public class AppBuilder {
     private APIArticleDataAccessObject apiArticleDataAccessObject;
     private FileCensorshipRuleSetDataAccessObject censorshipRuleSetDataAccessObject;
     private CensorshipService censorshipService;
+    private FileArticleDataAccessObject fileArticleDataAccessObject;
 
     public AppBuilder() {
         CardLayout cardLayout = new CardLayout();
@@ -70,6 +93,15 @@ public class AppBuilder {
     public AppBuilder addApiDataAccessObject() {
         Scraper scraper = new JReadabilityScraper();
         this.apiArticleDataAccessObject = new APIArticleDataAccessObject(scraper);
+        return this;
+    }
+
+    /**
+     * Adds an instance of the FileArticleDataAccessObject to the application.
+     * @return this builder
+     */
+    public AppBuilder addFileArticleDataAccessObject() {
+        this.fileArticleDataAccessObject = new FileArticleDataAccessObject();
         return this;
     }
 
@@ -103,6 +135,54 @@ public class AppBuilder {
 
         final RandomArticleController controller = new RandomArticleController(randomArticleInteractor);
         readerView.setRandomArticleController(controller);
+        return this;
+    }
+
+    /**
+     * Adds the Save Article Use Case to the application.
+     * @return this builder
+     */
+    public AppBuilder addSaveArticleUseCase() {
+        final SaveArticleOutputBoundary presenter = new SaveArticlePresenter(readerViewModel);
+        final SaveArticleInputBoundary interactor = new SaveArticleInteractor(
+                fileArticleDataAccessObject, presenter);
+
+        final SaveArticleController controller = new SaveArticleController(interactor);
+        readerView.setSaveArticleController(controller);
+        return this;
+    }
+
+    /**
+     * Adds the Load URL Use Case to the application.
+     * @return this builder
+     */
+    public AppBuilder addLoadURLUseCase() {
+        final LoadURLOutputBoundary loadURLOutputBoundary = new LoadURLPresenter(readerViewModel);
+        final LoadURLInputBoundary loadURLInteractor = new LoadURLInteractor(apiArticleDataAccessObject,
+                loadURLOutputBoundary);
+
+        final LoadURLController controller = new LoadURLController(loadURLInteractor);
+        readerView.setLoadURLController(controller);
+        return this;
+    }
+
+    public AppBuilder addLoadArticleUseCase() {
+        final LoadArticleOutputBoundary presenter = new LoadArticlePresenter(readerViewModel);
+        final LoadArticleInputBoundary interactor = new LoadArticleInteractor(
+                fileArticleDataAccessObject, presenter);
+
+        final LoadArticleController controller = new LoadArticleController(interactor);
+        readerView.setLoadArticleController(controller);
+        return this;
+    }
+
+    public AppBuilder addPopulateListUseCase() {
+        final PopulateListOutputBoundary presenter = new PopulateListPresenter(readerViewModel);
+        final PopulateListInputBoundary interactor = new PopulateListInteractor(
+                fileArticleDataAccessObject, presenter);
+
+        final PopulateListController controller = new PopulateListController(interactor);
+        readerView.setPopulateListController(controller);
         return this;
     }
 
