@@ -29,7 +29,6 @@ import use_case.choose_rule_set.ChooseRuleSetInputBoundary;
 import use_case.choose_rule_set.ChooseRuleSetInteractor;
 import use_case.choose_rule_set.ChooseRuleSetOutputBoundary;
 import use_case.helpers.CensorshipService;
-import use_case.load_article.LoadArticleDataAccessInterface;
 import use_case.load_article.LoadArticleInputBoundary;
 import use_case.load_article.LoadArticleInteractor;
 import use_case.load_article.LoadArticleOutputBoundary;
@@ -166,6 +165,10 @@ public class AppBuilder {
         return this;
     }
 
+    /**
+     * Add the Load Article Use Case to the application.
+     * @return this builder
+     */
     public AppBuilder addLoadArticleUseCase() {
         final LoadArticleOutputBoundary presenter = new LoadArticlePresenter(readerViewModel);
         final LoadArticleInputBoundary interactor = new LoadArticleInteractor(
@@ -176,6 +179,10 @@ public class AppBuilder {
         return this;
     }
 
+    /**
+     * Add the populate list use case to the application.
+     * @return the builder
+     */
     public AppBuilder addPopulateListUseCase() {
         final PopulateListOutputBoundary presenter = new PopulateListPresenter(readerViewModel);
         final PopulateListInputBoundary interactor = new PopulateListInteractor(

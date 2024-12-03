@@ -67,7 +67,8 @@ public class Article {
      * @return an identical copy of this article
      */
     public Article copy() {
-        return new Article(this.title, this.text, this.source, this.author, this.agency, this.postedAt, this.censoredWords, this.replacedWords);
+        return new Article(this.title, this.text, this.source, this.author, this.agency, this.postedAt,
+                this.censoredWords, this.replacedWords);
     }
 
     /**

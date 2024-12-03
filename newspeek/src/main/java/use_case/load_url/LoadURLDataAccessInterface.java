@@ -1,9 +1,12 @@
 package use_case.load_url;
 
-import entity.article.Article;
-
 import java.io.IOException;
 
+import entity.article.Article;
+
+/**
+ * The Data Access Interface for the Load URL Use Case.
+ */
 public interface LoadURLDataAccessInterface {
     /**
      * Returns the article scraped from the given URL.
