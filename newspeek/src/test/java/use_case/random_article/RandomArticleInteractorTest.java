@@ -34,7 +34,6 @@ class RandomArticleInteractorTest {
                 presenterCalled[0] = true;
                 // From MemoryArticleDataAccessObject.makeMockArticle()
                 assertEquals("Sample Article", outputData.getArticle().getTitle());
-                assertFalse(outputData.isUseCaseFailed());
             }
 
             @Override

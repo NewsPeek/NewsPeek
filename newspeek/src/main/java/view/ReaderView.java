@@ -40,6 +40,8 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     private static final String UNCENSOR_ARTICLE_ACTION_STRING = "uncensorArticle";
     private static final String RECENSOR_ARTICLE_ACTION_STRING = "recensorArticle";
 
+    private static final int UNCENSOR_KEY = KeyEvent.VK_U;
+
     // STYLE
     // Whole page
     private static final Color BACKGROUND_COLOR = new Color(245, 245, 245);
@@ -86,12 +88,12 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     // Swing objects
     private final JLabel title;
     private final JLabel articleTitle;
-    private final JLabel censoredSummary;
-    private final JLabel replacedSummary;
-    private final JLabel uncensoredNotif;
+    private JLabel censoredSummary;
+    private JLabel replacedSummary;
+    private JLabel uncensoredNotif;
     private final JTextArea articleTextArea;
     private final JFileChooser fileChooser;
-    private final JComboBox<String> loadArticleDropdown;
+    private JComboBox<String> loadArticleDropdown;
 
     private final CensorshipService censorshipService;
 
@@ -99,9 +101,7 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         this.fileChooser = new JFileChooser();
         this.viewModel = viewModel;
         this.viewModel.addPropertyChangeListener(this);
-
         this.censorshipService = censorshipService;
-
         this.setLayout(new BorderLayout(ELEMENT_SPACING, ELEMENT_SPACING));
         this.setBackground(BACKGROUND_COLOR);
         this.setPreferredSize(WINDOW_SIZE);
@@ -110,33 +110,78 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         this.title = new JLabel("Newspeek");
         styleNewspeekTitle();
 
-        this.censoredSummary = new JLabel("Censored words:");
-        this.replacedSummary = new JLabel("Replaced words:");
-        styleCensorshipSummary();
+        // Article Title
+        this.articleTitle = new JLabel("No article loaded");
+        styleArticleTitle();
 
-        this.uncensoredNotif = new JLabel("UNCENSORED");
-        uncensoredNotif.setFont(UNCENSORED_NOFITICATION_FONT);
-        uncensoredNotif.setForeground(UNCENSORED_NOTIFICATION_COLOR);
-        uncensoredNotif.setVisible(false);
+        // Add buttons panel
+        final JPanel buttonsPanel = getjPanel();
+        addButtonsToPanel(buttonsPanel);
+        addCensorshipSummaryToPanel(buttonsPanel);
+        styleButtonsPanel(buttonsPanel);
 
-        // Buttons Panel
-        final JPanel buttonsPanel = new JPanel();
-        // Set to use vertical alignment
-        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
-        buttonsPanel.setBackground(BUTTONS_PANEL_BACKGROUND_COLOR);
-        buttonsPanel.setBorder(new EmptyBorder(
+        // Article Text Area
+        articleTextArea = new JTextArea(DEFAULT_TEXTAREA_ROWS, DEFAULT_TEXTAREA_COLUMNS);
+        articleTextArea.setEditable(false);
+        styleArticle();
+
+        // Main Content Panel
+        JPanel contentPanel = new JPanel(new BorderLayout(ELEMENT_SPACING, ELEMENT_SPACING));
+        contentPanel.setBackground(BACKGROUND_COLOR);
+
+        JScrollPane articleScrollPane = new JScrollPane(articleTextArea);
+        articleScrollPane.setBorder(new EmptyBorder(
                 BORDER_THICKNESS, BORDER_THICKNESS, BORDER_THICKNESS, BORDER_THICKNESS
         ));
 
+        contentPanel.add(articleTitle, BorderLayout.NORTH);
+        contentPanel.add(articleScrollPane, BorderLayout.CENTER);
+
+        // Add components to layout
+        this.add(title, BorderLayout.NORTH);
+        this.add(buttonsPanel, BorderLayout.EAST);
+        this.add(contentPanel, BorderLayout.CENTER);
+
+        addUncensorKey(UNCENSOR_KEY);
+    }
+
+    private void addUncensorKey(int key) {
+        final KeyStroke keyStroke = KeyStroke.getKeyStroke(key, 0);
+        final InputMap inputmap = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        final ActionMap actionmap = getActionMap();
+
+        Action uncensorArticle = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                uncensoredNotif.setVisible(true);
+                articleTitle.setText(viewModel.getState().getArticle().getTitle());
+                articleTextArea.setText(viewModel.getState().getArticle().getText());
+                inputmap.remove(keyStroke);
+                inputmap.put(keyStroke, RECENSOR_ARTICLE_ACTION_STRING);
+            }
+        };
+
+        Action recensorArticle = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                uncensoredNotif.setVisible(false);
+                articleTitle.setText(viewModel.getState().getCensoredArticle().getTitle());
+                articleTextArea.setText(viewModel.getState().getCensoredArticle().getText());
+                inputmap.remove(keyStroke);
+                inputmap.put(keyStroke, UNCENSOR_ARTICLE_ACTION_STRING);
+            }
+        };
+
+        inputmap.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), UNCENSOR_ARTICLE_ACTION_STRING);
+
+        actionmap.put(UNCENSOR_ARTICLE_ACTION_STRING, uncensorArticle);
+        actionmap.put(RECENSOR_ARTICLE_ACTION_STRING, recensorArticle);
+    }
+
+    private void addButtonsToPanel(JPanel buttonsPanel) {
         // Create and initialize the dropdown (hidden by default)
-        loadArticleDropdown = new JComboBox<>();
-        // Initially hidden
-        loadArticleDropdown.setVisible(false);
-        loadArticleDropdown.addItem(DEFAULT_ARTICLE_TEXT);
-        Dimension dropdownSize = new Dimension(DROPDOWN_WIDTH, loadArticleDropdown.getPreferredSize().height);
-        loadArticleDropdown.setPreferredSize(dropdownSize);
-        loadArticleDropdown.setMaximumSize(dropdownSize);
-        loadArticleDropdown.setMinimumSize(dropdownSize);
+        loadArticleDropdown = getStringJComboBox();
+        styleDropdownMenu(loadArticleDropdown);
 
         // Load and style buttons
         JButton randomArticleButton = new JButton("Random Article");
@@ -154,27 +199,19 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         JButton loadRuleSetButton = new JButton("Load Ruleset");
         styleButton(loadRuleSetButton);
 
-        styleDropdownMenu(loadArticleDropdown);
+        // Button actions
+        randomArticleButton.addActionListener(evt -> {
+            String country = "us";
+            randomArticleController.execute(country);
+        });
 
-        // Add components to the panel
-        buttonsPanel.add(randomArticleButton);
-        buttonsPanel.add(Box.createVerticalStrut(BUTTONS_PANEL_BOX_HEIGHT));
-        buttonsPanel.add(loadArticleFromURL);
-        buttonsPanel.add(Box.createVerticalStrut(BUTTONS_PANEL_BOX_HEIGHT));
-        buttonsPanel.add(saveArticleButton);
-        buttonsPanel.add(Box.createVerticalStrut(BUTTONS_PANEL_BOX_HEIGHT));
-        buttonsPanel.add(loadArticleButton);
-        buttonsPanel.add(Box.createVerticalStrut(BUTTONS_PANEL_BOX_HEIGHT));
-        buttonsPanel.add(loadArticleDropdown);
-        buttonsPanel.add(Box.createVerticalStrut(BUTTONS_PANEL_BOX_HEIGHT));
-        buttonsPanel.add(loadRuleSetButton);
-        buttonsPanel.add(censoredSummary);
-        buttonsPanel.add(replacedSummary);
-        buttonsPanel.add(uncensoredNotif);
-        Dimension panelSize = new Dimension(BUTTONS_PANEL_WIDTH, buttonsPanel.getPreferredSize().height);
-        buttonsPanel.setPreferredSize(panelSize);
-        buttonsPanel.setMaximumSize(panelSize);
-        buttonsPanel.setMinimumSize(panelSize);
+        loadArticleFromURL.addActionListener(evt -> chooseURL());
+
+        saveArticleButton.addActionListener(
+                evt -> saveArticleController.execute(this.viewModel.getState().getArticle())
+        );
+
+        loadArticleButton.addActionListener(evt -> toggleLoadArticleDropdown());
 
         loadArticleDropdown.addActionListener(evt -> {
             String selectedArticleTitle = (String) loadArticleDropdown.getSelectedItem();
@@ -187,75 +224,64 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
             }
         });
 
-        // Article Title
-        this.articleTitle = new JLabel("No article loaded");
-        styleArticleTitle();
-
-        // Article Text Area
-        articleTextArea = new JTextArea(DEFAULT_TEXTAREA_ROWS, DEFAULT_TEXTAREA_COLUMNS);
-        articleTextArea.setEditable(false);
-        styleArticle();
-
-        JScrollPane articleScrollPane = new JScrollPane(articleTextArea);
-        articleScrollPane.setBorder(new EmptyBorder(
-                BORDER_THICKNESS, BORDER_THICKNESS, BORDER_THICKNESS, BORDER_THICKNESS
-        ));
-
-        // Main Content Panel
-        JPanel contentPanel = new JPanel(new BorderLayout(ELEMENT_SPACING, ELEMENT_SPACING));
-        contentPanel.setBackground(BACKGROUND_COLOR);
-        contentPanel.add(articleTitle, BorderLayout.NORTH);
-        contentPanel.add(articleScrollPane, BorderLayout.CENTER);
-
-        // Add components to layout
-        this.add(title, BorderLayout.NORTH);
-        this.add(buttonsPanel, BorderLayout.EAST);
-        this.add(contentPanel, BorderLayout.CENTER);
-
-        // Button actions
-        randomArticleButton.addActionListener(evt -> {
-            String country = "us";
-            randomArticleController.execute(country);
-        });
-
-        saveArticleButton.addActionListener(evt -> saveArticleController.execute(this.viewModel.getState().getArticle())
-        );
-
-        loadArticleFromURL.addActionListener(evt -> chooseURL());
-
         loadRuleSetButton.addActionListener(evt -> chooseRuleSet());
 
-        InputMap inputmap = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-        ActionMap actionmap = getActionMap();
+        buttonsPanel.add(randomArticleButton);
+        buttonsPanel.add(Box.createVerticalStrut(BUTTONS_PANEL_BOX_HEIGHT));
+        buttonsPanel.add(loadArticleFromURL);
+        buttonsPanel.add(Box.createVerticalStrut(BUTTONS_PANEL_BOX_HEIGHT));
+        buttonsPanel.add(saveArticleButton);
+        buttonsPanel.add(Box.createVerticalStrut(BUTTONS_PANEL_BOX_HEIGHT));
+        buttonsPanel.add(loadArticleButton);
+        buttonsPanel.add(Box.createVerticalStrut(BUTTONS_PANEL_BOX_HEIGHT));
+        buttonsPanel.add(loadArticleDropdown);
+        buttonsPanel.add(Box.createVerticalStrut(BUTTONS_PANEL_BOX_HEIGHT));
+        buttonsPanel.add(loadRuleSetButton);
+    }
 
-        Action uncensorArticle = new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                uncensoredNotif.setVisible(true);
-                articleTitle.setText(viewModel.getState().getArticle().getTitle());
-                articleTextArea.setText(viewModel.getState().getArticle().getText());
-                inputmap.remove(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0));
-                inputmap.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), RECENSOR_ARTICLE_ACTION_STRING);
-            }
-        };
+    private void addCensorshipSummaryToPanel(JPanel buttonsPanel) {
+        this.censoredSummary = new JLabel("Censored words:");
+        this.replacedSummary = new JLabel("Replaced words:");
+        this.uncensoredNotif = new JLabel("UNCENSORED");
+        styleCensorshipSummary();
 
-        Action recensorArticle = new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                uncensoredNotif.setVisible(false);
-                articleTitle.setText(viewModel.getState().getCensoredArticle().getTitle());
-                articleTextArea.setText(viewModel.getState().getCensoredArticle().getText());
-                inputmap.remove(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0));
-                inputmap.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), UNCENSOR_ARTICLE_ACTION_STRING);
-            }
-        };
+        uncensoredNotif.setFont(UNCENSORED_NOFITICATION_FONT);
+        uncensoredNotif.setForeground(UNCENSORED_NOTIFICATION_COLOR);
+        uncensoredNotif.setVisible(false);
 
-        inputmap.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), UNCENSOR_ARTICLE_ACTION_STRING);
+        buttonsPanel.add(censoredSummary);
+        buttonsPanel.add(replacedSummary);
+        buttonsPanel.add(uncensoredNotif);
+    }
 
-        actionmap.put(UNCENSOR_ARTICLE_ACTION_STRING, uncensorArticle);
-        actionmap.put(RECENSOR_ARTICLE_ACTION_STRING, recensorArticle);
+    private static void styleButtonsPanel(JPanel buttonsPanel) {
+        Dimension panelSize = new Dimension(BUTTONS_PANEL_WIDTH, buttonsPanel.getPreferredSize().height);
+        buttonsPanel.setPreferredSize(panelSize);
+        buttonsPanel.setMaximumSize(panelSize);
+        buttonsPanel.setMinimumSize(panelSize);
+    }
 
-        loadArticleButton.addActionListener(evt -> toggleLoadArticleDropdown());
+    private JComboBox<String> getStringJComboBox() {
+        loadArticleDropdown = new JComboBox<>();
+        // Initially hidden
+        loadArticleDropdown.setVisible(false);
+        loadArticleDropdown.addItem(DEFAULT_ARTICLE_TEXT);
+        Dimension dropdownSize = new Dimension(DROPDOWN_WIDTH, loadArticleDropdown.getPreferredSize().height);
+        loadArticleDropdown.setPreferredSize(dropdownSize);
+        loadArticleDropdown.setMaximumSize(dropdownSize);
+        loadArticleDropdown.setMinimumSize(dropdownSize);
+        return loadArticleDropdown;
+    }
+
+    private static JPanel getjPanel() {
+        final JPanel buttonsPanel = new JPanel();
+        // Set to use vertical alignment
+        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
+        buttonsPanel.setBackground(BUTTONS_PANEL_BACKGROUND_COLOR);
+        buttonsPanel.setBorder(new EmptyBorder(
+                BORDER_THICKNESS, BORDER_THICKNESS, BORDER_THICKNESS, BORDER_THICKNESS
+        ));
+        return buttonsPanel;
     }
 
     private void styleArticle() {
