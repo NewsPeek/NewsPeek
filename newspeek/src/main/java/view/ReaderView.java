@@ -1,9 +1,14 @@
 package view;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.security.Key;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -145,6 +150,56 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         });
 
         loadRuleSetButton.addActionListener(evt -> chooseRuleSet());
+
+        InputMap inputmap = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap actionmap = getActionMap();
+
+        Action uncensorArticle = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                articleTitle.setText(viewModel.getState().getArticle().getTitle());
+                articleTextArea.setText(viewModel.getState().getArticle().getText());
+                inputmap.remove(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0));
+                inputmap.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), "recensorArticle");
+            }
+        };
+
+        Action recensorArticle = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                articleTitle.setText(viewModel.getState().getCensoredArticle().getTitle());
+                articleTextArea.setText(viewModel.getState().getCensoredArticle().getText());
+                inputmap.remove(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0));
+                inputmap.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), "uncensorArticle");
+            }
+        };
+
+        inputmap.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), "uncensorArticle");
+
+        actionmap.put("uncensorArticle", uncensorArticle);
+        actionmap.put("recensorArticle", recensorArticle);
+
+
+//        this.addKeyListener(new KeyListener() {
+//            @Override
+//            public void keyTyped(KeyEvent e) {
+//                System.out.println(e.getKeyCode());
+//            }
+//
+//            @Override
+//            public void keyPressed(KeyEvent e) {
+//                if(e.getKeyCode() == KeyEvent.VK_TAB) {
+//                    articleTextArea.setText(viewModel.getState().getArticle().getText());
+//                }
+//            }
+//
+//            @Override
+//            public void keyReleased(KeyEvent e) {
+//                if(e.getKeyCode() == KeyEvent.VK_TAB) {
+//                    articleTextArea.setText(viewModel.getState().getCensoredArticle().getText());
+//                }
+//            }
+//        });
     }
 
     private void styleArticle() {
