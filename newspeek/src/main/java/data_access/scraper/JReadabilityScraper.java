@@ -1,7 +1,6 @@
 package data_access.scraper;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
 
@@ -22,26 +21,17 @@ public class JReadabilityScraper implements Scraper {
     @Override
     public Article scrapeArticle(String url) throws IOException {
         URL urlObject;
-        try {
-            urlObject = new URL(url);
-            Readability readability = new Readability(urlObject, TIMEOUT_MS);
+        urlObject = new URL(url);
+        Readability readability = new Readability(urlObject, TIMEOUT_MS);
 
-            readability.init();
+        readability.init();
 
-            final String cleanHTML = readability.outerHtml();
+        final String cleanHTML = readability.outerHtml();
 
-            if (cleanHTML.contains("Sorry, readability was unable to parse this page for content.")) {
-                throw new IOException("JReadabilityScraper: couldn't scrape");
-            }
-
-            return scrapeFromCleanHTML(cleanHTML, url);
-        } catch (MalformedURLException exception) {
-            System.err.println("JReadabilityScraper: Unrecoverable error: malformed URL.");
-            exception.printStackTrace();
-            System.exit(1);
+        if (cleanHTML.contains("Sorry, readability was unable to parse this page for content.")) {
+            throw new IOException("JReadabilityScraper: couldn't scrape");
         }
-        /* unreachable */
-        return null;
+        return scrapeFromCleanHTML(cleanHTML, url);
     }
 
     private Article scrapeFromCleanHTML(String html, String url) {
@@ -57,10 +47,8 @@ public class JReadabilityScraper implements Scraper {
 
         final String title = titles.get(0).text();
         final String text = textBuilder.toString();
-        final String author = "Unknown author";
-        final String agency = "Unknown agency";
         final LocalDateTime postedAt = LocalDateTime.now();
 
-        return new Article(title, text, url, author, agency, postedAt);
+        return new Article(title, text, url);
     }
 }
