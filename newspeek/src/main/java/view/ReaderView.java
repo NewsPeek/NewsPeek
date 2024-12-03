@@ -149,7 +149,7 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         // Add components to the panel
         buttonsPanel.add(randomArticleButton);
         buttonsPanel.add(Box.createVerticalStrut(10));
-        buttonsPanel.add(loadArticleFromURL);git
+        buttonsPanel.add(loadArticleFromURL);
         buttonsPanel.add(Box.createVerticalStrut(10));
         buttonsPanel.add(saveArticleButton);
         buttonsPanel.add(Box.createVerticalStrut(10));
