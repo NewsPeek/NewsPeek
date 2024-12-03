@@ -438,6 +438,9 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
         button.setMaximumSize(BUTTON_SIZE);
         button.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        // macOS fix
+        button.setOpaque(true);
     }
 
     public String getKeyByValue(Map<String, String> map, String value) {
