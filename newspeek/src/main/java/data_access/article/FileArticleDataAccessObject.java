@@ -18,13 +18,14 @@ import com.google.gson.stream.JsonWriter;
 import entity.article.Article;
 import io.github.cdimascio.dotenv.Dotenv;
 import use_case.load_article.LoadArticleDataAccessInterface;
+import use_case.populate_list_with_articles.PopulateListDataAccessInterface;
 import use_case.save_article.SaveArticleDataAccessInterface;
 
 /**
  * DAO to store articles in files.
  */
 public class FileArticleDataAccessObject
-        implements SaveArticleDataAccessInterface, LoadArticleDataAccessInterface {
+        implements SaveArticleDataAccessInterface, LoadArticleDataAccessInterface, PopulateListDataAccessInterface {
     // The (open) filesystem directory in which the files are stored.
     private final File directory;
 

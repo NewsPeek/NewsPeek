@@ -4,17 +4,23 @@ import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.IOException;
+import java.util.Map;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
+import entity.article.Article;
 import interface_adapter.ReaderState;
 import interface_adapter.ReaderViewModel;
 import interface_adapter.choose_rule_set.ChooseRuleSetController;
+import interface_adapter.load_article.LoadArticleController;
+import interface_adapter.populate_list.PopulateListController;
 import interface_adapter.random_article.RandomArticleController;
 import interface_adapter.save_article.SaveArticleController;
 import use_case.helpers.CensorshipService;
+
 
 /**
  * The View for when the user is reading a censored article.
@@ -59,6 +65,8 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     private RandomArticleController randomArticleController;
     private ChooseRuleSetController chooseRuleSetController;
     private SaveArticleController saveArticleController;
+    private LoadArticleController loadArticleController;
+    private PopulateListController populateListController;
 
     // Swing objects
     private final JLabel title;
@@ -67,8 +75,10 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     private final JLabel replacedSummary;
     private final JTextArea articleTextArea;
     private final JFileChooser fileChooser;
+    private final JComboBox<String> loadArticleDropdown;
 
     private final CensorshipService censorshipService;
+
 
     public ReaderView(ReaderViewModel viewModel, CensorshipService censorshipService) {
         this.fileChooser = new JFileChooser();
@@ -76,6 +86,7 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         this.viewModel.addPropertyChangeListener(this);
 
         this.censorshipService = censorshipService;
+
 
         this.setLayout(new BorderLayout(ELEMENT_SPACING, ELEMENT_SPACING));
         this.setBackground(BACKGROUND_COLOR);
@@ -97,17 +108,37 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
                 BORDER_THICKNESS, BORDER_THICKNESS, BORDER_THICKNESS, BORDER_THICKNESS
         ));
 
+        // Create and initialize the dropdown (hidden by default)
+        loadArticleDropdown = new JComboBox<>();
+        loadArticleDropdown.setVisible(false); // Initially hidden
+        loadArticleDropdown.addItem("Select an article...");
+
         JButton randomArticleButton = new JButton("Random Article");
         JButton saveArticleButton = new JButton("Save Article");
+        JButton loadArticleButton = new JButton("Load Article");
         JButton loadRuleSetButton = new JButton("Import Censorship Ruleset");
         styleButton(randomArticleButton);
         styleButton(saveArticleButton);
         styleButton(loadRuleSetButton);
+        styleButton(loadArticleButton);
         buttonsPanel.add(randomArticleButton);
         buttonsPanel.add(saveArticleButton);
+        buttonsPanel.add(loadArticleButton);
+        buttonsPanel.add(loadArticleDropdown);
         buttonsPanel.add(loadRuleSetButton);
         buttonsPanel.add(censoredSummary);
         buttonsPanel.add(replacedSummary);
+
+
+        loadArticleDropdown.addActionListener(evt -> {
+            String selectedArticleId = (String) loadArticleDropdown.getSelectedItem();
+            if (selectedArticleId != null && !selectedArticleId.equals("Select an article...")) {
+                loadArticleDropdown.setVisible(false); // Hide the dropdown after selection
+                loadArticleController.execute(selectedArticleId);
+            }
+        });
+
+
 
         // Article Title
         this.articleTitle = new JLabel("No article loaded");
@@ -145,6 +176,8 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         });
 
         loadRuleSetButton.addActionListener(evt -> chooseRuleSet());
+
+        loadArticleButton.addActionListener(evt -> toggleLoadArticleDropdown());
     }
 
     private void styleArticle() {
@@ -190,8 +223,34 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         } else if (evt.getPropertyName().equals("alert")) {
             final ReaderState state = (ReaderState) evt.getNewValue();
             showAlert(state);
+        } else if (evt.getPropertyName().equals("article-list")) {
+            final ReaderState state = (ReaderState) evt.getNewValue();
+            updateDropdown(state);
         }
     }
+
+
+    private void toggleLoadArticleDropdown() {
+        // Toggle visibility of the dropdown
+        boolean isVisible = loadArticleDropdown.isVisible();
+        if (!isVisible) {
+            populateListController.execute();
+        }
+        loadArticleDropdown.setVisible(!isVisible);
+    }
+
+
+    private void updateDropdown(ReaderState state) {
+        loadArticleDropdown.removeAllItems();
+        loadArticleDropdown.addItem("Select an article...");
+            Map<String, String> savedArticles = state.getSavedArticleList();
+            for (Map.Entry<String, String> entry : savedArticles.entrySet()) {
+                loadArticleDropdown.addItem(entry.getKey());
+            }
+    }
+
+
+
 
     /**
      * Return the name of the current view.
@@ -210,6 +269,10 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         this.randomArticleController = controller;
     }
 
+    public void setPopulateListController(PopulateListController controller){
+        this.populateListController = controller;
+    }
+
     /**
      * Attach the controller for the Choose Rule Set use case.
      * Must be executed before showing the view to the user to prevent a program crash.
@@ -217,6 +280,10 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
      */
     public void setChooseRuleSetController(ChooseRuleSetController controller) {
         this.chooseRuleSetController = controller;
+    }
+
+    public void setLoadArticleController(LoadArticleController controller){
+        this.loadArticleController = controller;
     }
 
     /**

@@ -16,5 +16,5 @@ public interface LoadArticleDataAccessInterface {
      */
     Article loadArticle(String id) throws java.io.IOException;
 
-    Map<String, String> listSavedArticles() throws java.io.IOException;
+
 }
