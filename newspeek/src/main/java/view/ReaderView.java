@@ -99,9 +99,7 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         this.fileChooser = new JFileChooser();
         this.viewModel = viewModel;
         this.viewModel.addPropertyChangeListener(this);
-
         this.censorshipService = censorshipService;
-
         this.setLayout(new BorderLayout(ELEMENT_SPACING, ELEMENT_SPACING));
         this.setBackground(BACKGROUND_COLOR);
         this.setPreferredSize(WINDOW_SIZE);
@@ -120,23 +118,10 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         uncensoredNotif.setVisible(false);
 
         // Buttons Panel
-        final JPanel buttonsPanel = new JPanel();
-        // Set to use vertical alignment
-        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
-        buttonsPanel.setBackground(BUTTONS_PANEL_BACKGROUND_COLOR);
-        buttonsPanel.setBorder(new EmptyBorder(
-                BORDER_THICKNESS, BORDER_THICKNESS, BORDER_THICKNESS, BORDER_THICKNESS
-        ));
+        final JPanel buttonsPanel = getjPanel();
 
         // Create and initialize the dropdown (hidden by default)
-        loadArticleDropdown = new JComboBox<>();
-        // Initially hidden
-        loadArticleDropdown.setVisible(false);
-        loadArticleDropdown.addItem(DEFAULT_ARTICLE_TEXT);
-        Dimension dropdownSize = new Dimension(DROPDOWN_WIDTH, loadArticleDropdown.getPreferredSize().height);
-        loadArticleDropdown.setPreferredSize(dropdownSize);
-        loadArticleDropdown.setMaximumSize(dropdownSize);
-        loadArticleDropdown.setMinimumSize(dropdownSize);
+        loadArticleDropdown = getStringJComboBox();
 
         // Load and style buttons
         JButton randomArticleButton = new JButton("Random Article");
@@ -156,26 +141,6 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
 
         styleDropdownMenu(loadArticleDropdown);
 
-        // Add components to the panel
-        buttonsPanel.add(randomArticleButton);
-        buttonsPanel.add(Box.createVerticalStrut(BUTTONS_PANEL_BOX_HEIGHT));
-        buttonsPanel.add(loadArticleFromURL);
-        buttonsPanel.add(Box.createVerticalStrut(BUTTONS_PANEL_BOX_HEIGHT));
-        buttonsPanel.add(saveArticleButton);
-        buttonsPanel.add(Box.createVerticalStrut(BUTTONS_PANEL_BOX_HEIGHT));
-        buttonsPanel.add(loadArticleButton);
-        buttonsPanel.add(Box.createVerticalStrut(BUTTONS_PANEL_BOX_HEIGHT));
-        buttonsPanel.add(loadArticleDropdown);
-        buttonsPanel.add(Box.createVerticalStrut(BUTTONS_PANEL_BOX_HEIGHT));
-        buttonsPanel.add(loadRuleSetButton);
-        buttonsPanel.add(censoredSummary);
-        buttonsPanel.add(replacedSummary);
-        buttonsPanel.add(uncensoredNotif);
-        Dimension panelSize = new Dimension(BUTTONS_PANEL_WIDTH, buttonsPanel.getPreferredSize().height);
-        buttonsPanel.setPreferredSize(panelSize);
-        buttonsPanel.setMaximumSize(panelSize);
-        buttonsPanel.setMinimumSize(panelSize);
-
         loadArticleDropdown.addActionListener(evt -> {
             String selectedArticleTitle = (String) loadArticleDropdown.getSelectedItem();
             String selectedArticleId = getKeyByValue(this.viewModel.getState().getSavedArticleList(),
@@ -186,6 +151,9 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
                 loadArticleController.execute(selectedArticleId);
             }
         });
+
+        // Add components to the panel
+        componentsAdded(buttonsPanel, randomArticleButton, loadArticleFromURL, saveArticleButton, loadArticleButton, loadRuleSetButton);
 
         // Article Title
         this.articleTitle = new JLabel("No article loaded");
@@ -256,6 +224,51 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         actionmap.put(RECENSOR_ARTICLE_ACTION_STRING, recensorArticle);
 
         loadArticleButton.addActionListener(evt -> toggleLoadArticleDropdown());
+    }
+
+    private void componentsAdded(JPanel buttonsPanel, JButton randomArticleButton, JButton loadArticleFromURL, JButton saveArticleButton, JButton loadArticleButton, JButton loadRuleSetButton) {
+        buttonsPanel.add(randomArticleButton);
+        buttonsPanel.add(Box.createVerticalStrut(BUTTONS_PANEL_BOX_HEIGHT));
+        buttonsPanel.add(loadArticleFromURL);
+        buttonsPanel.add(Box.createVerticalStrut(BUTTONS_PANEL_BOX_HEIGHT));
+        buttonsPanel.add(saveArticleButton);
+        buttonsPanel.add(Box.createVerticalStrut(BUTTONS_PANEL_BOX_HEIGHT));
+        buttonsPanel.add(loadArticleButton);
+        buttonsPanel.add(Box.createVerticalStrut(BUTTONS_PANEL_BOX_HEIGHT));
+        buttonsPanel.add(loadArticleDropdown);
+        buttonsPanel.add(Box.createVerticalStrut(BUTTONS_PANEL_BOX_HEIGHT));
+        buttonsPanel.add(loadRuleSetButton);
+        buttonsPanel.add(censoredSummary);
+        buttonsPanel.add(replacedSummary);
+        buttonsPanel.add(uncensoredNotif);
+        Dimension panelSize = new Dimension(BUTTONS_PANEL_WIDTH, buttonsPanel.getPreferredSize().height);
+        buttonsPanel.setPreferredSize(panelSize);
+        buttonsPanel.setMaximumSize(panelSize);
+        buttonsPanel.setMinimumSize(panelSize);
+    }
+
+    private JComboBox<String> getStringJComboBox() {
+        final JComboBox<String> loadArticleDropdown;
+        loadArticleDropdown = new JComboBox<>();
+        // Initially hidden
+        loadArticleDropdown.setVisible(false);
+        loadArticleDropdown.addItem(DEFAULT_ARTICLE_TEXT);
+        Dimension dropdownSize = new Dimension(DROPDOWN_WIDTH, loadArticleDropdown.getPreferredSize().height);
+        loadArticleDropdown.setPreferredSize(dropdownSize);
+        loadArticleDropdown.setMaximumSize(dropdownSize);
+        loadArticleDropdown.setMinimumSize(dropdownSize);
+        return loadArticleDropdown;
+    }
+
+    private static JPanel getjPanel() {
+        final JPanel buttonsPanel = new JPanel();
+        // Set to use vertical alignment
+        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
+        buttonsPanel.setBackground(BUTTONS_PANEL_BACKGROUND_COLOR);
+        buttonsPanel.setBorder(new EmptyBorder(
+                BORDER_THICKNESS, BORDER_THICKNESS, BORDER_THICKNESS, BORDER_THICKNESS
+        ));
+        return buttonsPanel;
     }
 
     private void styleArticle() {
