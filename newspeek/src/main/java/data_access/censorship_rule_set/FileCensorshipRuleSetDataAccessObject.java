@@ -21,8 +21,8 @@ public class FileCensorshipRuleSetDataAccessObject implements ChooseRuleSetDataA
         Map<String, String> replacedWords = new HashMap<>();
         Boolean caseSensitive = false;
         String ruleSetName = "Default Rules";
-        prohibitedWords.add("");
-        replacedWords.put("","*");
+        // prohibitedWords.add("");
+        // replacedWords.put("","*");
 
         StringBuilder jsonContent = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
