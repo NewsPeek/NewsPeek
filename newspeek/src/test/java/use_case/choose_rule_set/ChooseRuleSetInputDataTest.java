@@ -8,8 +8,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ChooseRuleSetInputDataTest {
     @Test
-    void inputTest() {
-        ChooseRuleSetInputData inputData = new ChooseRuleSetInputData(new File("xyz"));
-        assertEquals("xyz", inputData.getFile().getPath());
+    void fileTest() {
+        File mockFile = new File("MockFile.txt");
+        ChooseRuleSetInputData inputData = new ChooseRuleSetInputData(mockFile);
+        assertEquals(mockFile, inputData.getFile());
     }
 }
