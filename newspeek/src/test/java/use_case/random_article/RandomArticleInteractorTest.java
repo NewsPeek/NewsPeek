@@ -34,12 +34,10 @@ class RandomArticleInteractorTest {
                 presenterCalled[0] = true;
                 // From MemoryArticleDataAccessObject.makeMockArticle()
                 assertEquals("Sample Article", outputData.getArticle().getTitle());
-                assertFalse(outputData.isUseCaseFailed());
             }
 
             @Override
             public void prepareFailView(String error) {
-                presenterCalled[0] = true;
                 fail("Use case should not fail with country 'us'.");
             }
         };
@@ -63,7 +61,6 @@ class RandomArticleInteractorTest {
         RandomArticleOutputBoundary successPresenter = new RandomArticleOutputBoundary() {
             @Override
             public void prepareSuccessView(RandomArticleOutputData outputData) {
-                presenterCalled[0] = true;
                 fail("Use case should not succeed with country 'FAIL'.");
             }
 

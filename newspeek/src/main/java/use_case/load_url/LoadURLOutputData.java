@@ -7,27 +7,16 @@ import entity.article.Article;
  */
 public class LoadURLOutputData {
     private final Article article;
-    private final boolean useCaseFailed;
 
-    public LoadURLOutputData(Article article, boolean useCaseFailed) {
+    public LoadURLOutputData(Article article) {
         this.article = article;
-        this.useCaseFailed = useCaseFailed;
     }
 
-
     /**
-     * Returns the article found by this use case. If isUseCaseFailed() is true, this return value is undefined.
+     * Returns the article found by this use case.
      * @return the article found by this use case.
      */
     public Article getArticle() {
         return this.article;
-    }
-
-    /**
-     * Returns whether the use case failed and an error should be displayed.
-     * @return whether the use case failed.
-     */
-    public boolean isUseCaseFailed() {
-        return useCaseFailed;
     }
 }

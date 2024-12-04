@@ -30,8 +30,15 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     public static final Dimension BUTTON_SIZE = new Dimension(170, 30);
     private static final int DEFAULT_TEXTAREA_ROWS = 20;
     private static final int DEFAULT_TEXTAREA_COLUMNS = 40;
+    private static final int BUTTONS_PANEL_BOX_HEIGHT = 10;
+    private static final int BUTTONS_PANEL_WIDTH = 220;
+    private static final int DROPDOWN_WIDTH = 170;
 
     private static final String VIEW_NAME = "reader";
+
+    private static final String DEFAULT_ARTICLE_TEXT = "Select an article...";
+    private static final String UNCENSOR_ARTICLE_ACTION_STRING = "uncensorArticle";
+    private static final String RECENSOR_ARTICLE_ACTION_STRING = "recensorArticle";
 
     // STYLE
     // Whole page
@@ -43,29 +50,28 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
 
     // NewsPeek title
     private static final Color NEWSPEEK_COLOR = new Color(70, 130, 180);
-    private static final Font NEWSPEEK_TITLE_FONT = new Font("SansSerif", Font.BOLD, 36);
+    private static final Font NEWSPEEK_TITLE_FONT = new Font(Font.SANS_SERIF, Font.BOLD, 36);
 
     // Article title
-    private static final Font ARTICLE_TITLE_FONT = new Font("SansSerif", Font.BOLD, 20);
+    private static final Font ARTICLE_TITLE_FONT = new Font(Font.SANS_SERIF, Font.BOLD, 20);
 
     // Article
     private static final Color ARTICLE_BACKGROUND_COLOR = new Color(255, 250, 240);
-    private static final Font ARTICLE_FONT = new Font("Monospaced", Font.PLAIN, 14);
+    private static final Font ARTICLE_FONT = new Font(Font.MONOSPACED, Font.PLAIN, 14);
 
     // Buttons
     private static final Color BUTTONS_PANEL_BACKGROUND_COLOR = new Color(230, 230, 250);
     private static final Color BUTTON_BACKGROUND_COLOR = new Color(60, 130, 180);
     private static final LineBorder BUTTON_BORDER_STYLE = new LineBorder(new Color(6, 6, 56), 2, true);
-    private static final Font BUTTON_FONT = new Font("SansSerif", Font.BOLD, 14);
-
+    private static final Font BUTTON_FONT = new Font(Font.SANS_SERIF, Font.BOLD, 14);
+    private static final Color BUTTON_BORDER_COLOUR = new Color (6,6,56);
     // Censorship summary
-    private static final Font CENSORSHIP_SUMMARY_FONT = new Font("SansSerif", Font.BOLD, 16);
+    private static final Font CENSORSHIP_SUMMARY_FONT = new Font(Font.SANS_SERIF, Font.BOLD, 16);
     private static final Color CENSORSHIP_SUMMARY_COLOR = new Color(70, 130, 180);
 
     // Uncensored Notification
-    private static final Font UNCENSORED_NOFITICATION_FONT = new Font("SansSerif", Font.BOLD, 24);
+    private static final Font UNCENSORED_NOFITICATION_FONT = new Font(Font.SANS_SERIF, Font.BOLD, 24);
     private static final Color UNCENSORED_NOTIFICATION_COLOR = new Color(255, 30, 30);
-
 
     private final ReaderViewModel viewModel;
 
@@ -93,9 +99,7 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         this.fileChooser = new JFileChooser();
         this.viewModel = viewModel;
         this.viewModel.addPropertyChangeListener(this);
-
         this.censorshipService = censorshipService;
-
         this.setLayout(new BorderLayout(ELEMENT_SPACING, ELEMENT_SPACING));
         this.setBackground(BACKGROUND_COLOR);
         this.setPreferredSize(WINDOW_SIZE);
@@ -114,67 +118,42 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         uncensoredNotif.setVisible(false);
 
         // Buttons Panel
-        final JPanel buttonsPanel = new JPanel();
-        // Set to use vertical alignment
-        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
-        buttonsPanel.setBackground(BUTTONS_PANEL_BACKGROUND_COLOR);
-        buttonsPanel.setBorder(new EmptyBorder(
-                BORDER_THICKNESS, BORDER_THICKNESS, BORDER_THICKNESS, BORDER_THICKNESS
-        ));
+        final JPanel buttonsPanel = getjPanel();
 
         // Create and initialize the dropdown (hidden by default)
-        loadArticleDropdown = new JComboBox<>();
-        loadArticleDropdown.setVisible(false); // Initially hidden
-        loadArticleDropdown.addItem("Select an article...");
-        Dimension dropdownSize = new Dimension(170, loadArticleDropdown.getPreferredSize().height);
-        loadArticleDropdown.setPreferredSize(dropdownSize);
-        loadArticleDropdown.setMaximumSize(dropdownSize);
-        loadArticleDropdown.setMinimumSize(dropdownSize);
+        loadArticleDropdown = getStringJComboBox();
 
-        // Initialize buttons
+        // Load and style buttons
         JButton randomArticleButton = new JButton("Random Article");
-        JButton loadArticleFromURL = new JButton("Load from URL");
-        JButton saveArticleButton = new JButton("Save Article");
-        JButton loadArticleButton = new JButton("Load Article");
-        JButton loadRuleSetButton = new JButton("Load Ruleset");
-
-        // Style buttons and set alignment
         styleButton(randomArticleButton);
-        styleButton(loadArticleFromURL);
-        styleButton(saveArticleButton);
-        styleButton(loadArticleButton);
-        styleButton(loadRuleSetButton);
-        styleDropdownMenu(loadArticleDropdown);
 
-        // Add components to the panel
-        buttonsPanel.add(randomArticleButton);
-        buttonsPanel.add(Box.createVerticalStrut(10));
-        buttonsPanel.add(loadArticleFromURL);
-        buttonsPanel.add(Box.createVerticalStrut(10));
-        buttonsPanel.add(saveArticleButton);
-        buttonsPanel.add(Box.createVerticalStrut(10));
-        buttonsPanel.add(loadArticleButton);
-        buttonsPanel.add(Box.createVerticalStrut(10));
-        buttonsPanel.add(loadArticleDropdown);
-        buttonsPanel.add(Box.createVerticalStrut(10));
-        buttonsPanel.add(loadRuleSetButton);
-        buttonsPanel.add(censoredSummary);
-        buttonsPanel.add(replacedSummary);
-        buttonsPanel.add(uncensoredNotif);
-        Dimension panelSize = new Dimension(220, buttonsPanel.getPreferredSize().height);
-        buttonsPanel.setPreferredSize(panelSize);
-        buttonsPanel.setMaximumSize(panelSize);
-        buttonsPanel.setMinimumSize(panelSize);
+        JButton loadArticleFromURL = new JButton("Load from URL");
+        styleButton(loadArticleFromURL);
+
+        JButton saveArticleButton = new JButton("Save Article");
+        styleButton(saveArticleButton);
+
+        JButton loadArticleButton = new JButton("Load Article");
+        styleButton(loadArticleButton);
+
+        JButton loadRuleSetButton = new JButton("Load Ruleset");
+        styleButton(loadRuleSetButton);
+
+        styleDropdownMenu(loadArticleDropdown);
 
         loadArticleDropdown.addActionListener(evt -> {
             String selectedArticleTitle = (String) loadArticleDropdown.getSelectedItem();
-            String selectedArticleId = getKeyByValue(this.viewModel.getState().getSavedArticleList(), selectedArticleTitle);
-            if (selectedArticleId != null && !"Select an article...".equals(selectedArticleId)) {
+            String selectedArticleId = getKeyByValue(this.viewModel.getState().getSavedArticleList(),
+                    selectedArticleTitle);
+            if (selectedArticleId != null && !DEFAULT_ARTICLE_TEXT.equals(selectedArticleId)) {
                 // Hide the dropdown after selection
                 loadArticleDropdown.setVisible(false);
                 loadArticleController.execute(selectedArticleId);
             }
         });
+
+        // Add components to the panel
+        componentsAdded(buttonsPanel, randomArticleButton, loadArticleFromURL, saveArticleButton, loadArticleButton, loadRuleSetButton);
 
         // Article Title
         this.articleTitle = new JLabel("No article loaded");
@@ -207,9 +186,8 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
             randomArticleController.execute(country);
         });
 
-        saveArticleButton.addActionListener(evt -> {
-            saveArticleController.execute(this.viewModel.getState().getArticle());
-        });
+        saveArticleButton.addActionListener(evt -> saveArticleController.execute(this.viewModel.getState().getArticle())
+        );
 
         loadArticleFromURL.addActionListener(evt -> chooseURL());
 
@@ -225,7 +203,7 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
                 articleTitle.setText(viewModel.getState().getArticle().getTitle());
                 articleTextArea.setText(viewModel.getState().getArticle().getText());
                 inputmap.remove(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0));
-                inputmap.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), "recensorArticle");
+                inputmap.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), RECENSOR_ARTICLE_ACTION_STRING);
             }
         };
 
@@ -236,16 +214,61 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
                 articleTitle.setText(viewModel.getState().getCensoredArticle().getTitle());
                 articleTextArea.setText(viewModel.getState().getCensoredArticle().getText());
                 inputmap.remove(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0));
-                inputmap.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), "uncensorArticle");
+                inputmap.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), UNCENSOR_ARTICLE_ACTION_STRING);
             }
         };
 
-        inputmap.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), "uncensorArticle");
+        inputmap.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), UNCENSOR_ARTICLE_ACTION_STRING);
 
-        actionmap.put("uncensorArticle", uncensorArticle);
-        actionmap.put("recensorArticle", recensorArticle);
+        actionmap.put(UNCENSOR_ARTICLE_ACTION_STRING, uncensorArticle);
+        actionmap.put(RECENSOR_ARTICLE_ACTION_STRING, recensorArticle);
 
         loadArticleButton.addActionListener(evt -> toggleLoadArticleDropdown());
+    }
+
+    private void componentsAdded(JPanel buttonsPanel, JButton randomArticleButton, JButton loadArticleFromURL, JButton saveArticleButton, JButton loadArticleButton, JButton loadRuleSetButton) {
+        buttonsPanel.add(randomArticleButton);
+        buttonsPanel.add(Box.createVerticalStrut(BUTTONS_PANEL_BOX_HEIGHT));
+        buttonsPanel.add(loadArticleFromURL);
+        buttonsPanel.add(Box.createVerticalStrut(BUTTONS_PANEL_BOX_HEIGHT));
+        buttonsPanel.add(saveArticleButton);
+        buttonsPanel.add(Box.createVerticalStrut(BUTTONS_PANEL_BOX_HEIGHT));
+        buttonsPanel.add(loadArticleButton);
+        buttonsPanel.add(Box.createVerticalStrut(BUTTONS_PANEL_BOX_HEIGHT));
+        buttonsPanel.add(loadArticleDropdown);
+        buttonsPanel.add(Box.createVerticalStrut(BUTTONS_PANEL_BOX_HEIGHT));
+        buttonsPanel.add(loadRuleSetButton);
+        buttonsPanel.add(censoredSummary);
+        buttonsPanel.add(replacedSummary);
+        buttonsPanel.add(uncensoredNotif);
+        Dimension panelSize = new Dimension(BUTTONS_PANEL_WIDTH, buttonsPanel.getPreferredSize().height);
+        buttonsPanel.setPreferredSize(panelSize);
+        buttonsPanel.setMaximumSize(panelSize);
+        buttonsPanel.setMinimumSize(panelSize);
+    }
+
+    private JComboBox<String> getStringJComboBox() {
+        final JComboBox<String> loadArticleDropdown;
+        loadArticleDropdown = new JComboBox<>();
+        // Initially hidden
+        loadArticleDropdown.setVisible(false);
+        loadArticleDropdown.addItem(DEFAULT_ARTICLE_TEXT);
+        Dimension dropdownSize = new Dimension(DROPDOWN_WIDTH, loadArticleDropdown.getPreferredSize().height);
+        loadArticleDropdown.setPreferredSize(dropdownSize);
+        loadArticleDropdown.setMaximumSize(dropdownSize);
+        loadArticleDropdown.setMinimumSize(dropdownSize);
+        return loadArticleDropdown;
+    }
+
+    private static JPanel getjPanel() {
+        final JPanel buttonsPanel = new JPanel();
+        // Set to use vertical alignment
+        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
+        buttonsPanel.setBackground(BUTTONS_PANEL_BACKGROUND_COLOR);
+        buttonsPanel.setBorder(new EmptyBorder(
+                BORDER_THICKNESS, BORDER_THICKNESS, BORDER_THICKNESS, BORDER_THICKNESS
+        ));
+        return buttonsPanel;
     }
 
     private void styleArticle() {
@@ -257,14 +280,14 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         articleTextArea.setBackground(TEXTAREA_BACKGROUND_COLOR);
     }
 
-    private void styleDropdownMenu(JComboBox loadArticleDropdown) {
-        loadArticleDropdown.setFont(ARTICLE_FONT);
-        loadArticleDropdown.setBackground(BUTTON_BACKGROUND_COLOR);
-        loadArticleDropdown.setBorder(new LineBorder(Color.GRAY, 2));
-        loadArticleDropdown.setForeground(Color.WHITE);
-        loadArticleDropdown.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        loadArticleDropdown.setMaximumSize(BUTTON_SIZE);
-        loadArticleDropdown.setAlignmentX(Component.LEFT_ALIGNMENT);
+    private void styleDropdownMenu(JComboBox articleDropdown) {
+        articleDropdown.setFont(ARTICLE_FONT);
+        articleDropdown.setBackground(BUTTON_BACKGROUND_COLOR);
+        articleDropdown.setBorder(new LineBorder(BUTTON_BORDER_COLOUR, 2));
+        articleDropdown.setForeground(Color.WHITE);
+        articleDropdown.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        articleDropdown.setMaximumSize(BUTTON_SIZE);
+        articleDropdown.setAlignmentX(Component.LEFT_ALIGNMENT);
     }
 
     private void styleArticleTitle() {
@@ -308,7 +331,6 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         }
     }
 
-
     private void toggleLoadArticleDropdown() {
         // Toggle visibility of the dropdown
         boolean isVisible = loadArticleDropdown.isVisible();
@@ -320,7 +342,7 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
 
     private void updateDropdown(ReaderState state) {
         loadArticleDropdown.removeAllItems();
-        loadArticleDropdown.addItem("Select an article...");
+        loadArticleDropdown.addItem(DEFAULT_ARTICLE_TEXT);
         Map<String, String> savedArticles = state.getSavedArticleList();
         for (Map.Entry<String, String> entry : savedArticles.entrySet()) {
             loadArticleDropdown.addItem(entry.getValue());
@@ -328,8 +350,7 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     }
 
     /**
-     * Return the name of the current view.
-     *
+     * Getter for the current view name.
      * @return the name of the current view.
      */
     public String getViewName() {
@@ -339,17 +360,25 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     /**
      * Attach the controller for the Random Article use case.
      * Must be executed before showing the view to the user to prevent a program crash.
-     *
      * @param controller the controller to attach.
      */
     public void setRandomArticleController(RandomArticleController controller) {
         this.randomArticleController = controller;
     }
 
-    public void setLoadURLController(LoadURLController loadURLController) {
-        this.loadURLController = loadURLController;
+    /**
+     * Attach the controller for the Load URL use case.
+     * @param controller the controller to attach.
+     */
+
+    public void setLoadURLController(LoadURLController controller) {
+        this.loadURLController = controller;
     }
 
+    /**
+     * Attach the controller for the Set Populate List use case.
+     * @param controller the controller to attach.
+     */
     public void setPopulateListController(PopulateListController controller) {
         this.populateListController = controller;
     }
@@ -357,13 +386,17 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
     /**
      * Attach the controller for the Choose Rule Set use case.
      * Must be executed before showing the view to the user to prevent a program crash.
-     *
      * @param controller the controller to attach.
      */
     public void setChooseRuleSetController(ChooseRuleSetController controller) {
         this.chooseRuleSetController = controller;
     }
 
+    /**
+     * Attach the controller for the Load Article use case.
+     * Must be executed before showing the view to the user to prevent a program crash.
+     * @param controller the controller to attach.
+     */
     public void setLoadArticleController(LoadArticleController controller) {
         this.loadArticleController = controller;
     }
@@ -443,6 +476,12 @@ public class ReaderView extends JPanel implements PropertyChangeListener {
         button.setOpaque(true);
     }
 
+    /**
+     * Get a key in a map by a value.
+     * @param map the map to search for the key in.
+     * @param value the value to use to search.
+     * @return the key that matches the value, or null otherwise.
+     */
     public String getKeyByValue(Map<String, String> map, String value) {
         for (Map.Entry<String, String> entry : map.entrySet()) {
             if (entry.getValue().equals(value)) {

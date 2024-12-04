@@ -25,7 +25,7 @@ public class RandomArticleInteractor implements RandomArticleInputBoundary {
             final Article article = apiDataAccessInterface.getRandomArticle(country);
 
             // Populate output data
-            final RandomArticleOutputData randomArticleOutputData = new RandomArticleOutputData(article, false);
+            final RandomArticleOutputData randomArticleOutputData = new RandomArticleOutputData(article);
 
             // Prepare success view
             presenter.prepareSuccessView(randomArticleOutputData);
