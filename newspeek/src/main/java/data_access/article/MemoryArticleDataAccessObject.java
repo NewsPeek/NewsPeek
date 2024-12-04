@@ -10,6 +10,7 @@ import java.util.UUID;
 import entity.article.Article;
 import use_case.load_article.LoadArticleDataAccessInterface;
 import use_case.populate_list_with_articles.PopulateListDataAccessInterface;
+import use_case.load_url.LoadURLDataAccessInterface;
 import use_case.random_article.RandomArticleAPIDataAccessInterface;
 import use_case.save_article.SaveArticleDataAccessInterface;
 
@@ -17,8 +18,8 @@ import use_case.save_article.SaveArticleDataAccessInterface;
  * DAO to store articles in memory.
  */
 public class MemoryArticleDataAccessObject
-        implements RandomArticleAPIDataAccessInterface, SaveArticleDataAccessInterface, LoadArticleDataAccessInterface,
-        PopulateListDataAccessInterface {
+        implements RandomArticleAPIDataAccessInterface, SaveArticleDataAccessInterface,
+        LoadArticleDataAccessInterface, LoadURLDataAccessInterface, PopulateListDataAccessInterface {
     private final Map<String, Article> articles = new HashMap<>();
 
     /**
@@ -41,17 +42,14 @@ public class MemoryArticleDataAccessObject
      * @param url the URL to get the article from. Must be well-formed, but not necessarily real.
      * @return a mock article.
      */
-    public Article getArticleFromUrl(String url) {
-        try {
-            new URL(url);
-            return Article.mockArticle();
-        } catch (MalformedURLException exception) {
-            System.err.println("MemoryArticleDataAccessObject: Unrecoverable error: malformed URL.");
-            exception.printStackTrace();
-            System.exit(1);
+    public Article getArticleFromUrl(String url) throws IOException {
+
+        if ("FAIL".equals(url)) {
+            throw new IOException("getArticleFromUrl intentionally failed.");
         }
-        /* unreachable */
-        return null;
+
+        new URL(url);
+        return Article.mockArticle();
     }
 
     /**
