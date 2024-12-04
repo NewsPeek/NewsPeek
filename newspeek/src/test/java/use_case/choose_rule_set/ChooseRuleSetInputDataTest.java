@@ -1,8 +1,6 @@
-package use_case.ChooseRuleSet;
+package use_case.choose_rule_set;
 
 import org.junit.jupiter.api.Test;
-import use_case.choose_rule_set.ChooseRuleSetInputData;
-import use_case.load_article.LoadArticleInputData;
 
 import java.io.File;
 
